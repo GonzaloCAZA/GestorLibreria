@@ -1,6 +1,8 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -13,16 +15,17 @@ public class Usuario {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 254)
+    @NotNull
     @Column(name = "mail", nullable = false, length = 254)
     private String mail;
 
-    @Column(name = "pwd", nullable = false, length = 255)
-    private String pwd;
-
+    @NotNull
     @Lob
     @Column(name = "rol", nullable = false)
     private String rol;
 
+    @NotNull
     @ColumnDefault("0")
     @Column(name = "moroso", nullable = false)
     private Boolean moroso;
@@ -34,6 +37,11 @@ public class Usuario {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "actualizado")
     private Instant actualizado;
+
+    @Size(max = 255)
+    @NotNull
+    @Column(name = "pwd", nullable = false)
+    private String pwd;
 
     public Long getId() {
         return id;
@@ -49,14 +57,6 @@ public class Usuario {
 
     public void setMail(String mail) {
         this.mail = mail;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd;
     }
 
     public String getRol() {
@@ -89,6 +89,14 @@ public class Usuario {
 
     public void setActualizado(Instant actualizado) {
         this.actualizado = actualizado;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
 }

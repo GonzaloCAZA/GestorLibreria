@@ -1,6 +1,8 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -13,9 +15,12 @@ public class Estanteria {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 64)
+    @NotNull
     @Column(name = "categoria", nullable = false, length = 64)
     private String categoria;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_piso", nullable = false)
     private Piso idPiso;

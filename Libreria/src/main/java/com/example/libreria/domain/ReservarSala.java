@@ -1,29 +1,34 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
 @Entity
 @Table(name = "reservas_salas")
-public class ReservaSala {
+public class ReservarSala {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario idUsuario;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_sala", nullable = false)
     private Sala idSala;
 
+    @NotNull
     @Column(name = "fecha_reserva", nullable = false)
     private Instant fechaReserva;
 
+    @NotNull
     @Column(name = "fecha_fin_reserva", nullable = false)
     private Instant fechaFinReserva;
 

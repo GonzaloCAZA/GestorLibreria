@@ -1,7 +1,5 @@
 package com.example.libreria.service;
 
-import com.example.libreria.domain.Usuario;
-
 import java.util.List;
 
 public interface UsuarioService {

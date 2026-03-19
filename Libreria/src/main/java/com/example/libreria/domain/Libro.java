@@ -1,6 +1,8 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -13,16 +15,22 @@ public class Libro {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 128)
+    @NotNull
     @Column(name = "titulo", nullable = false, length = 128)
     private String titulo;
 
+    @Size(max = 13)
+    @NotNull
     @Column(name = "isbn", nullable = false, length = 13)
     private String isbn;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_autor", nullable = false)
     private Autor idAutor;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_balda", nullable = false)
     private Balda idBalda;

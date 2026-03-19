@@ -1,6 +1,7 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -14,14 +15,17 @@ public class PrestamoLibro {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario idUsuario;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_libro", nullable = false)
     private Libro idLibro;
 
+    @NotNull
     @Column(name = "fecha_prestamo", nullable = false)
     private LocalDate fechaPrestamo;
 

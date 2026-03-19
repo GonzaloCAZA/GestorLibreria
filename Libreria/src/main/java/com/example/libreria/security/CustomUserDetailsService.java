@@ -1,6 +1,5 @@
 package com.example.libreria.security;
 
-import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

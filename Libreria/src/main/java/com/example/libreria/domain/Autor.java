@@ -1,6 +1,8 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -14,12 +16,17 @@ public class Autor {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 124)
+    @NotNull
     @Column(name = "nombre", nullable = false, length = 124)
     private String nombre;
 
+    @NotNull
     @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
 
+    @Size(max = 64)
+    @NotNull
     @Column(name = "nacionalidad", nullable = false, length = 64)
     private String nacionalidad;
 

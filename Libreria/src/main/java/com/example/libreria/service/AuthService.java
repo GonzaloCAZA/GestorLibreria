@@ -1,9 +1,8 @@
 package com.example.libreria.service;
 
-import com.example.libreria.domain.Usuario;
-import com.example.libreria.dto.auth.AuthResponse;
-import com.example.libreria.dto.auth.LoginRequest;
-import com.example.libreria.dto.auth.RegisterRequest;
+import com.example.libreria.security.dto.AuthResponse;
+import com.example.libreria.security.dto.LoginRequest;
+import com.example.libreria.security.dto.RegisterRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {

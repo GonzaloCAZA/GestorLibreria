@@ -1,6 +1,7 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -13,9 +14,11 @@ public class Balda {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotNull
     @Column(name = "numero", nullable = false)
     private Integer numero;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_estanteria", nullable = false)
     private Estanteria idEstanteria;

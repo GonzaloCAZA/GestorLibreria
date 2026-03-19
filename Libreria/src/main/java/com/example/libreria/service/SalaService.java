@@ -1,8 +1,5 @@
 package com.example.libreria.service;
 
-import com.example.libreria.domain.Piso;
-import com.example.libreria.domain.Sala;
-
 import java.util.List;
 
 public interface SalaService {

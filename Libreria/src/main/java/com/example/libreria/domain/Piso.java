@@ -1,6 +1,8 @@
 package com.example.libreria.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -13,9 +15,12 @@ public class Piso {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @NotNull
     @Column(name = "num_piso", nullable = false)
     private Integer numPiso;
 
+    @Size(max = 64)
+    @NotNull
     @Column(name = "nombre", nullable = false, length = 64)
     private String nombre;
 

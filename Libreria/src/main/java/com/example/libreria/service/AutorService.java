@@ -1,7 +1,5 @@
 package com.example.libreria.service;
 
-import com.example.libreria.domain.Autor;
-
 import java.time.LocalDate;
 import java.util.List;
 

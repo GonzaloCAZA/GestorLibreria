@@ -1,42 +1,48 @@
 package com.example.libreria.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.util.Date;
+import java.time.Instant;
 
 @Service
 public class JwtService {
 
     private final JwtProperties jwtProperties;
+    private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
-    public JwtService(JwtProperties jwtProperties) {
+    public JwtService(JwtProperties jwtProperties, JwtEncoder jwtEncoder, JwtDecoder jwtDecoder) {
         this.jwtProperties = jwtProperties;
+        this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
     }
 
     public String generateToken(UserDetails userDetails) {
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + jwtProperties.getExpiration());
+        Instant issuedAt = Instant.now();
+        Instant expiresAt = issuedAt.plusMillis(jwtProperties.getExpiration());
 
-        return Jwts.builder()
+        JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(userDetails.getUsername())
-                .issuedAt(now)
-                .expiration(expirationDate)
+                .issuedAt(issuedAt)
+                .expiresAt(expiresAt)
                 .claim("roles", userDetails.getAuthorities().stream().map(Object::toString).toList())
-                .signWith(getSigningKey())
-                .compact();
+                .build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();
+        return decodeToken(token).getSubject();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -79,19 +85,12 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractAllClaims(token).getExpiration().before(new Date());
+        Instant expiresAt = decodeToken(token).getExpiresAt();
+        return expiresAt == null || expiresAt.isBefore(Instant.now());
     }
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+    private Jwt decodeToken(String token) {
+        return jwtDecoder.decode(token);
     }
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(java.util.Base64.getEncoder().encodeToString(jwtProperties.getSecret().getBytes()));
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
 }

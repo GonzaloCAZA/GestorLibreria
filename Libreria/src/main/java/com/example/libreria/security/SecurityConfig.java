@@ -25,16 +25,16 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final DaoAuthenticationProvider authenticationProvider;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
             JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-            CustomUserDetailsService customUserDetailsService
+            DaoAuthenticationProvider authenticationProvider
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.customUserDetailsService = customUserDetailsService;
+        this.authenticationProvider = authenticationProvider;
     }
 
     @Bean
@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .authenticationProvider(authenticationProvider())
+                .authenticationProvider(authenticationProvider)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
@@ -55,10 +55,10 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/static/**",
-                                "/webjars/**",
-                                "/api/auth/**"
+                                "/webjars/**"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/csrf").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/csrf").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -70,9 +70,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(customUserDetailsService);
+    public DaoAuthenticationProvider authenticationProvider(CustomUserDetailsService customUserDetailsService) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(customUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

@@ -1,8 +1,5 @@
 package com.example.libreria.repository;
 
-import com.example.libreria.domain.Libro;
-import com.example.libreria.domain.PrestamoLibro;
-import com.example.libreria.domain.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
