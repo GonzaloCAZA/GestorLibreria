@@ -1,6 +1,6 @@
 SELECT * FROM usuarios;
 
-INSERT INTO usuarios (mail, rol) VALUES ('paco@gmail.com', 'ROLE_CUSTOMER');
+INSERT INTO usuarios (mail, pwd, rol) VALUES ('juanma@gmail.com', '123', 'ROLE_CUSTOMER');
 
 
 SELECT * FROM pisos;

@@ -16,6 +16,9 @@ public class Usuario {
     @Column(name = "mail", nullable = false, length = 254)
     private String mail;
 
+    @Column(name = "pwd", nullable = false, length = 255)
+    private String pwd;
+
     @Lob
     @Column(name = "rol", nullable = false)
     private String rol;
@@ -46,6 +49,14 @@ public class Usuario {
 
     public void setMail(String mail) {
         this.mail = mail;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getRol() {
