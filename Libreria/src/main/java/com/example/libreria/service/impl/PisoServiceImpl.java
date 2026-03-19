@@ -1,5 +1,6 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.domain.Piso;
 import com.example.libreria.repository.PisoRepository;
 import com.example.libreria.service.PisoService;
 import jakarta.persistence.EntityNotFoundException;

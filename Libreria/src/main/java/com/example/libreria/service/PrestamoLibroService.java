@@ -1,5 +1,9 @@
 package com.example.libreria.service;
 
+import com.example.libreria.domain.Libro;
+import com.example.libreria.domain.PrestamoLibro;
+import com.example.libreria.domain.Usuario;
+
 import java.time.LocalDate;
 import java.util.List;
 

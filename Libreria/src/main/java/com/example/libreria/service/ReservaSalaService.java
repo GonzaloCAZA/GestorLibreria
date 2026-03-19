@@ -1,25 +1,29 @@
 package com.example.libreria.service;
 
+import com.example.libreria.domain.ReservarSala;
+import com.example.libreria.domain.Sala;
+import com.example.libreria.domain.Usuario;
+
 import java.time.Instant;
 import java.util.List;
 
 public interface ReservaSalaService {
 
-    List<ReservaSala> findAll();
+    List<ReservarSala> findAll();
 
-    ReservaSala findById(Long id);
+    ReservarSala findById(Long id);
 
-    ReservaSala save(ReservaSala reservaSala);
+    ReservarSala save(ReservarSala reservarSala);
 
-    ReservaSala update(Long id, ReservaSala reservaSala);
+    ReservarSala update(Long id, ReservarSala reservarSala);
 
     void deleteById(Long id);
 
-    List<ReservaSala> findByUsuario(Usuario usuario);
+    List<ReservarSala> findByUsuario(Usuario usuario);
 
-    List<ReservaSala> findBySala(Sala sala);
+    List<ReservarSala> findBySala(Sala sala);
 
-    List<ReservaSala> findByFechaReserva(Instant fechaReserva);
+    List<ReservarSala> findByFechaReserva(Instant fechaReserva);
 
-    List<ReservaSala> findByFechaFinReserva(Instant fechaFinReserva);
+    List<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva);
 }

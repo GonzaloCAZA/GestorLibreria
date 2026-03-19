@@ -1,5 +1,8 @@
 package com.example.libreria.service;
 
+import com.example.libreria.domain.Balda;
+import com.example.libreria.domain.Estanteria;
+
 import java.util.List;
 
 public interface BaldaService {

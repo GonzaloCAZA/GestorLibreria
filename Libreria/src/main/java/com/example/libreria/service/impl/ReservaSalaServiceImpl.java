@@ -1,5 +1,8 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.domain.ReservarSala;
+import com.example.libreria.domain.Sala;
+import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.ReservaSalaRepository;
 import com.example.libreria.service.ReservaSalaService;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,25 +24,25 @@ public class ReservaSalaServiceImpl implements ReservaSalaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaSala> findAll() {
+    public List<ReservarSala> findAll() {
         return reservaSalaRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ReservaSala findById(Long id) {
+    public ReservarSala findById(Long id) {
         return reservaSalaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Reserva no encontrada con id: " + id));
     }
 
     @Override
-    public ReservaSala save(ReservaSala reservaSala) {
+    public ReservarSala save(ReservarSala reservaSala) {
         return reservaSalaRepository.save(reservaSala);
     }
 
     @Override
-    public ReservaSala update(Long id, ReservaSala reservaSala) {
-        ReservaSala reservaExistente = findById(id);
+    public ReservarSala update(Long id, ReservarSala reservaSala) {
+        ReservarSala reservaExistente = findById(id);
         reservaExistente.setIdUsuario(reservaSala.getIdUsuario());
         reservaExistente.setIdSala(reservaSala.getIdSala());
         reservaExistente.setFechaReserva(reservaSala.getFechaReserva());
@@ -51,31 +54,31 @@ public class ReservaSalaServiceImpl implements ReservaSalaService {
 
     @Override
     public void deleteById(Long id) {
-        ReservaSala reservaSala = findById(id);
+        ReservarSala reservaSala = findById(id);
         reservaSalaRepository.delete(reservaSala);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaSala> findByUsuario(Usuario usuario) {
+    public List<ReservarSala> findByUsuario(Usuario usuario) {
         return reservaSalaRepository.findByIdUsuario(usuario);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaSala> findBySala(Sala sala) {
+    public List<ReservarSala> findBySala(Sala sala) {
         return reservaSalaRepository.findByIdSala(sala);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaSala> findByFechaReserva(Instant fechaReserva) {
+    public List<ReservarSala> findByFechaReserva(Instant fechaReserva) {
         return reservaSalaRepository.findByFechaReserva(fechaReserva);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaSala> findByFechaFinReserva(Instant fechaFinReserva) {
+    public List<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva) {
         return reservaSalaRepository.findByFechaFinReserva(fechaFinReserva);
     }
 }

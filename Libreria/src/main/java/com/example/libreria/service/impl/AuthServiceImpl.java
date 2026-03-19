@@ -1,5 +1,7 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.util.Rol;
+import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.UsuarioRepository;
 import com.example.libreria.security.JwtService;
 import com.example.libreria.security.dto.AuthResponse;
@@ -57,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
         Usuario savedUsuario = usuarioRepository.save(usuario);
         authenticateAndAttachToken(savedUsuario.getMail(), request.getPassword(), response);
 
-        return new AuthResponse(savedUsuario.getId(), savedUsuario.getMail(), savedUsuario.getRol(), "Usuario registrado correctamente");
+        return new AuthResponse(savedUsuario.getId(), savedUsuario.getMail(), savedUsuario.getRol().name(), "Usuario registrado correctamente");
     }
 
     @Override
@@ -78,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
         Usuario usuario = usuarioRepository.findByMail(request.getMail().trim().toLowerCase())
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        return new AuthResponse(usuario.getId(), usuario.getMail(), usuario.getRol(), "Login correcto");
+        return new AuthResponse(usuario.getId(), usuario.getMail(), usuario.getRol().name(), "Login correcto");
     }
 
     @Override
@@ -109,10 +111,17 @@ public class AuthServiceImpl implements AuthService {
         response.addHeader("Set-Cookie", jwtService.buildAuthCookie(token).toString());
     }
 
-    private String normalizeRole(String role) {
+    private Rol normalizeRole(String role) {
         if (role == null || role.isBlank()) {
-            return "USER";
+            return Rol.ROLE_CUSTOMER;
         }
-        return role.trim().replace("ROLE_", "");
+        switch (role.trim().replace("ROLE_", "")){
+            case "ADMIN":
+                return Rol.ROLE_ADMIN;
+            case "DEV":
+                return Rol.ROLE_DEV;
+            default:
+                return Rol.ROLE_CUSTOMER;
+        }
     }
 }

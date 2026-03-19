@@ -1,5 +1,6 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.UsuarioRepository;
 import com.example.libreria.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;

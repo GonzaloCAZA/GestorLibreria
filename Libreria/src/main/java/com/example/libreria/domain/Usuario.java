@@ -1,15 +1,17 @@
 package com.example.libreria.domain;
 
+import com.example.libreria.util.Rol;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
-
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -20,10 +22,9 @@ public class Usuario {
     @Column(name = "mail", nullable = false, length = 254)
     private String mail;
 
-    @NotNull
-    @Lob
-    @Column(name = "rol", nullable = false)
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "ENUM('ROLE_ADMIN','ROLE_CUSTOMER','ROLE_DEV')")
+    private Rol rol;
 
     @NotNull
     @ColumnDefault("0")
@@ -59,11 +60,11 @@ public class Usuario {
         this.mail = mail;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 

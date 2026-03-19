@@ -1,5 +1,6 @@
 package com.example.libreria.service;
 
+import com.example.libreria.domain.Usuario;
 import com.example.libreria.security.dto.AuthResponse;
 import com.example.libreria.security.dto.LoginRequest;
 import com.example.libreria.security.dto.RegisterRequest;

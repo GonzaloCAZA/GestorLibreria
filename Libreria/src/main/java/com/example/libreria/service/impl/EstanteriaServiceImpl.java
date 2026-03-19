@@ -1,5 +1,7 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.domain.Estanteria;
+import com.example.libreria.domain.Piso;
 import com.example.libreria.repository.EstanteriaRepository;
 import com.example.libreria.service.EstanteriaService;
 import jakarta.persistence.EntityNotFoundException;

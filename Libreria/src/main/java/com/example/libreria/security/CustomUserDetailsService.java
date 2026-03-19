@@ -1,5 +1,6 @@
 package com.example.libreria.security;
 
+import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new User(
                 usuario.getMail(),
                 usuario.getPwd(),
-                buildAuthorities(usuario.getRol())
+                buildAuthorities(usuario.getRol().name())
         );
     }
 

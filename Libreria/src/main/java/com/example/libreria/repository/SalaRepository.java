@@ -1,5 +1,7 @@
 package com.example.libreria.repository;
 
+import com.example.libreria.domain.Piso;
+import com.example.libreria.domain.Sala;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,5 +1,7 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.domain.Balda;
+import com.example.libreria.domain.Estanteria;
 import com.example.libreria.repository.BaldaRepository;
 import com.example.libreria.service.BaldaService;
 import jakarta.persistence.EntityNotFoundException;

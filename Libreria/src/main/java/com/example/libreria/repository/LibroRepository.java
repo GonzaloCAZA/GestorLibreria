@@ -1,5 +1,8 @@
 package com.example.libreria.repository;
 
+import com.example.libreria.domain.Autor;
+import com.example.libreria.domain.Balda;
+import com.example.libreria.domain.Libro;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

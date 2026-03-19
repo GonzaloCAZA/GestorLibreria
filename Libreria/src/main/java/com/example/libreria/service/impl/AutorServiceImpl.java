@@ -1,5 +1,6 @@
 package com.example.libreria.service.impl;
 
+import com.example.libreria.domain.Autor;
 import com.example.libreria.repository.AutorRepository;
 import com.example.libreria.service.AutorService;
 import jakarta.persistence.EntityNotFoundException;

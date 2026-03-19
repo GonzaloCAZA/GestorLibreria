@@ -1,5 +1,7 @@
 package com.example.libreria.security.dto;
 
+import com.example.libreria.util.Rol;
+
 public class AuthResponse {
 
     private Long id;
@@ -7,7 +9,7 @@ public class AuthResponse {
     private String rol;
     private String message;
 
-    public AuthResponse() {
+    public AuthResponse(Long id, String mail, Rol rol, String usuarioRegistradoCorrectamente) {
     }
 
     public AuthResponse(Long id, String mail, String rol, String message) {
