@@ -119,6 +119,21 @@ CREATE TABLE reservas_salas(
     CONSTRAINT chk_reserva_fechas CHECK (fecha_fin_reserva > fecha_reserva)
 );
 
+
+CREATE TABLE IF NOT EXISTS codigos_recuperacion (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    id_usuario BIGINT NOT NULL,
+    codigo VARCHAR(12) NOT NULL,
+    expira_en TIMESTAMP NOT NULL,
+    usado_en TIMESTAMP NULL,
+    creado TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_codigos_recuperacion_usuario
+        FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
 -- TRIGGERS
 
 DELIMITER $$
@@ -212,3 +227,13 @@ ON prestamo_libros (fecha_devolucion_prevista, fecha_devolucion_real);
 
 CREATE INDEX idx_reserva_sala_fechas
 ON reservas_salas (id_sala, fecha_reserva, fecha_fin_reserva);
+
+
+CREATE INDEX idx_codigos_recuperacion_usuario
+    ON codigos_recuperacion (id_usuario);
+
+CREATE INDEX idx_codigos_recuperacion_codigo
+    ON codigos_recuperacion (codigo);
+
+CREATE INDEX idx_codigos_recuperacion_expira_en
+    ON codigos_recuperacion (expira_en);
