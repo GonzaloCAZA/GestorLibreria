@@ -11,7 +11,10 @@ public class Balda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
+
+    @Column(name = "numero", nullable = false)
+    private Integer numero;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_estanteria", nullable = false)
@@ -25,12 +28,20 @@ public class Balda {
     @Column(name = "actualizado")
     private Instant actualizado;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getNumero() {
+        return numero;
+    }
+
+    public void setNumero(Integer numero) {
+        this.numero = numero;
     }
 
     public Estanteria getIdEstanteria() {

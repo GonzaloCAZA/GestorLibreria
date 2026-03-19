@@ -11,9 +11,9 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "mail", nullable = false, length = 64)
+    @Column(name = "mail", nullable = false, length = 254)
     private String mail;
 
     @Lob
@@ -32,11 +32,11 @@ public class Usuario {
     @Column(name = "actualizado")
     private Instant actualizado;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

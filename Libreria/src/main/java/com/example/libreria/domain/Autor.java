@@ -12,7 +12,7 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "nombre", nullable = false, length = 124)
     private String nombre;
@@ -31,11 +31,11 @@ public class Autor {
     @Column(name = "actualizado")
     private Instant actualizado;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
