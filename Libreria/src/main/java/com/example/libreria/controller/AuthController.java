@@ -2,8 +2,10 @@ package com.example.libreria.controller;
 
 import com.example.libreria.domain.Usuario;
 import com.example.libreria.security.dto.AuthResponse;
+import com.example.libreria.security.dto.ForgotPasswordRequest;
 import com.example.libreria.security.dto.LoginRequest;
 import com.example.libreria.security.dto.RegisterRequest;
+import com.example.libreria.security.dto.ResetPasswordRequest;
 import com.example.libreria.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -40,6 +42,18 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
         return ResponseEntity.ok(authService.login(request, response));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.sendRecoveryCode(request);
+        return ResponseEntity.ok(Map.of("message", "Si el correo existe, se ha enviado un codigo de recuperacion"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok(Map.of("message", "Contrasena actualizada correctamente"));
     }
 
     @PostMapping("/logout")

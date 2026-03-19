@@ -2,8 +2,10 @@ package com.example.libreria.service;
 
 import com.example.libreria.domain.Usuario;
 import com.example.libreria.security.dto.AuthResponse;
+import com.example.libreria.security.dto.ForgotPasswordRequest;
 import com.example.libreria.security.dto.LoginRequest;
 import com.example.libreria.security.dto.RegisterRequest;
+import com.example.libreria.security.dto.ResetPasswordRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
@@ -15,4 +17,8 @@ public interface AuthService {
     void logout(HttpServletResponse response);
 
     Usuario getAuthenticatedUser();
+
+    void sendRecoveryCode(ForgotPasswordRequest request);
+
+    void resetPassword(ResetPasswordRequest request);
 }
