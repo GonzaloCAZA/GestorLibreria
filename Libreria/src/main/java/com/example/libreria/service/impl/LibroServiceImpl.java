@@ -6,6 +6,8 @@ import com.example.libreria.domain.Libro;
 import com.example.libreria.repository.LibroRepository;
 import com.example.libreria.service.LibroService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,12 @@ public class LibroServiceImpl implements LibroService {
     @Transactional(readOnly = true)
     public List<Libro> findAll() {
         return libroRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Libro> findAll(Pageable pageable) {
+        return libroRepository.findAll(pageable);
     }
 
     @Override
@@ -78,6 +86,12 @@ public class LibroServiceImpl implements LibroService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Libro> findByTituloContaining(String titulo, Pageable pageable) {
+        return libroRepository.findByTituloContainingIgnoreCase(titulo, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Libro> findByAutor(Autor autor) {
         return libroRepository.findByIdAutor(autor);
     }
@@ -86,5 +100,11 @@ public class LibroServiceImpl implements LibroService {
     @Transactional(readOnly = true)
     public List<Libro> findByBalda(Balda balda) {
         return libroRepository.findByIdBalda(balda);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Libro> findByCategoria(String categoria, Pageable pageable) {
+        return libroRepository.findByIdBalda_IdEstanteria_CategoriaContainingIgnoreCase(categoria, pageable);
     }
 }

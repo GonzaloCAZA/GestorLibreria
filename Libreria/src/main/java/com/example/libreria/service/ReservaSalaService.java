@@ -3,6 +3,8 @@ package com.example.libreria.service;
 import com.example.libreria.domain.ReservarSala;
 import com.example.libreria.domain.Sala;
 import com.example.libreria.domain.Usuario;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.Instant;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
 public interface ReservaSalaService {
 
     List<ReservarSala> findAll();
+    Page<ReservarSala> findAll(Pageable pageable);
 
     ReservarSala findById(Long id);
 
@@ -24,6 +27,8 @@ public interface ReservaSalaService {
     List<ReservarSala> findBySala(Sala sala);
 
     List<ReservarSala> findByFechaReserva(Instant fechaReserva);
+    Page<ReservarSala> findByFechaReserva(Instant fechaReserva, Pageable pageable);
 
     List<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva);
+    Page<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva, Pageable pageable);
 }

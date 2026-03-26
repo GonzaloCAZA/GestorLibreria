@@ -6,6 +6,8 @@ import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.ReservaSalaRepository;
 import com.example.libreria.service.ReservaSalaService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,12 @@ public class ReservaSalaServiceImpl implements ReservaSalaService {
     @Transactional(readOnly = true)
     public List<ReservarSala> findAll() {
         return reservaSalaRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ReservarSala> findAll(Pageable pageable) {
+        return reservaSalaRepository.findAll(pageable);
     }
 
     @Override
@@ -78,7 +86,19 @@ public class ReservaSalaServiceImpl implements ReservaSalaService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ReservarSala> findByFechaReserva(Instant fechaReserva, Pageable pageable) {
+        return reservaSalaRepository.findByFechaReserva(fechaReserva, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva) {
         return reservaSalaRepository.findByFechaFinReserva(fechaFinReserva);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva, Pageable pageable) {
+        return reservaSalaRepository.findByFechaFinReserva(fechaFinReserva, pageable);
     }
 }

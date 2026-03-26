@@ -4,6 +4,8 @@ import com.example.libreria.domain.Autor;
 import com.example.libreria.repository.AutorRepository;
 import com.example.libreria.service.AutorService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,12 @@ public class AutorServiceImpl implements AutorService {
     @Transactional(readOnly = true)
     public List<Autor> findAll() {
         return autorRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Autor> findAll(Pageable pageable) {
+        return autorRepository.findAll(pageable);
     }
 
     @Override
@@ -70,13 +78,31 @@ public class AutorServiceImpl implements AutorService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Autor> findByNacionalidad(String nacionalidad, Pageable pageable) {
+        return autorRepository.findByNacionalidad(nacionalidad, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Autor> findByFechaNacimiento(LocalDate fechaNacimiento) {
         return autorRepository.findByFechaNacimiento(fechaNacimiento);
     }
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Autor> findByFechaNacimiento(LocalDate fechaNacimiento, Pageable pageable) {
+        return autorRepository.findByFechaNacimiento(fechaNacimiento, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Autor> findByNombreContaining(String nombre) {
         return autorRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Autor> findByNombreContaining(String nombre, Pageable pageable) {
+        return autorRepository.findByNombreContainingIgnoreCase(nombre, pageable);
     }
 }

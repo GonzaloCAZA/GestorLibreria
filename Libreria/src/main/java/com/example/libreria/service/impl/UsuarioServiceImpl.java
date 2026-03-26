@@ -6,6 +6,8 @@ import com.example.libreria.dto.usuario.UsuarioUpdateRequest;
 import com.example.libreria.repository.UsuarioRepository;
 import com.example.libreria.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Usuario> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
     }
 
     @Override
@@ -97,7 +105,19 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Usuario> findByRol(String rol, Pageable pageable) {
+        return usuarioRepository.findByRol(rol, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Usuario> findByMoroso(Boolean moroso) {
         return usuarioRepository.findByMoroso(moroso);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Usuario> findByMoroso(Boolean moroso, Pageable pageable) {
+        return usuarioRepository.findByMoroso(moroso, pageable);
     }
 }

@@ -1,62 +1,84 @@
-# Manual de Endpoints para Frontend
+# API Backend para Implementacion Frontend
 
-## Base URL
+## Instrucciones para la IA del frontend
 
-- Desarrollo local: `http://localhost:8080`
-- Prefijo API: `/api`
+Usa este documento como contrato de integracion.
 
-## Autenticacion y sesion
+Reglas:
 
-- La autenticacion usa cookie JWT `HttpOnly`.
-- El frontend debe enviar siempre credenciales:
+- Base URL local: `http://localhost:8080`
+- Todos los requests al backend deben usar `credentials: "include"`.
+- La sesion se guarda en cookie HttpOnly.
+- La sesion dura 1 dia.
+- Para cualquier `POST`, `PUT` o `DELETE`, primero obtén CSRF con `GET /api/auth/csrf`.
+- Después envía el token en el header `X-XSRF-TOKEN`.
+- Si recibes `401`, redirige a login.
+- Si recibes `403`, muestra error de permisos.
+- Si recibes `400`, pinta errores de validacion si existe `details`.
+- Los listados principales ya son paginados.
 
-```ts
-fetch(url, {
-  credentials: "include"
-})
-```
-
-- El backend usa CSRF para peticiones mutadoras.
-- Antes de `POST`, `PUT` o `DELETE`, conviene pedir token CSRF en `GET /api/auth/csrf`.
-- Luego enviar el header `X-XSRF-TOKEN` con el valor recibido o con el valor de la cookie `XSRF-TOKEN`.
-
-Ejemplo base:
+Cliente base recomendado:
 
 ```ts
-await fetch("http://localhost:8080/api/auth/csrf", {
-  credentials: "include"
-})
+const API_URL = "http://localhost:8080";
 
-await fetch("http://localhost:8080/api/auth/login", {
-  method: "POST",
-  credentials: "include",
-  headers: {
-    "Content-Type": "application/json",
-    "X-XSRF-TOKEN": xsrfToken
-  },
-  body: JSON.stringify({
-    mail: "admin@demo.com",
-    password: "12345678"
-  })
-})
+export async function getCsrfToken() {
+  const res = await fetch(`${API_URL}/api/auth/csrf`, {
+    method: "GET",
+    credentials: "include"
+  });
+
+  if (!res.ok) {
+    throw new Error("No se pudo obtener CSRF");
+  }
+
+  const data = await res.json();
+  return data.token;
+}
+
+export async function apiFetch(path: string, init: RequestInit = {}) {
+  const method = (init.method ?? "GET").toUpperCase();
+  const headers = new Headers(init.headers ?? {});
+
+  if (method !== "GET" && method !== "HEAD" && method !== "OPTIONS") {
+    const csrfToken = await getCsrfToken();
+    headers.set("X-XSRF-TOKEN", csrfToken);
+  }
+
+  if (!headers.has("Content-Type") && init.body) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const response = await fetch(`${API_URL}${path}`, {
+    ...init,
+    headers,
+    credentials: "include"
+  });
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  const contentType = response.headers.get("content-type") ?? "";
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : await response.text();
+
+  if (!response.ok) {
+    throw { status: response.status, data };
+  }
+
+  return data;
+}
 ```
 
-## Roles
+## Sesion
 
-- `ROLE_CUSTOMER`: usuario normal.
-- `ROLE_ADMIN`: administrador.
+- Duracion actual: `86400000 ms`
+- Equivale a 24 horas
+- Login y register dejan la sesion iniciada
 
-Permisos actuales:
-
-- Lectura de catalogo: cualquier usuario autenticado.
-- Escritura de catalogo: solo `ROLE_ADMIN`.
-- Usuarios: solo `ROLE_ADMIN`.
-- Prestamos: solo `ROLE_ADMIN`.
-- Reservas de sala: solo `ROLE_ADMIN`.
-
-## Respuestas de error
-
-Formato general:
+## Formato de error
 
 ```json
 {
@@ -70,21 +92,50 @@ Formato general:
 }
 ```
 
-Codigos habituales:
+## Paginacion
 
-- `400`: validacion o datos invalidos.
-- `401`: no autenticado o credenciales incorrectas.
-- `403`: autenticado pero sin permisos.
-- `404`: recurso no encontrado.
-- `409`: conflicto, por ejemplo email duplicado.
+Endpoints paginados:
+
+- `GET /api/autores`
+- `GET /api/libros`
+- `GET /api/libros/categorias/{categoria}`
+- `GET /api/usuarios`
+- `GET /api/salas`
+- `GET /api/prestamos`
+- `GET /api/reservas-sala`
+
+Query params soportados:
+
+- `page`: indice base 0
+- `size`: tamano de pagina
+- `sort`: formato `campo,direccion`
+
+Ejemplo:
+
+```http
+GET /api/libros?page=0&size=12&sort=titulo,asc
+```
+
+Respuesta:
+
+```json
+{
+  "content": [],
+  "number": 0,
+  "size": 12,
+  "totalElements": 120,
+  "totalPages": 10,
+  "first": true,
+  "last": false,
+  "empty": false
+}
+```
 
 ## Auth
 
 ### `GET /api/auth/csrf`
 
-Uso:
-
-- Obtiene el token CSRF para futuras peticiones `POST`, `PUT`, `DELETE`.
+Publico: `si`
 
 Respuesta:
 
@@ -107,13 +158,7 @@ Body:
 }
 ```
 
-Notas:
-
-- El rol no se envia.
-- El backend asigna siempre `ROLE_CUSTOMER`.
-- Si va bien, ademas de responder, deja la sesion iniciada por cookie.
-
-Respuesta 200:
+Respuesta:
 
 ```json
 {
@@ -137,7 +182,7 @@ Body:
 }
 ```
 
-Respuesta 200:
+Respuesta:
 
 ```json
 {
@@ -152,9 +197,7 @@ Respuesta 200:
 
 Publico: `no`
 
-Body: vacio
-
-Respuesta 200:
+Respuesta:
 
 ```json
 {
@@ -166,12 +209,7 @@ Respuesta 200:
 
 Publico: `no`
 
-Uso:
-
-- Recupera el usuario autenticado actual.
-- Ideal para hidratar el estado global de sesion al cargar la app.
-
-Respuesta 200:
+Respuesta:
 
 ```json
 {
@@ -194,7 +232,7 @@ Body:
 }
 ```
 
-Respuesta 200:
+Respuesta:
 
 ```json
 {
@@ -216,7 +254,7 @@ Body:
 }
 ```
 
-Respuesta 200:
+Respuesta:
 
 ```json
 {
@@ -224,9 +262,22 @@ Respuesta 200:
 }
 ```
 
+## Roles y permisos
+
+- `ROLE_CUSTOMER`: lectura de catalogo y uso de sesion.
+- `ROLE_ADMIN`: acceso total.
+
+Permisos actuales:
+
+- `GET` catalogo: autenticado
+- `POST/PUT/DELETE` catalogo: admin
+- usuarios: admin
+- prestamos: admin
+- reservas de sala: admin
+
 ## Usuarios
 
-Todos los endpoints de usuarios requieren `ROLE_ADMIN`.
+Todos requieren `ROLE_ADMIN`.
 
 ### `GET /api/usuarios`
 
@@ -234,29 +285,37 @@ Query params opcionales:
 
 - `rol`
 - `moroso`
-
-Ejemplos:
-
-- `/api/usuarios`
-- `/api/usuarios?rol=ROLE_ADMIN`
-- `/api/usuarios?moroso=true`
+- `page`
+- `size`
+- `sort`
 
 Respuesta:
 
 ```json
-[
-  {
-    "id": 1,
-    "mail": "admin@demo.com",
-    "rol": "ROLE_ADMIN",
-    "moroso": false,
-    "creado": "2026-03-26T12:00:00Z",
-    "actualizado": "2026-03-26T12:00:00Z"
-  }
-]
+{
+  "content": [
+    {
+      "id": 1,
+      "mail": "admin@demo.com",
+      "rol": "ROLE_ADMIN",
+      "moroso": false,
+      "creado": "2026-03-26T12:00:00Z",
+      "actualizado": "2026-03-26T12:00:00Z"
+    }
+  ],
+  "number": 0,
+  "size": 10,
+  "totalElements": 1,
+  "totalPages": 1,
+  "first": true,
+  "last": true,
+  "empty": false
+}
 ```
 
 ### `GET /api/usuarios/{id}`
+
+### `GET /api/usuarios/mail/{mail}`
 
 Respuesta:
 
@@ -270,14 +329,6 @@ Respuesta:
   "actualizado": "2026-03-26T12:00:00Z"
 }
 ```
-
-### `GET /api/usuarios/mail/{mail}`
-
-Ejemplo:
-
-- `/api/usuarios/mail/admin@demo.com`
-
-Respuesta igual que `GET /api/usuarios/{id}`.
 
 ### `POST /api/usuarios`
 
@@ -305,39 +356,28 @@ Body:
 }
 ```
 
-Notas:
-
-- `password` es opcional en update.
-- Si se envia vacio o `null`, no cambia.
-
 ### `DELETE /api/usuarios/{id}`
 
-Respuesta: `204 No Content`
+Respuesta: `204`
 
 ## Catalogo
-
-Lectura: cualquier usuario autenticado.
-
-Escritura: solo `ROLE_ADMIN`.
 
 ## Autores
 
 ### `GET /api/autores`
 
-Filtros opcionales:
+Filtros:
 
 - `nombre`
 - `nacionalidad`
-- `fechaNacimiento` en formato `YYYY-MM-DD`
+- `fechaNacimiento=YYYY-MM-DD`
+- `page`
+- `size`
+- `sort`
 
-Ejemplos:
+### `GET /api/autores/{id}`
 
-- `/api/autores`
-- `/api/autores?nombre=cerv`
-- `/api/autores?nacionalidad=Espana`
-- `/api/autores?fechaNacimiento=1947-09-21`
-
-Modelo:
+Respuesta:
 
 ```json
 {
@@ -350,13 +390,9 @@ Modelo:
 }
 ```
 
-### `GET /api/autores/{id}`
-
 ### `POST /api/autores`
 
 Admin.
-
-Body:
 
 ```json
 {
@@ -368,7 +404,7 @@ Body:
 
 ### `PUT /api/autores/{id}`
 
-Admin. Mismo body que create.
+Admin. Mismo body.
 
 ### `DELETE /api/autores/{id}`
 
@@ -376,7 +412,11 @@ Admin. Respuesta `204`.
 
 ## Pisos
 
-Modelo:
+### `GET /api/pisos`
+
+### `GET /api/pisos/{id}`
+
+Respuesta:
 
 ```json
 {
@@ -388,15 +428,9 @@ Modelo:
 }
 ```
 
-Endpoints:
+### `POST /api/pisos`
 
-- `GET /api/pisos`
-- `GET /api/pisos/{id}`
-- `POST /api/pisos` admin
-- `PUT /api/pisos/{id}` admin
-- `DELETE /api/pisos/{id}` admin
-
-Body create/update:
+Admin.
 
 ```json
 {
@@ -405,31 +439,37 @@ Body create/update:
 }
 ```
 
+### `PUT /api/pisos/{id}`
+
+Admin. Mismo body.
+
+### `DELETE /api/pisos/{id}`
+
+Admin. Respuesta `204`.
+
 ## Estanterias
 
-Modelo:
+### `GET /api/estanterias`
+
+### `GET /api/estanterias/{id}`
+
+Respuesta:
 
 ```json
 {
   "id": 1,
   "categoria": "Novela",
-  "idPiso": {
-    "id": 1
-  },
+  "pisoId": 1,
+  "pisoNumero": 1,
+  "pisoNombre": "Primera planta",
   "creado": "2026-03-26T12:00:00Z",
   "actualizado": "2026-03-26T12:00:00Z"
 }
 ```
 
-Endpoints:
+### `POST /api/estanterias`
 
-- `GET /api/estanterias`
-- `GET /api/estanterias/{id}`
-- `POST /api/estanterias` admin
-- `PUT /api/estanterias/{id}` admin
-- `DELETE /api/estanterias/{id}` admin
-
-Body create/update:
+Admin.
 
 ```json
 {
@@ -439,32 +479,40 @@ Body create/update:
   }
 }
 ```
+
+### `PUT /api/estanterias/{id}`
+
+Admin. Mismo body.
+
+### `DELETE /api/estanterias/{id}`
+
+Admin. Respuesta `204`.
 
 ## Baldas
 
-Modelo:
+### `GET /api/baldas`
+
+### `GET /api/baldas/{id}`
+
+Respuesta:
 
 ```json
 {
   "id": 1,
   "numero": 3,
-  "idEstanteria": {
-    "id": 2
-  },
+  "estanteriaId": 2,
+  "estanteriaCategoria": "Novela",
+  "pisoId": 1,
+  "pisoNumero": 1,
+  "pisoNombre": "Primera planta",
   "creado": "2026-03-26T12:00:00Z",
   "actualizado": "2026-03-26T12:00:00Z"
 }
 ```
 
-Endpoints:
+### `POST /api/baldas`
 
-- `GET /api/baldas`
-- `GET /api/baldas/{id}`
-- `POST /api/baldas` admin
-- `PUT /api/baldas/{id}` admin
-- `DELETE /api/baldas/{id}` admin
-
-Body create/update:
+Admin.
 
 ```json
 {
@@ -474,6 +522,14 @@ Body create/update:
   }
 }
 ```
+
+### `PUT /api/baldas/{id}`
+
+Admin. Mismo body.
+
+### `DELETE /api/baldas/{id}`
+
+Admin. Respuesta `204`.
 
 ## Libros
 
@@ -482,31 +538,58 @@ Body create/update:
 Filtro opcional:
 
 - `titulo`
+- `categoria`
+- `page`
+- `size`
+- `sort`
 
 Ejemplos:
 
-- `/api/libros`
-- `/api/libros?titulo=quijote`
+- `/api/libros?page=0&size=12&sort=titulo,asc`
+- `/api/libros?titulo=soledad&page=0&size=10`
+- `/api/libros?categoria=Novela&page=0&size=10`
 
 ### `GET /api/libros/{id}`
 
 ### `GET /api/libros/isbn/{isbn}`
 
-Modelo:
+### `GET /api/libros/categorias/{categoria}`
+
+Endpoint dedicado para pedir libros por categoria.
+
+Ejemplo:
+
+- `/api/libros/categorias/Novela?page=0&size=10&sort=titulo,asc`
+
+Respuesta:
 
 ```json
 {
-  "id": 1,
-  "titulo": "Cien anos de soledad",
-  "isbn": "9780307474728",
-  "idAutor": {
-    "id": 1
-  },
-  "idBalda": {
-    "id": 2
-  },
-  "creado": "2026-03-26T12:00:00Z",
-  "actualizado": "2026-03-26T12:00:00Z"
+  "content": [
+    {
+      "id": 1,
+      "titulo": "Cien anos de soledad",
+      "isbn": "9780307474728",
+      "autorId": 1,
+      "autorNombre": "Gabriel Garcia Marquez",
+      "baldaId": 2,
+      "baldaNumero": 3,
+      "estanteriaId": 7,
+      "estanteriaCategoria": "Novela",
+      "pisoId": 1,
+      "pisoNumero": 1,
+      "pisoNombre": "Primera planta",
+      "creado": "2026-03-26T12:00:00Z",
+      "actualizado": "2026-03-26T12:00:00Z"
+    }
+  ],
+  "number": 0,
+  "size": 10,
+  "totalElements": 1,
+  "totalPages": 1,
+  "first": true,
+  "last": true,
+  "empty": false
 }
 ```
 
@@ -529,7 +612,7 @@ Admin.
 
 ### `PUT /api/libros/{id}`
 
-Admin. Mismo body que create.
+Admin. Mismo body.
 
 ### `DELETE /api/libros/{id}`
 
@@ -537,30 +620,36 @@ Admin. Respuesta `204`.
 
 ## Salas
 
-Modelo:
+### `GET /api/salas`
+
+Filtros opcionales:
+
+- `nombre`
+- `maximoPersonas`
+- `page`
+- `size`
+- `sort`
+
+### `GET /api/salas/{id}`
+
+Respuesta:
 
 ```json
 {
   "id": 1,
   "nombre": "Sala 1",
   "maximoPersonas": 8,
-  "idPiso": {
-    "id": 1
-  },
+  "pisoId": 1,
+  "pisoNumero": 1,
+  "pisoNombre": "Primera planta",
   "creado": "2026-03-26T12:00:00Z",
   "actualizado": "2026-03-26T12:00:00Z"
 }
 ```
 
-Endpoints:
+### `POST /api/salas`
 
-- `GET /api/salas`
-- `GET /api/salas/{id}`
-- `POST /api/salas` admin
-- `PUT /api/salas/{id}` admin
-- `DELETE /api/salas/{id}` admin
-
-Body create/update:
+Admin.
 
 ```json
 {
@@ -572,21 +661,41 @@ Body create/update:
 }
 ```
 
+### `PUT /api/salas/{id}`
+
+Admin. Mismo body.
+
+### `DELETE /api/salas/{id}`
+
+Admin. Respuesta `204`.
+
 ## Prestamos
 
-Todos los endpoints de prestamos requieren `ROLE_ADMIN`.
+Todos requieren `ROLE_ADMIN`.
 
-Modelo:
+### `GET /api/prestamos`
+
+Filtros opcionales:
+
+- `fechaPrestamo`
+- `fechaDevolucionPrevista`
+- `fechaDevolucionReal`
+- `page`
+- `size`
+- `sort`
+
+### `GET /api/prestamos/{id}`
+
+Respuesta:
 
 ```json
 {
   "id": 1,
-  "idUsuario": {
-    "id": 5
-  },
-  "idLibro": {
-    "id": 10
-  },
+  "usuarioId": 5,
+  "usuarioMail": "cliente@demo.com",
+  "libroId": 10,
+  "libroTitulo": "Cien anos de soledad",
+  "libroIsbn": "9780307474728",
   "fechaPrestamo": "2026-03-26",
   "fechaDevolucionPrevista": "2026-04-26",
   "fechaDevolucionReal": null,
@@ -595,15 +704,9 @@ Modelo:
 }
 ```
 
-Endpoints:
+### `POST /api/prestamos`
 
-- `GET /api/prestamos`
-- `GET /api/prestamos/{id}`
-- `POST /api/prestamos`
-- `PUT /api/prestamos/{id}`
-- `DELETE /api/prestamos/{id}`
-
-Body create/update:
+Admin.
 
 ```json
 {
@@ -619,21 +722,43 @@ Body create/update:
 }
 ```
 
+### `PUT /api/prestamos/{id}`
+
+Admin. Mismo body.
+
+### `DELETE /api/prestamos/{id}`
+
+Admin. Respuesta `204`.
+
 ## Reservas de sala
 
-Todos los endpoints de reservas requieren `ROLE_ADMIN`.
+Todos requieren `ROLE_ADMIN`.
 
-Modelo:
+### `GET /api/reservas-sala`
+
+Filtros opcionales:
+
+- `fechaReserva`
+- `fechaFinReserva`
+- `page`
+- `size`
+- `sort`
+
+### `GET /api/reservas-sala/{id}`
+
+Respuesta:
 
 ```json
 {
   "id": 1,
-  "idUsuario": {
-    "id": 5
-  },
-  "idSala": {
-    "id": 2
-  },
+  "usuarioId": 5,
+  "usuarioMail": "cliente@demo.com",
+  "salaId": 2,
+  "salaNombre": "Sala 1",
+  "salaMaximoPersonas": 8,
+  "pisoId": 1,
+  "pisoNumero": 1,
+  "pisoNombre": "Primera planta",
   "fechaReserva": "2026-03-26T10:00:00Z",
   "fechaFinReserva": "2026-03-26T12:00:00Z",
   "creado": "2026-03-26T09:00:00Z",
@@ -641,15 +766,9 @@ Modelo:
 }
 ```
 
-Endpoints:
+### `POST /api/reservas-sala`
 
-- `GET /api/reservas-sala`
-- `GET /api/reservas-sala/{id}`
-- `POST /api/reservas-sala`
-- `PUT /api/reservas-sala/{id}`
-- `DELETE /api/reservas-sala/{id}`
-
-Body create/update:
+Admin.
 
 ```json
 {
@@ -664,13 +783,21 @@ Body create/update:
 }
 ```
 
-## Recomendaciones para frontend
+### `PUT /api/reservas-sala/{id}`
 
-- Centraliza `fetch` con `credentials: "include"`.
-- Antes de cualquier mutacion, asegúrate de tener token CSRF.
-- Usa `/api/auth/me` al arrancar la app para saber si hay sesion activa.
-- Guarda en estado frontend `id`, `mail` y `rol` del usuario autenticado.
-- Oculta botones de admin si el rol no es `ROLE_ADMIN`.
-- Si recibes `401`, redirige a login.
-- Si recibes `403`, muestra error de permisos.
-- Si recibes `400`, pinta los campos de `details`.
+Admin. Mismo body.
+
+### `DELETE /api/reservas-sala/{id}`
+
+Admin. Respuesta `204`.
+
+## Resumen rapido para implementar
+
+- Usa `/api/auth/me` al arrancar la app.
+- Guarda `id`, `mail`, `rol`.
+- Oculta UI admin si `rol !== "ROLE_ADMIN"`.
+- Usa los campos planos de respuesta como `autorNombre`, `pisoNumero`, `usuarioMail`.
+- En formularios de escritura sigue enviando ids anidados por ahora:
+  - `{ "idAutor": { "id": 1 } }`
+  - `{ "idPiso": { "id": 1 } }`
+  - `{ "idUsuario": { "id": 5 } }`

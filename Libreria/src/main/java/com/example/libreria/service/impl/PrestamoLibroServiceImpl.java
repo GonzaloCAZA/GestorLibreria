@@ -6,6 +6,8 @@ import com.example.libreria.domain.Usuario;
 import com.example.libreria.repository.PrestamoLibroRepository;
 import com.example.libreria.service.PrestamoLibroService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,12 @@ public class PrestamoLibroServiceImpl implements PrestamoLibroService {
     @Transactional(readOnly = true)
     public List<PrestamoLibro> findAll() {
         return prestamoLibroRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PrestamoLibro> findAll(Pageable pageable) {
+        return prestamoLibroRepository.findAll(pageable);
     }
 
     @Override
@@ -79,13 +87,31 @@ public class PrestamoLibroServiceImpl implements PrestamoLibroService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<PrestamoLibro> findByFechaPrestamo(LocalDate fechaPrestamo, Pageable pageable) {
+        return prestamoLibroRepository.findByFechaPrestamo(fechaPrestamo, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PrestamoLibro> findByFechaDevolucionPrevista(LocalDate fechaDevolucionPrevista) {
         return prestamoLibroRepository.findByFechaDevolucionPrevista(fechaDevolucionPrevista);
     }
 
     @Override
     @Transactional(readOnly = true)
+    public Page<PrestamoLibro> findByFechaDevolucionPrevista(LocalDate fechaDevolucionPrevista, Pageable pageable) {
+        return prestamoLibroRepository.findByFechaDevolucionPrevista(fechaDevolucionPrevista, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PrestamoLibro> findByFechaDevolucionReal(LocalDate fechaDevolucionReal) {
         return prestamoLibroRepository.findByFechaDevolucionReal(fechaDevolucionReal);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<PrestamoLibro> findByFechaDevolucionReal(LocalDate fechaDevolucionReal, Pageable pageable) {
+        return prestamoLibroRepository.findByFechaDevolucionReal(fechaDevolucionReal, pageable);
     }
 }
