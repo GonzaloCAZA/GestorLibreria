@@ -1,8 +1,12 @@
 package com.example.libreria.controller;
 
-import com.example.libreria.domain.Usuario;
+import com.example.libreria.dto.usuario.UsuarioCreateRequest;
+import com.example.libreria.dto.usuario.UsuarioResponse;
+import com.example.libreria.dto.usuario.UsuarioUpdateRequest;
 import com.example.libreria.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
@@ -26,37 +31,37 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> findAll(
+    public ResponseEntity<List<UsuarioResponse>> findAll(
             @RequestParam(required = false) String rol,
             @RequestParam(required = false) Boolean moroso
     ) {
         if (rol != null && !rol.isBlank()) {
-            return ResponseEntity.ok(usuarioService.findByRol(rol));
+            return ResponseEntity.ok(usuarioService.findByRol(rol).stream().map(UsuarioResponse::from).toList());
         }
         if (moroso != null) {
-            return ResponseEntity.ok(usuarioService.findByMoroso(moroso));
+            return ResponseEntity.ok(usuarioService.findByMoroso(moroso).stream().map(UsuarioResponse::from).toList());
         }
-        return ResponseEntity.ok(usuarioService.findAll());
+        return ResponseEntity.ok(usuarioService.findAll().stream().map(UsuarioResponse::from).toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.findById(id));
+    public ResponseEntity<UsuarioResponse> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(UsuarioResponse.from(usuarioService.findById(id)));
     }
 
     @GetMapping("/mail/{mail}")
-    public ResponseEntity<Usuario> findByMail(@PathVariable String mail) {
-        return ResponseEntity.ok(usuarioService.findByMail(mail));
+    public ResponseEntity<UsuarioResponse> findByMail(@PathVariable String mail) {
+        return ResponseEntity.ok(UsuarioResponse.from(usuarioService.findByMail(mail)));
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> create(@RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.save(usuario));
+    public ResponseEntity<UsuarioResponse> create(@Valid @RequestBody UsuarioCreateRequest request) {
+        return ResponseEntity.ok(UsuarioResponse.from(usuarioService.save(request)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody Usuario usuario) {
-        return ResponseEntity.ok(usuarioService.update(id, usuario));
+    public ResponseEntity<UsuarioResponse> update(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateRequest request) {
+        return ResponseEntity.ok(UsuarioResponse.from(usuarioService.update(id, request)));
     }
 
     @DeleteMapping("/{id}")

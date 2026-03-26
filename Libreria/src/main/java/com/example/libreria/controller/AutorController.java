@@ -2,7 +2,9 @@ package com.example.libreria.controller;
 
 import com.example.libreria.domain.Autor;
 import com.example.libreria.service.AutorService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,16 +52,19 @@ public class AutorController {
     }
 
     @PostMapping
-    public ResponseEntity<Autor> create(@RequestBody Autor autor) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Autor> create(@Valid @RequestBody Autor autor) {
         return ResponseEntity.ok(autorService.save(autor));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Autor> update(@PathVariable Long id, @RequestBody Autor autor) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Autor> update(@PathVariable Long id, @Valid @RequestBody Autor autor) {
         return ResponseEntity.ok(autorService.update(id, autor));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         autorService.deleteById(id);
         return ResponseEntity.noContent().build();

@@ -58,14 +58,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse register(RegisterRequest request, HttpServletResponse response) {
-        if (usuarioRepository.existsByMail(request.getMail())) {
+        String normalizedMail = request.getMail().trim().toLowerCase();
+        if (usuarioRepository.existsByMail(normalizedMail)) {
             throw new IllegalArgumentException("Ya existe un usuario con ese email");
         }
 
         Usuario usuario = new Usuario();
-        usuario.setMail(request.getMail().trim().toLowerCase());
+        usuario.setMail(normalizedMail);
         usuario.setPwd(passwordEncoder.encode(request.getPassword()));
-        usuario.setRol(normalizeRole(request.getRol()));
+        usuario.setRol(Rol.ROLE_CUSTOMER);
         usuario.setMoroso(Boolean.FALSE);
         usuario.setCreado(Instant.now());
         usuario.setActualizado(Instant.now());
@@ -168,21 +169,6 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.generateToken((org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal());
         response.addHeader("Set-Cookie", jwtService.buildAuthCookie(token).toString());
     }
-
-    private Rol normalizeRole(String role) {
-        if (role == null || role.isBlank()) {
-            return Rol.ROLE_CUSTOMER;
-        }
-        switch (role.trim().replace("ROLE_", "")){
-            case "ADMIN":
-                return Rol.ROLE_ADMIN;
-            case "DEV":
-                return Rol.ROLE_DEV;
-            default:
-                return Rol.ROLE_CUSTOMER;
-        }
-    }
-
     private void invalidateActiveRecoveryCodes(Usuario usuario) {
         List<CodigoRecuperacion> activeCodes = codigoRecuperacionRepository.findByIdUsuarioAndUsadoEnIsNull(usuario);
         Instant now = Instant.now();

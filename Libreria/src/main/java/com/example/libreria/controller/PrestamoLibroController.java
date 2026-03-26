@@ -2,7 +2,9 @@ package com.example.libreria.controller;
 
 import com.example.libreria.domain.PrestamoLibro;
 import com.example.libreria.service.PrestamoLibroService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/prestamos")
 public class PrestamoLibroController {
 
@@ -35,12 +38,12 @@ public class PrestamoLibroController {
     }
 
     @PostMapping
-    public ResponseEntity<PrestamoLibro> create(@RequestBody PrestamoLibro prestamoLibro) {
+    public ResponseEntity<PrestamoLibro> create(@Valid @RequestBody PrestamoLibro prestamoLibro) {
         return ResponseEntity.ok(prestamoLibroService.save(prestamoLibro));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PrestamoLibro> update(@PathVariable Long id, @RequestBody PrestamoLibro prestamoLibro) {
+    public ResponseEntity<PrestamoLibro> update(@PathVariable Long id, @Valid @RequestBody PrestamoLibro prestamoLibro) {
         return ResponseEntity.ok(prestamoLibroService.update(id, prestamoLibro));
     }
 

@@ -1,12 +1,16 @@
 package com.example.libreria.service.impl;
 
 import com.example.libreria.domain.Usuario;
+import com.example.libreria.dto.usuario.UsuarioCreateRequest;
+import com.example.libreria.dto.usuario.UsuarioUpdateRequest;
 import com.example.libreria.repository.UsuarioRepository;
 import com.example.libreria.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -14,9 +18,11 @@ import java.util.List;
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,18 +39,39 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario save(Usuario usuario) {
+    public Usuario save(UsuarioCreateRequest request) {
+        if (usuarioRepository.existsByMail(request.getMail().trim().toLowerCase())) {
+            throw new IllegalArgumentException("Ya existe un usuario con ese email");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setMail(request.getMail().trim().toLowerCase());
+        usuario.setRol(request.getRol());
+        usuario.setMoroso(request.getMoroso());
+        usuario.setPwd(passwordEncoder.encode(request.getPassword()));
+        usuario.setCreado(Instant.now());
+        usuario.setActualizado(Instant.now());
         return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Usuario update(Long id, Usuario usuario) {
+    public Usuario update(Long id, UsuarioUpdateRequest request) {
         Usuario usuarioExistente = findById(id);
-        usuarioExistente.setMail(usuario.getMail());
-        usuarioExistente.setRol(usuario.getRol());
-        usuarioExistente.setMoroso(usuario.getMoroso());
-        usuarioExistente.setCreado(usuario.getCreado());
-        usuarioExistente.setActualizado(usuario.getActualizado());
+        String normalizedMail = request.getMail().trim().toLowerCase();
+        if (!usuarioExistente.getMail().equalsIgnoreCase(normalizedMail)
+                && usuarioRepository.existsByMail(normalizedMail)) {
+            throw new IllegalArgumentException("Ya existe un usuario con ese email");
+        }
+
+        usuarioExistente.setMail(normalizedMail);
+        usuarioExistente.setRol(request.getRol());
+        usuarioExistente.setMoroso(request.getMoroso());
+        usuarioExistente.setActualizado(Instant.now());
+
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            usuarioExistente.setPwd(passwordEncoder.encode(request.getPassword()));
+        }
+
         return usuarioRepository.save(usuarioExistente);
     }
 
@@ -57,8 +84,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional(readOnly = true)
     public Usuario findByMail(String mail) {
-        return usuarioRepository.findByMail(mail)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con mail: " + mail));
+        String normalizedMail = mail.trim().toLowerCase();
+        return usuarioRepository.findByMail(normalizedMail)
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con mail: " + normalizedMail));
     }
 
     @Override

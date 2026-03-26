@@ -1,5 +1,6 @@
 package com.example.libreria.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.libreria.util.Rol;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +24,7 @@ public class Usuario {
     private String mail;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     @Column(nullable = false, columnDefinition = "ENUM('ROLE_ADMIN','ROLE_CUSTOMER','ROLE_DEV')")
     private Rol rol;
 
@@ -41,6 +43,7 @@ public class Usuario {
 
     @Size(max = 255)
     @NotNull
+    @JsonIgnore
     @Column(name = "pwd", nullable = false)
     private String pwd;
 

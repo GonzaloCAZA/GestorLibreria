@@ -9,7 +9,8 @@ public class AuthResponse {
     private String rol;
     private String message;
 
-    public AuthResponse(Long id, String mail, Rol rol, String usuarioRegistradoCorrectamente) {
+    public AuthResponse(Long id, String mail, Rol rol, String message) {
+        this(id, mail, rol != null ? rol.name() : null, message);
     }
 
     public AuthResponse(Long id, String mail, String rol, String message) {

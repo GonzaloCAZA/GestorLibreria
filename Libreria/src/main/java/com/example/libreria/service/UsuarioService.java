@@ -1,6 +1,8 @@
 package com.example.libreria.service;
 
 import com.example.libreria.domain.Usuario;
+import com.example.libreria.dto.usuario.UsuarioCreateRequest;
+import com.example.libreria.dto.usuario.UsuarioUpdateRequest;
 
 import java.util.List;
 
@@ -10,9 +12,9 @@ public interface UsuarioService {
 
     Usuario findById(Long id);
 
-    Usuario save(Usuario usuario);
+    Usuario save(UsuarioCreateRequest request);
 
-    Usuario update(Long id, Usuario usuario);
+    Usuario update(Long id, UsuarioUpdateRequest request);
 
     void deleteById(Long id);
 

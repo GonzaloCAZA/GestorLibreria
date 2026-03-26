@@ -2,7 +2,9 @@ package com.example.libreria.controller;
 
 import com.example.libreria.domain.Sala;
 import com.example.libreria.service.SalaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,16 +37,19 @@ public class SalaController {
     }
 
     @PostMapping
-    public ResponseEntity<Sala> create(@RequestBody Sala sala) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Sala> create(@Valid @RequestBody Sala sala) {
         return ResponseEntity.ok(salaService.save(sala));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Sala> update(@PathVariable Long id, @RequestBody Sala sala) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Sala> update(@PathVariable Long id, @Valid @RequestBody Sala sala) {
         return ResponseEntity.ok(salaService.update(id, sala));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         salaService.deleteById(id);
         return ResponseEntity.noContent().build();

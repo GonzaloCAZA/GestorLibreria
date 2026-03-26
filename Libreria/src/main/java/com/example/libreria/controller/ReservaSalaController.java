@@ -2,7 +2,9 @@ package com.example.libreria.controller;
 
 import com.example.libreria.domain.ReservarSala;
 import com.example.libreria.service.ReservaSalaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/reservas-sala")
 public class ReservaSalaController {
 
@@ -35,12 +38,12 @@ public class ReservaSalaController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservarSala> create(@RequestBody ReservarSala reservarSala) {
+    public ResponseEntity<ReservarSala> create(@Valid @RequestBody ReservarSala reservarSala) {
         return ResponseEntity.ok(reservaSalaService.save(reservarSala));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservarSala> update(@PathVariable Long id, @RequestBody ReservarSala reservarSala) {
+    public ResponseEntity<ReservarSala> update(@PathVariable Long id, @Valid @RequestBody ReservarSala reservarSala) {
         return ResponseEntity.ok(reservaSalaService.update(id, reservarSala));
     }
 
