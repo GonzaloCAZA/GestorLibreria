@@ -2,7 +2,9 @@ package com.example.libreria.service.impl;
 
 import com.example.libreria.domain.Estanteria;
 import com.example.libreria.domain.Piso;
+import com.example.libreria.dto.catalogo.EstanteriaRequest;
 import com.example.libreria.repository.EstanteriaRepository;
+import com.example.libreria.repository.PisoRepository;
 import com.example.libreria.service.EstanteriaService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,11 @@ import java.util.List;
 public class EstanteriaServiceImpl implements EstanteriaService {
 
     private final EstanteriaRepository estanteriaRepository;
+    private final PisoRepository pisoRepository;
 
-    public EstanteriaServiceImpl(EstanteriaRepository estanteriaRepository) {
+    public EstanteriaServiceImpl(EstanteriaRepository estanteriaRepository, PisoRepository pisoRepository) {
         this.estanteriaRepository = estanteriaRepository;
+        this.pisoRepository = pisoRepository;
     }
 
     @Override
@@ -34,17 +38,18 @@ public class EstanteriaServiceImpl implements EstanteriaService {
     }
 
     @Override
-    public Estanteria save(Estanteria estanteria) {
+    public Estanteria save(EstanteriaRequest request) {
+        Estanteria estanteria = new Estanteria();
+        estanteria.setCategoria(request.categoria());
+        estanteria.setIdPiso(resolvePiso(request));
         return estanteriaRepository.save(estanteria);
     }
 
     @Override
-    public Estanteria update(Long id, Estanteria estanteria) {
+    public Estanteria update(Long id, EstanteriaRequest request) {
         Estanteria estanteriaExistente = findById(id);
-        estanteriaExistente.setCategoria(estanteria.getCategoria());
-        estanteriaExistente.setIdPiso(estanteria.getIdPiso());
-        estanteriaExistente.setCreado(estanteria.getCreado());
-        estanteriaExistente.setActualizado(estanteria.getActualizado());
+        estanteriaExistente.setCategoria(request.categoria());
+        estanteriaExistente.setIdPiso(resolvePiso(request));
         return estanteriaRepository.save(estanteriaExistente);
     }
 
@@ -70,5 +75,14 @@ public class EstanteriaServiceImpl implements EstanteriaService {
     @Transactional(readOnly = true)
     public List<Estanteria> findByPiso(Piso piso) {
         return estanteriaRepository.findByIdPiso(piso);
+    }
+
+    private Piso resolvePiso(EstanteriaRequest request) {
+        Long pisoId = request.resolvePisoId();
+        if (pisoId == null) {
+            throw new IllegalArgumentException("El campo pisoId es obligatorio");
+        }
+        return pisoRepository.findById(pisoId)
+                .orElseThrow(() -> new EntityNotFoundException("Piso no encontrado con id: " + pisoId));
     }
 }

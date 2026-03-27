@@ -1,6 +1,9 @@
 package com.example.libreria.dto.catalogo;
 
 import com.example.libreria.domain.Balda;
+import com.example.libreria.domain.Piso;
+import com.example.libreria.service.BaldaService;
+import com.example.libreria.service.EstanteriaService;
 
 import java.time.Instant;
 

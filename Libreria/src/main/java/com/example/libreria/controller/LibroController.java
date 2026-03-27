@@ -1,8 +1,12 @@
 package com.example.libreria.controller;
 
+import com.example.libreria.domain.Balda;
+import com.example.libreria.domain.Estanteria;
 import com.example.libreria.domain.Libro;
 import com.example.libreria.dto.catalogo.LibroResponse;
 import com.example.libreria.dto.common.PageResponse;
+import com.example.libreria.service.BaldaService;
+import com.example.libreria.service.EstanteriaService;
 import com.example.libreria.service.LibroService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class LibroController {
 
     private final LibroService libroService;
+    private final EstanteriaService estanteriaService;
+    private final BaldaService baldaService;
 
-    public LibroController(LibroService libroService) {
+    public LibroController(LibroService libroService, EstanteriaService estanteriaService, BaldaService baldaService) {
         this.libroService = libroService;
+        this.estanteriaService = estanteriaService;
+        this.baldaService = baldaService;
     }
 
     @GetMapping
@@ -64,6 +72,7 @@ public class LibroController {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public ResponseEntity<LibroResponse> create(@Valid @RequestBody Libro libro) {
+        libro.setIdBalda(baldaService.findById(libro.getIdBalda().getId()));
         return ResponseEntity.ok(LibroResponse.from(libroService.save(libro)));
     }
 

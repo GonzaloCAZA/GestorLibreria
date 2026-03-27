@@ -79,7 +79,7 @@ export const prestamosApi = {
   getAll:  ()       => api.get('/api/prestamos'),
   getById: (id)     => api.get(`/api/prestamos/${id}`),
   create:  (body)   => api.post('/api/prestamos', body),
-  update:  (id, body) => api.put(`/api/prestamos/${id}`, body),
+  update:  (id, body) => api.put(`/api/prestamos/${id}/devolver`, body),
   remove:  (id)     => api.delete(`/api/prestamos/${id}`),
 }
 

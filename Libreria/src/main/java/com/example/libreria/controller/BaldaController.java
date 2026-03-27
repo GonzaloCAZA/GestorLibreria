@@ -1,8 +1,10 @@
 package com.example.libreria.controller;
 
 import com.example.libreria.domain.Balda;
+import com.example.libreria.domain.Estanteria;
 import com.example.libreria.dto.catalogo.BaldaResponse;
 import com.example.libreria.service.BaldaService;
+import com.example.libreria.service.EstanteriaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,9 +26,11 @@ import java.util.List;
 public class BaldaController {
 
     private final BaldaService baldaService;
+    private final EstanteriaService estanteriaService;
 
-    public BaldaController(BaldaService baldaService) {
+    public BaldaController(BaldaService baldaService, EstanteriaService estanteriaService) {
         this.baldaService = baldaService;
+        this.estanteriaService = estanteriaService;
     }
 
     @GetMapping
@@ -43,6 +47,8 @@ public class BaldaController {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public ResponseEntity<BaldaResponse> create(@Valid @RequestBody Balda balda) {
+        Estanteria estanteria = estanteriaService.findById(balda.getIdEstanteria().getId());
+        balda.setIdEstanteria(estanteria);
         return ResponseEntity.ok(BaldaResponse.from(baldaService.save(balda)));
     }
 

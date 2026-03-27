@@ -321,6 +321,68 @@
     /* ── DARK TOGGLE ── */
     .theme-toggle { font-size: 1rem; }
 
+    /* ── GESTIÓN PANEL ── */
+    .gestion-layout { display: grid; grid-template-columns: 200px 1fr; gap: 1.75rem; align-items: start; }
+    .gestion-sidebar {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.5rem; position: sticky; top: 80px;
+    }
+    .gestion-tab {
+      width: 100%; display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.65rem 0.875rem; border: none; background: none;
+      font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
+      color: var(--text2); cursor: pointer; border-radius: var(--radius-sm);
+      transition: all var(--transition); text-align: left;
+    }
+    .gestion-tab:hover { background: var(--bg2); color: var(--text); }
+    .gestion-tab.active { background: var(--accent-light); color: var(--accent); }
+    .gestion-tab .tab-icon { font-size: 1rem; width: 20px; text-align: center; }
+    .gestion-tab .tab-count {
+      margin-left: auto; font-size: 0.7rem; background: var(--bg2);
+      padding: 0.1rem 0.45rem; border-radius: 99px; color: var(--text3);
+    }
+    .gestion-tab.active .tab-count { background: var(--accent); color: white; }
+    .gestion-divider { height: 1px; background: var(--border); margin: 0.4rem 0; }
+
+    .gestion-content { min-width: 0; }
+    .gestion-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .gestion-title { font-family: var(--font-display); font-size: 1.75rem; color: var(--text); letter-spacing: -0.02em; }
+
+    /* Form + list split */
+    .gestion-split { display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start; }
+    .gestion-form-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 80px;
+    }
+    .gestion-form-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2); margin-bottom: 1.25rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+    .form-select {
+      width: 100%; padding: 0.65rem 0.875rem; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--bg2);
+      font-family: var(--font-body); font-size: 0.9rem; color: var(--text);
+      transition: all var(--transition); outline: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.875rem center;
+      padding-right: 2.5rem; cursor: pointer;
+    }
+    .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,0.12); }
+
+    .gestion-list-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .gestion-list-header { padding: 1rem 1.25rem; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .gestion-list-count { font-size: 0.8rem; color: var(--text2); }
+    .edit-form-inline { background: var(--warn-light); border: 1px solid var(--warn); border-radius: var(--radius-sm); padding: 1rem; margin: 0.5rem 0; }
+    .edit-form-inline .form-input, .edit-form-inline .form-select { background: var(--bg3); }
+    .btn-edit { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
+    .btn-edit:hover { background: var(--warn-light); color: var(--warn); border-color: var(--warn); }
+
+    @media (max-width: 900px) {
+      .gestion-layout { grid-template-columns: 1fr; }
+      .gestion-sidebar { position: static; display: flex; flex-wrap: wrap; gap: 0.25rem; }
+      .gestion-tab { width: auto; }
+      .gestion-split { grid-template-columns: 1fr; }
+      .gestion-form-card { position: static; }
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
       .nav { padding: 0 1rem; }
@@ -433,6 +495,47 @@ const App = {
     const prestamoPageTotal = ref(0);
     const adminLoading = ref(false);
 
+    // Gestión de catálogo
+    const gestionTab = ref('pisos'); // pisos | estanterias | baldas | libros | salas-g | autores
+    const gestionLoading = ref(false);
+
+    // Listas de catálogo
+    const pisos = ref([]);
+    const estanterias = ref([]);
+    const baldas = ref([]);
+    const autores = ref([]);
+    const salasG = ref([]);
+
+    // Pisos
+    const pisoForm = reactive({ numPiso: '', nombre: '' });
+    const editingPiso = ref(null);
+    const editPisoForm = reactive({ numPiso: '', nombre: '' });
+
+    // Estanterías
+    const estanteriaForm = reactive({ categoria: '', idPiso: '' });
+    const editingEstanteria = ref(null);
+    const editEstanteriaForm = reactive({ categoria: '', idPiso: '' });
+
+    // Baldas
+    const baldaForm = reactive({ numero: '', idEstanteria: '' });
+    const editingBalda = ref(null);
+    const editBaldaForm = reactive({ numero: '', idEstanteria: '' });
+
+    // Libros (gestión)
+    const libroGForm = reactive({ titulo: '', isbn: '', idAutor: '', idBalda: '' });
+    const editingLibroG = ref(null);
+    const editLibroGForm = reactive({ titulo: '', isbn: '', idAutor: '', idBalda: '' });
+
+    // Salas gestión
+    const salaGForm = reactive({ nombre: '', maximoPersonas: '', idPiso: '' });
+    const editingSalaG = ref(null);
+    const editSalaGForm = reactive({ nombre: '', maximoPersonas: '', idPiso: '' });
+
+    // Autores
+    const autorForm = reactive({ nombre: '', fechaNacimiento: '', nacionalidad: '' });
+    const editingAutor = ref(null);
+    const editAutorForm = reactive({ nombre: '', fechaNacimiento: '', nacionalidad: '' });
+
     // ── THEME ──
     watch(theme, v => {
       document.documentElement.setAttribute('data-theme', v);
@@ -519,6 +622,7 @@ const App = {
       if (v === 'salas') { salaPage.value = 0; loadSalas(); }
       if (v === 'admin') loadAdmin();
       if (v === 'prestamos') { prestamoPage.value = 0; loadPrestamos(); }
+      if (v === 'gestion') loadGestion();
     }
 
     // ── BOOKS ──
@@ -723,6 +827,186 @@ const App = {
       } catch { toast('Error al registrar devolución', 'error'); }
     }
 
+    // ── GESTIÓN ──
+    async function loadGestion() {
+      gestionLoading.value = true;
+      try {
+        const [pData, eData, bData, aData, sData] = await Promise.all([
+          apiFetch('/api/pisos'),
+          apiFetch('/api/estanterias'),
+          apiFetch('/api/baldas'),
+          apiFetch('/api/autores?page=0&size=100'),
+          apiFetch('/api/salas?page=0&size=100')
+        ]);
+        pisos.value = Array.isArray(pData) ? pData : (pData?.content || []);
+        estanterias.value = Array.isArray(eData) ? eData : (eData?.content || []);
+        baldas.value = Array.isArray(bData) ? bData : (bData?.content || []);
+        autores.value = aData?.content || [];
+        salasG.value = sData?.content || [];
+      } catch(e) {
+        if (e?.status === 403) toast('Sin permisos de administrador', 'error');
+      } finally { gestionLoading.value = false; }
+    }
+
+    function switchGestionTab(t) {
+      gestionTab.value = t;
+      editingPiso.value = null; editingEstanteria.value = null;
+      editingBalda.value = null; editingLibroG.value = null;
+      editingSalaG.value = null; editingAutor.value = null;
+    }
+
+    function errMsg(e, fallback) {
+      const det = e?.data?.details;
+      if (det) return Object.values(det).join(', ');
+      return e?.data?.message || fallback;
+    }
+
+    // ── PISOS CRUD ──
+    async function createPiso() {
+      if (!pisoForm.numPiso || !pisoForm.nombre) { toast('Rellena todos los campos', 'error'); return; }
+      try {
+        await apiFetch('/api/pisos', { method: 'POST', body: JSON.stringify({ numPiso: Number(pisoForm.numPiso), nombre: pisoForm.nombre }) });
+        toast('Piso creado'); pisoForm.numPiso = ''; pisoForm.nombre = '';
+        await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al crear piso'), 'error'); }
+    }
+    function startEditPiso(p) {
+      editingPiso.value = p.id; editPisoForm.numPiso = p.numPiso; editPisoForm.nombre = p.nombre;
+    }
+    async function saveEditPiso(p) {
+      try {
+        await apiFetch(`/api/pisos/${p.id}`, { method: 'PUT', body: JSON.stringify({ numPiso: Number(editPisoForm.numPiso), nombre: editPisoForm.nombre }) });
+        toast('Piso actualizado'); editingPiso.value = null; await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+    }
+    async function deletePiso(id) {
+      if (!confirm('¿Eliminar este piso? Se perderán sus estanterías.')) return;
+      try { await apiFetch(`/api/pisos/${id}`, { method: 'DELETE' }); toast('Piso eliminado'); await loadGestion(); }
+      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+    }
+
+    // ── ESTANTERÍAS CRUD ──
+    async function createEstanteria() {
+      if (!estanteriaForm.categoria || !estanteriaForm.idPiso) { toast('Rellena todos los campos', 'error'); return; }
+      try {
+        await apiFetch('/api/estanterias', { method: 'POST', body: JSON.stringify({ categoria: estanteriaForm.categoria, idPiso: { id: Number(estanteriaForm.idPiso) } }) });
+        toast('Estantería creada'); estanteriaForm.categoria = ''; estanteriaForm.idPiso = '';
+        await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+    }
+    function startEditEstanteria(e) {
+      editingEstanteria.value = e.id; editEstanteriaForm.categoria = e.categoria; editEstanteriaForm.idPiso = e.pisoId;
+    }
+    async function saveEditEstanteria(e) {
+      try {
+        await apiFetch(`/api/estanterias/${e.id}`, { method: 'PUT', body: JSON.stringify({ categoria: editEstanteriaForm.categoria, idPiso: { id: Number(editEstanteriaForm.idPiso) } }) });
+        toast('Estantería actualizada'); editingEstanteria.value = null; await loadGestion();
+      } catch(er) { toast(errMsg(er, 'Error al editar'), 'error'); }
+    }
+    async function deleteEstanteria(id) {
+      if (!confirm('¿Eliminar esta estantería?')) return;
+      try { await apiFetch(`/api/estanterias/${id}`, { method: 'DELETE' }); toast('Estantería eliminada'); await loadGestion(); }
+      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+    }
+
+    // ── BALDAS CRUD ──
+    async function createBalda() {
+      if (!baldaForm.numero || !baldaForm.idEstanteria) { toast('Rellena todos los campos', 'error'); return; }
+      try {
+        await apiFetch('/api/baldas', { method: 'POST', body: JSON.stringify({ numero: Number(baldaForm.numero), idEstanteria: { id: Number(baldaForm.idEstanteria) } }) });
+        toast('Balda creada'); baldaForm.numero = ''; baldaForm.idEstanteria = '';
+        await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+    }
+    function startEditBalda(b) {
+      editingBalda.value = b.id; editBaldaForm.numero = b.numero; editBaldaForm.idEstanteria = b.estanteriaId;
+    }
+    async function saveEditBalda(b) {
+      try {
+        await apiFetch(`/api/baldas/${b.id}`, { method: 'PUT', body: JSON.stringify({ numero: Number(editBaldaForm.numero), idEstanteria: { id: Number(editBaldaForm.idEstanteria) } }) });
+        toast('Balda actualizada'); editingBalda.value = null; await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+    }
+    async function deleteBalda(id) {
+      if (!confirm('¿Eliminar esta balda?')) return;
+      try { await apiFetch(`/api/baldas/${id}`, { method: 'DELETE' }); toast('Balda eliminada'); await loadGestion(); }
+      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+    }
+
+    // ── LIBROS GESTIÓN CRUD ──
+    async function createLibroG() {
+      if (!libroGForm.titulo || !libroGForm.isbn || !libroGForm.idAutor || !libroGForm.idBalda) { toast('Rellena todos los campos', 'error'); return; }
+      try {
+        await apiFetch('/api/libros', { method: 'POST', body: JSON.stringify({ titulo: libroGForm.titulo, isbn: libroGForm.isbn, idAutor: { id: Number(libroGForm.idAutor) }, idBalda: { id: Number(libroGForm.idBalda) } }) });
+        toast('Libro creado'); libroGForm.titulo = ''; libroGForm.isbn = ''; libroGForm.idAutor = ''; libroGForm.idBalda = '';
+        await loadGestion(); await loadBooks();
+      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+    }
+    function startEditLibroG(l) {
+      editingLibroG.value = l.id;
+      editLibroGForm.titulo = l.titulo; editLibroGForm.isbn = l.isbn;
+      editLibroGForm.idAutor = l.autorId; editLibroGForm.idBalda = l.baldaId;
+    }
+    async function saveEditLibroG(l) {
+      try {
+        await apiFetch(`/api/libros/${l.id}`, { method: 'PUT', body: JSON.stringify({ titulo: editLibroGForm.titulo, isbn: editLibroGForm.isbn, idAutor: { id: Number(editLibroGForm.idAutor) }, idBalda: { id: Number(editLibroGForm.idBalda) } }) });
+        toast('Libro actualizado'); editingLibroG.value = null; await loadGestion(); await loadBooks();
+      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+    }
+    async function deleteLibroG(id) {
+      if (!confirm('¿Eliminar este libro del catálogo?')) return;
+      try { await apiFetch(`/api/libros/${id}`, { method: 'DELETE' }); toast('Libro eliminado'); await loadGestion(); await loadBooks(); }
+      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+    }
+
+    // ── SALAS GESTIÓN CRUD ──
+    async function createSalaG() {
+      if (!salaGForm.nombre || !salaGForm.maximoPersonas || !salaGForm.idPiso) { toast('Rellena todos los campos', 'error'); return; }
+      try {
+        await apiFetch('/api/salas', { method: 'POST', body: JSON.stringify({ nombre: salaGForm.nombre, maximoPersonas: Number(salaGForm.maximoPersonas), idPiso: { id: Number(salaGForm.idPiso) } }) });
+        toast('Sala creada'); salaGForm.nombre = ''; salaGForm.maximoPersonas = ''; salaGForm.idPiso = '';
+        await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+    }
+    function startEditSalaG(s) {
+      editingSalaG.value = s.id; editSalaGForm.nombre = s.nombre; editSalaGForm.maximoPersonas = s.maximoPersonas; editSalaGForm.idPiso = s.pisoId;
+    }
+    async function saveEditSalaG(s) {
+      try {
+        await apiFetch(`/api/salas/${s.id}`, { method: 'PUT', body: JSON.stringify({ nombre: editSalaGForm.nombre, maximoPersonas: Number(editSalaGForm.maximoPersonas), idPiso: { id: Number(editSalaGForm.idPiso) } }) });
+        toast('Sala actualizada'); editingSalaG.value = null; await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+    }
+    async function deleteSalaG(id) {
+      if (!confirm('¿Eliminar esta sala?')) return;
+      try { await apiFetch(`/api/salas/${id}`, { method: 'DELETE' }); toast('Sala eliminada'); await loadGestion(); }
+      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+    }
+
+    // ── AUTORES CRUD ──
+    async function createAutor() {
+      if (!autorForm.nombre) { toast('El nombre es obligatorio', 'error'); return; }
+      try {
+        await apiFetch('/api/autores', { method: 'POST', body: JSON.stringify({ nombre: autorForm.nombre, fechaNacimiento: autorForm.fechaNacimiento || null, nacionalidad: autorForm.nacionalidad || null }) });
+        toast('Autor creado'); autorForm.nombre = ''; autorForm.fechaNacimiento = ''; autorForm.nacionalidad = '';
+        await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+    }
+    function startEditAutor(a) {
+      editingAutor.value = a.id; editAutorForm.nombre = a.nombre; editAutorForm.fechaNacimiento = a.fechaNacimiento || ''; editAutorForm.nacionalidad = a.nacionalidad || '';
+    }
+    async function saveEditAutor(a) {
+      try {
+        await apiFetch(`/api/autores/${a.id}`, { method: 'PUT', body: JSON.stringify({ nombre: editAutorForm.nombre, fechaNacimiento: editAutorForm.fechaNacimiento || null, nacionalidad: editAutorForm.nacionalidad || null }) });
+        toast('Autor actualizado'); editingAutor.value = null; await loadGestion();
+      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+    }
+    async function deleteAutor(id) {
+      if (!confirm('¿Eliminar este autor?')) return;
+      try { await apiFetch(`/api/autores/${id}`, { method: 'DELETE' }); toast('Autor eliminado'); await loadGestion(); }
+      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+    }
+
     // ── HELPERS ──
     function fmtDate(d) {
       if (!d) return '—';
@@ -746,6 +1030,13 @@ const App = {
       salas, salaPage, salaPageTotal, salaTotal, selectedSala, salaLoading, salaReservas,
       prestamoModal, prestamoBook, prestamoDate, prestamoBusy,
       usuarios, usuarioPage, usuarioPageTotal, prestamos, prestamoPage, prestamoPageTotal, adminLoading,
+      gestionTab, gestionLoading, pisos, estanterias, baldas, autores, salasG,
+      pisoForm, editingPiso, editPisoForm,
+      estanteriaForm, editingEstanteria, editEstanteriaForm,
+      baldaForm, editingBalda, editBaldaForm,
+      libroGForm, editingLibroG, editLibroGForm,
+      salaGForm, editingSalaG, editSalaGForm,
+      autorForm, editingAutor, editAutorForm,
       isAdmin, catEmoji,
       toggleTheme, doLogin, doRegister, doForgot, doLogout,
       goTo, loadBooks, loadSalas, loadAdmin, loadPrestamos,
@@ -753,6 +1044,13 @@ const App = {
       openBook, closeBook, openPrestamo, maxLoanDate, confirmPrestamo,
       openSala, closeSala, isSalaAvailable,
       deleteUsuario, toggleMoroso, devolvLibro,
+      switchGestionTab, loadGestion,
+      createPiso, startEditPiso, saveEditPiso, deletePiso,
+      createEstanteria, startEditEstanteria, saveEditEstanteria, deleteEstanteria,
+      createBalda, startEditBalda, saveEditBalda, deleteBalda,
+      createLibroG, startEditLibroG, saveEditLibroG, deleteLibroG,
+      createSalaG, startEditSalaG, saveEditSalaG, deleteSalaG,
+      createAutor, startEditAutor, saveEditAutor, deleteAutor,
       fmtDate, paginate
     };
   },
@@ -839,6 +1137,7 @@ const App = {
           <template v-if="isAdmin">
             <button class="nav-link" :class="{active: view==='admin'}" @click="goTo('admin')">👥 Usuarios</button>
             <button class="nav-link" :class="{active: view==='prestamos'}" @click="goTo('prestamos')">📋 Préstamos</button>
+            <button class="nav-link" :class="{active: view==='gestion'}" @click="goTo('gestion')">⚙️ Gestión</button>
           </template>
         </div>
         <div class="nav-actions">
@@ -1082,6 +1381,524 @@ const App = {
               <button class="page-btn" :disabled="prestamoPage>=prestamoPageTotal-1" @click="prestamoPage++;loadPrestamos()">›</button>
             </div>
           </div>
+        </div>
+
+        <!-- ───── GESTIÓN ───── -->
+        <div v-if="view==='gestion'">
+          <div class="page-header">
+            <div>
+              <div class="page-title">Gestión del catálogo</div>
+              <div class="page-count">Administra la estructura física y el fondo bibliográfico</div>
+            </div>
+          </div>
+
+          <div v-if="gestionLoading" class="loading-wrap"><div class="loader"></div>Cargando datos…</div>
+
+          <div v-else class="gestion-layout">
+            <!-- Sidebar de tabs -->
+            <div class="gestion-sidebar">
+              <button class="gestion-tab" :class="{active:gestionTab==='autores'}" @click="switchGestionTab('autores')">
+                <span class="tab-icon">✒️</span> Autores
+                <span class="tab-count">{{autores.length}}</span>
+              </button>
+              <button class="gestion-tab" :class="{active:gestionTab==='pisos'}" @click="switchGestionTab('pisos')">
+                <span class="tab-icon">🏢</span> Pisos
+                <span class="tab-count">{{pisos.length}}</span>
+              </button>
+              <button class="gestion-tab" :class="{active:gestionTab==='estanterias'}" @click="switchGestionTab('estanterias')">
+                <span class="tab-icon">🗄️</span> Estanterías
+                <span class="tab-count">{{estanterias.length}}</span>
+              </button>
+              <button class="gestion-tab" :class="{active:gestionTab==='baldas'}" @click="switchGestionTab('baldas')">
+                <span class="tab-icon">📐</span> Baldas
+                <span class="tab-count">{{baldas.length}}</span>
+              </button>
+              <div class="gestion-divider"></div>
+              <button class="gestion-tab" :class="{active:gestionTab==='libros-g'}" @click="switchGestionTab('libros-g')">
+                <span class="tab-icon">📚</span> Libros
+              </button>
+              <button class="gestion-tab" :class="{active:gestionTab==='salas-g'}" @click="switchGestionTab('salas-g')">
+                <span class="tab-icon">🏠</span> Salas
+                <span class="tab-count">{{salasG.length}}</span>
+              </button>
+            </div>
+
+            <!-- Contenido -->
+            <div class="gestion-content">
+
+              <!-- ─── AUTORES ─── -->
+              <div v-if="gestionTab==='autores'">
+                <div class="gestion-header"><div class="gestion-title">Autores</div></div>
+                <div class="gestion-split">
+                  <div class="gestion-form-card">
+                    <div class="gestion-form-title">➕ Nuevo autor</div>
+                    <div class="form-group">
+                      <label class="form-label">Nombre completo *</label>
+                      <input v-model="autorForm.nombre" class="form-input" placeholder="Gabriel García Márquez" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Fecha de nacimiento</label>
+                      <input v-model="autorForm.fechaNacimiento" class="form-input" type="date" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Nacionalidad</label>
+                      <input v-model="autorForm.nacionalidad" class="form-input" placeholder="Colombiana" />
+                    </div>
+                    <button class="btn btn-primary" @click="createAutor">Crear autor</button>
+                  </div>
+                  <div class="gestion-list-card">
+                    <div class="gestion-list-header">
+                      <span style="font-weight:600;font-size:0.875rem">Lista de autores</span>
+                      <span class="gestion-list-count">{{autores.length}} registrados</span>
+                    </div>
+                    <div v-if="autores.length===0" class="empty-state" style="padding:2rem">
+                      <div class="empty-icon">✒️</div><div class="empty-text">Sin autores todavía</div>
+                    </div>
+                    <table v-else class="admin-table">
+                      <thead><tr><th>Nombre</th><th>Nacionalidad</th><th>Nacimiento</th><th></th></tr></thead>
+                      <tbody>
+                        <template v-for="a in autores" :key="a.id">
+                          <tr>
+                            <td style="font-weight:500">{{a.nombre}}</td>
+                            <td style="color:var(--text2)">{{a.nacionalidad || '—'}}</td>
+                            <td style="color:var(--text2);font-size:0.8rem">{{a.fechaNacimiento || '—'}}</td>
+                            <td>
+                              <div class="table-actions">
+                                <button class="btn btn-edit btn-sm" @click="startEditAutor(a)">✎</button>
+                                <button class="btn btn-danger btn-sm" @click="deleteAutor(a.id)">✕</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="editingAutor===a.id">
+                            <td colspan="4" style="padding:0.5rem 1rem 1rem">
+                              <div class="edit-form-inline">
+                                <div style="font-size:0.75rem;font-weight:600;color:var(--warn);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Editando autor #{{a.id}}</div>
+                                <div class="form-group">
+                                  <label class="form-label">Nombre</label>
+                                  <input v-model="editAutorForm.nombre" class="form-input" />
+                                </div>
+                                <div class="form-row">
+                                  <div class="form-group">
+                                    <label class="form-label">Nacimiento</label>
+                                    <input v-model="editAutorForm.fechaNacimiento" class="form-input" type="date" />
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="form-label">Nacionalidad</label>
+                                    <input v-model="editAutorForm.nacionalidad" class="form-input" />
+                                  </div>
+                                </div>
+                                <div style="display:flex;gap:0.5rem">
+                                  <button class="btn btn-primary" style="flex:1;width:auto" @click="saveEditAutor(a)">Guardar</button>
+                                  <button class="btn btn-outline" @click="editingAutor=null">Cancelar</button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ─── PISOS ─── -->
+              <div v-if="gestionTab==='pisos'">
+                <div class="gestion-header"><div class="gestion-title">Pisos</div></div>
+                <div class="gestion-split">
+                  <div class="gestion-form-card">
+                    <div class="gestion-form-title">➕ Nuevo piso</div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Número de piso *</label>
+                        <input v-model="pisoForm.numPiso" class="form-input" type="number" min="0" placeholder="1" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Nombre *</label>
+                        <input v-model="pisoForm.nombre" class="form-input" placeholder="Primera planta" />
+                      </div>
+                    </div>
+                    <button class="btn btn-primary" @click="createPiso">Crear piso</button>
+                  </div>
+                  <div class="gestion-list-card">
+                    <div class="gestion-list-header">
+                      <span style="font-weight:600;font-size:0.875rem">Lista de pisos</span>
+                      <span class="gestion-list-count">{{pisos.length}} registrados</span>
+                    </div>
+                    <div v-if="pisos.length===0" class="empty-state" style="padding:2rem">
+                      <div class="empty-icon">🏢</div><div class="empty-text">Sin pisos todavía</div>
+                    </div>
+                    <table v-else class="admin-table">
+                      <thead><tr><th>Nº</th><th>Nombre</th><th>Creado</th><th></th></tr></thead>
+                      <tbody>
+                        <template v-for="p in pisos" :key="p.id">
+                          <tr>
+                            <td><span style="font-family:monospace;font-size:0.9rem;font-weight:600;color:var(--accent)">P{{p.numPiso}}</span></td>
+                            <td style="font-weight:500">{{p.nombre}}</td>
+                            <td style="color:var(--text2);font-size:0.8rem">{{fmtDate(p.creado)}}</td>
+                            <td>
+                              <div class="table-actions">
+                                <button class="btn btn-edit btn-sm" @click="startEditPiso(p)">✎</button>
+                                <button class="btn btn-danger btn-sm" @click="deletePiso(p.id)">✕</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="editingPiso===p.id">
+                            <td colspan="4" style="padding:0.5rem 1rem 1rem">
+                              <div class="edit-form-inline">
+                                <div style="font-size:0.75rem;font-weight:600;color:var(--warn);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Editando piso #{{p.id}}</div>
+                                <div class="form-row">
+                                  <div class="form-group">
+                                    <label class="form-label">Número</label>
+                                    <input v-model="editPisoForm.numPiso" class="form-input" type="number" />
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="form-label">Nombre</label>
+                                    <input v-model="editPisoForm.nombre" class="form-input" />
+                                  </div>
+                                </div>
+                                <div style="display:flex;gap:0.5rem">
+                                  <button class="btn btn-primary" style="flex:1;width:auto" @click="saveEditPiso(p)">Guardar</button>
+                                  <button class="btn btn-outline" @click="editingPiso=null">Cancelar</button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ─── ESTANTERÍAS ─── -->
+              <div v-if="gestionTab==='estanterias'">
+                <div class="gestion-header"><div class="gestion-title">Estanterías</div></div>
+                <div class="gestion-split">
+                  <div class="gestion-form-card">
+                    <div class="gestion-form-title">➕ Nueva estantería</div>
+                    <div class="form-group">
+                      <label class="form-label">Categoría *</label>
+                      <input v-model="estanteriaForm.categoria" class="form-input" placeholder="Novela, Ciencia…" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Piso *</label>
+                      <select v-model="estanteriaForm.idPiso" class="form-select">
+                        <option value="">Selecciona un piso…</option>
+                        <option v-for="p in pisos" :key="p.id" :value="p.id">P{{p.numPiso}} — {{p.nombre}}</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary" @click="createEstanteria">Crear estantería</button>
+                    <div v-if="pisos.length===0" style="margin-top:0.75rem;font-size:0.8rem;color:var(--warn)">⚠ Crea primero un piso</div>
+                  </div>
+                  <div class="gestion-list-card">
+                    <div class="gestion-list-header">
+                      <span style="font-weight:600;font-size:0.875rem">Lista de estanterías</span>
+                      <span class="gestion-list-count">{{estanterias.length}} registradas</span>
+                    </div>
+                    <div v-if="estanterias.length===0" class="empty-state" style="padding:2rem">
+                      <div class="empty-icon">🗄️</div><div class="empty-text">Sin estanterías todavía</div>
+                    </div>
+                    <table v-else class="admin-table">
+                      <thead><tr><th>Categoría</th><th>Piso</th><th></th></tr></thead>
+                      <tbody>
+                        <template v-for="e in estanterias" :key="e.id">
+                          <tr>
+                            <td style="font-weight:500">{{catEmoji(e.categoria)}} {{e.categoria}}</td>
+                            <td style="color:var(--text2);font-size:0.85rem">P{{e.pisoNumero}} — {{e.pisoNombre}}</td>
+                            <td>
+                              <div class="table-actions">
+                                <button class="btn btn-edit btn-sm" @click="startEditEstanteria(e)">✎</button>
+                                <button class="btn btn-danger btn-sm" @click="deleteEstanteria(e.id)">✕</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="editingEstanteria===e.id">
+                            <td colspan="3" style="padding:0.5rem 1rem 1rem">
+                              <div class="edit-form-inline">
+                                <div style="font-size:0.75rem;font-weight:600;color:var(--warn);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Editando estantería #{{e.id}}</div>
+                                <div class="form-row">
+                                  <div class="form-group">
+                                    <label class="form-label">Categoría</label>
+                                    <input v-model="editEstanteriaForm.categoria" class="form-input" />
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="form-label">Piso</label>
+                                    <select v-model="editEstanteriaForm.idPiso" class="form-select">
+                                      <option v-for="p in pisos" :key="p.id" :value="p.id">P{{p.numPiso}} — {{p.nombre}}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div style="display:flex;gap:0.5rem">
+                                  <button class="btn btn-primary" style="flex:1;width:auto" @click="saveEditEstanteria(e)">Guardar</button>
+                                  <button class="btn btn-outline" @click="editingEstanteria=null">Cancelar</button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ─── BALDAS ─── -->
+              <div v-if="gestionTab==='baldas'">
+                <div class="gestion-header"><div class="gestion-title">Baldas</div></div>
+                <div class="gestion-split">
+                  <div class="gestion-form-card">
+                    <div class="gestion-form-title">➕ Nueva balda</div>
+                    <div class="form-group">
+                      <label class="form-label">Número de balda *</label>
+                      <input v-model="baldaForm.numero" class="form-input" type="number" min="1" placeholder="1" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Estantería *</label>
+                      <select v-model="baldaForm.idEstanteria" class="form-select">
+                        <option value="">Selecciona una estantería…</option>
+                        <option v-for="e in estanterias" :key="e.id" :value="e.id">
+                          {{catEmoji(e.categoria)}} {{e.categoria}} · P{{e.pisoNumero}}
+                        </option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary" @click="createBalda">Crear balda</button>
+                    <div v-if="estanterias.length===0" style="margin-top:0.75rem;font-size:0.8rem;color:var(--warn)">⚠ Crea primero una estantería</div>
+                  </div>
+                  <div class="gestion-list-card">
+                    <div class="gestion-list-header">
+                      <span style="font-weight:600;font-size:0.875rem">Lista de baldas</span>
+                      <span class="gestion-list-count">{{baldas.length}} registradas</span>
+                    </div>
+                    <div v-if="baldas.length===0" class="empty-state" style="padding:2rem">
+                      <div class="empty-icon">📐</div><div class="empty-text">Sin baldas todavía</div>
+                    </div>
+                    <table v-else class="admin-table">
+                      <thead><tr><th>Nº</th><th>Estantería</th><th>Piso</th><th></th></tr></thead>
+                      <tbody>
+                        <template v-for="b in baldas" :key="b.id">
+                          <tr>
+                            <td><span style="font-family:monospace;font-weight:600;color:var(--accent)">#{{b.numero}}</span></td>
+                            <td style="font-size:0.85rem">{{catEmoji(b.estanteriaCategoria)}} {{b.estanteriaCategoria}}</td>
+                            <td style="color:var(--text2);font-size:0.8rem">P{{b.pisoNumero}} — {{b.pisoNombre}}</td>
+                            <td>
+                              <div class="table-actions">
+                                <button class="btn btn-edit btn-sm" @click="startEditBalda(b)">✎</button>
+                                <button class="btn btn-danger btn-sm" @click="deleteBalda(b.id)">✕</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="editingBalda===b.id">
+                            <td colspan="4" style="padding:0.5rem 1rem 1rem">
+                              <div class="edit-form-inline">
+                                <div style="font-size:0.75rem;font-weight:600;color:var(--warn);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Editando balda #{{b.id}}</div>
+                                <div class="form-row">
+                                  <div class="form-group">
+                                    <label class="form-label">Número</label>
+                                    <input v-model="editBaldaForm.numero" class="form-input" type="number" />
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="form-label">Estantería</label>
+                                    <select v-model="editBaldaForm.idEstanteria" class="form-select">
+                                      <option v-for="e in estanterias" :key="e.id" :value="e.id">{{catEmoji(e.categoria)}} {{e.categoria}} · P{{e.pisoNumero}}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div style="display:flex;gap:0.5rem">
+                                  <button class="btn btn-primary" style="flex:1;width:auto" @click="saveEditBalda(b)">Guardar</button>
+                                  <button class="btn btn-outline" @click="editingBalda=null">Cancelar</button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ─── LIBROS GESTIÓN ─── -->
+              <div v-if="gestionTab==='libros-g'">
+                <div class="gestion-header"><div class="gestion-title">Libros del catálogo</div></div>
+                <div class="gestion-split">
+                  <div class="gestion-form-card">
+                    <div class="gestion-form-title">➕ Nuevo libro</div>
+                    <div class="form-group">
+                      <label class="form-label">Título *</label>
+                      <input v-model="libroGForm.titulo" class="form-input" placeholder="Cien años de soledad" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">ISBN *</label>
+                      <input v-model="libroGForm.isbn" class="form-input" placeholder="9780307474728" maxlength="13" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Autor *</label>
+                      <select v-model="libroGForm.idAutor" class="form-select">
+                        <option value="">Selecciona un autor…</option>
+                        <option v-for="a in autores" :key="a.id" :value="a.id">{{a.nombre}}</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Balda *</label>
+                      <select v-model="libroGForm.idBalda" class="form-select">
+                        <option value="">Selecciona una balda…</option>
+                        <option v-for="b in baldas" :key="b.id" :value="b.id">
+                          Balda #{{b.numero}} · {{catEmoji(b.estanteriaCategoria)}} {{b.estanteriaCategoria}} · P{{b.pisoNumero}}
+                        </option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary" @click="createLibroG">Añadir al catálogo</button>
+                    <div v-if="autores.length===0 || baldas.length===0" style="margin-top:0.75rem;font-size:0.8rem;color:var(--warn)">
+                      ⚠ Necesitas autores y baldas creados previamente
+                    </div>
+                  </div>
+                  <div class="gestion-list-card">
+                    <div class="gestion-list-header">
+                      <span style="font-weight:600;font-size:0.875rem">Catálogo de libros</span>
+                      <span class="gestion-list-count">Mostrando hasta 12 recientes</span>
+                    </div>
+                    <div v-if="books.length===0" class="empty-state" style="padding:2rem">
+                      <div class="empty-icon">📚</div><div class="empty-text">Sin libros en el catálogo</div>
+                    </div>
+                    <table v-else class="admin-table">
+                      <thead><tr><th>Título</th><th>Autor</th><th>Balda</th><th>ISBN</th><th></th></tr></thead>
+                      <tbody>
+                        <template v-for="l in books" :key="l.id">
+                          <tr>
+                            <td style="font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" :title="l.titulo">{{l.titulo}}</td>
+                            <td style="color:var(--text2);font-size:0.82rem">{{l.autorNombre}}</td>
+                            <td style="color:var(--text2);font-size:0.8rem">{{catEmoji(l.estanteriaCategoria)}} #{{l.baldaNumero}}</td>
+                            <td style="font-family:monospace;font-size:0.75rem;color:var(--text3)">{{l.isbn}}</td>
+                            <td>
+                              <div class="table-actions">
+                                <button class="btn btn-edit btn-sm" @click="startEditLibroG(l)">✎</button>
+                                <button class="btn btn-danger btn-sm" @click="deleteLibroG(l.id)">✕</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="editingLibroG===l.id">
+                            <td colspan="5" style="padding:0.5rem 1rem 1rem">
+                              <div class="edit-form-inline">
+                                <div style="font-size:0.75rem;font-weight:600;color:var(--warn);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Editando libro #{{l.id}}</div>
+                                <div class="form-group">
+                                  <label class="form-label">Título</label>
+                                  <input v-model="editLibroGForm.titulo" class="form-input" />
+                                </div>
+                                <div class="form-row">
+                                  <div class="form-group">
+                                    <label class="form-label">ISBN</label>
+                                    <input v-model="editLibroGForm.isbn" class="form-input" maxlength="13" />
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="form-label">Autor</label>
+                                    <select v-model="editLibroGForm.idAutor" class="form-select">
+                                      <option v-for="a in autores" :key="a.id" :value="a.id">{{a.nombre}}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="form-group">
+                                  <label class="form-label">Balda</label>
+                                  <select v-model="editLibroGForm.idBalda" class="form-select">
+                                    <option v-for="b in baldas" :key="b.id" :value="b.id">Balda #{{b.numero}} · {{catEmoji(b.estanteriaCategoria)}} {{b.estanteriaCategoria}} · P{{b.pisoNumero}}</option>
+                                  </select>
+                                </div>
+                                <div style="display:flex;gap:0.5rem">
+                                  <button class="btn btn-primary" style="flex:1;width:auto" @click="saveEditLibroG(l)">Guardar</button>
+                                  <button class="btn btn-outline" @click="editingLibroG=null">Cancelar</button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ─── SALAS GESTIÓN ─── -->
+              <div v-if="gestionTab==='salas-g'">
+                <div class="gestion-header"><div class="gestion-title">Salas de estudio</div></div>
+                <div class="gestion-split">
+                  <div class="gestion-form-card">
+                    <div class="gestion-form-title">➕ Nueva sala</div>
+                    <div class="form-group">
+                      <label class="form-label">Nombre *</label>
+                      <input v-model="salaGForm.nombre" class="form-input" placeholder="Sala de reuniones A" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Máximo de personas *</label>
+                      <input v-model="salaGForm.maximoPersonas" class="form-input" type="number" min="1" placeholder="8" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Piso *</label>
+                      <select v-model="salaGForm.idPiso" class="form-select">
+                        <option value="">Selecciona un piso…</option>
+                        <option v-for="p in pisos" :key="p.id" :value="p.id">P{{p.numPiso}} — {{p.nombre}}</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary" @click="createSalaG">Crear sala</button>
+                    <div v-if="pisos.length===0" style="margin-top:0.75rem;font-size:0.8rem;color:var(--warn)">⚠ Crea primero un piso</div>
+                  </div>
+                  <div class="gestion-list-card">
+                    <div class="gestion-list-header">
+                      <span style="font-weight:600;font-size:0.875rem">Lista de salas</span>
+                      <span class="gestion-list-count">{{salasG.length}} registradas</span>
+                    </div>
+                    <div v-if="salasG.length===0" class="empty-state" style="padding:2rem">
+                      <div class="empty-icon">🏠</div><div class="empty-text">Sin salas todavía</div>
+                    </div>
+                    <table v-else class="admin-table">
+                      <thead><tr><th>Nombre</th><th>Capacidad</th><th>Piso</th><th></th></tr></thead>
+                      <tbody>
+                        <template v-for="s in salasG" :key="s.id">
+                          <tr>
+                            <td style="font-weight:500">{{s.nombre}}</td>
+                            <td style="color:var(--text2)">👥 {{s.maximoPersonas}} personas</td>
+                            <td style="color:var(--text2);font-size:0.85rem">P{{s.pisoNumero}} — {{s.pisoNombre}}</td>
+                            <td>
+                              <div class="table-actions">
+                                <button class="btn btn-edit btn-sm" @click="startEditSalaG(s)">✎</button>
+                                <button class="btn btn-danger btn-sm" @click="deleteSalaG(s.id)">✕</button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr v-if="editingSalaG===s.id">
+                            <td colspan="4" style="padding:0.5rem 1rem 1rem">
+                              <div class="edit-form-inline">
+                                <div style="font-size:0.75rem;font-weight:600;color:var(--warn);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em">Editando sala #{{s.id}}</div>
+                                <div class="form-group">
+                                  <label class="form-label">Nombre</label>
+                                  <input v-model="editSalaGForm.nombre" class="form-input" />
+                                </div>
+                                <div class="form-row">
+                                  <div class="form-group">
+                                    <label class="form-label">Capacidad</label>
+                                    <input v-model="editSalaGForm.maximoPersonas" class="form-input" type="number" />
+                                  </div>
+                                  <div class="form-group">
+                                    <label class="form-label">Piso</label>
+                                    <select v-model="editSalaGForm.idPiso" class="form-select">
+                                      <option v-for="p in pisos" :key="p.id" :value="p.id">P{{p.numPiso}} — {{p.nombre}}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div style="display:flex;gap:0.5rem">
+                                  <button class="btn btn-primary" style="flex:1;width:auto" @click="saveEditSalaG(s)">Guardar</button>
+                                  <button class="btn btn-outline" @click="editingSalaG=null">Cancelar</button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /gestion-content -->
+          </div><!-- /gestion-layout -->
         </div>
 
       </main>

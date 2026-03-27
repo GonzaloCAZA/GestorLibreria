@@ -30,7 +30,7 @@ public class PrestamoLibro {
     private LocalDate fechaPrestamo;
 
     @ColumnDefault("(`fecha_prestamo` + interval 1 month)")
-    @Column(name = "fecha_devolucion_prevista")
+    @Column(name = "fecha_devolucion_prevista", insertable = false, updatable = false)
     private LocalDate fechaDevolucionPrevista;
 
     @Column(name = "fecha_devolucion_real")

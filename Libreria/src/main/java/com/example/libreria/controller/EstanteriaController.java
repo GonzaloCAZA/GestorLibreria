@@ -1,6 +1,6 @@
 package com.example.libreria.controller;
 
-import com.example.libreria.domain.Estanteria;
+import com.example.libreria.dto.catalogo.EstanteriaRequest;
 import com.example.libreria.dto.catalogo.EstanteriaResponse;
 import com.example.libreria.service.EstanteriaService;
 import jakarta.validation.Valid;
@@ -42,15 +42,15 @@ public class EstanteriaController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public ResponseEntity<EstanteriaResponse> create(@Valid @RequestBody Estanteria estanteria) {
-        return ResponseEntity.ok(EstanteriaResponse.from(estanteriaService.save(estanteria)));
+    public ResponseEntity<EstanteriaResponse> create(@Valid @RequestBody EstanteriaRequest request) {
+        return ResponseEntity.ok(EstanteriaResponse.from(estanteriaService.save(request)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public ResponseEntity<EstanteriaResponse> update(@PathVariable Long id, @Valid @RequestBody Estanteria estanteria) {
-        return ResponseEntity.ok(EstanteriaResponse.from(estanteriaService.update(id, estanteria)));
+    public ResponseEntity<EstanteriaResponse> update(@PathVariable Long id, @Valid @RequestBody EstanteriaRequest request) {
+        return ResponseEntity.ok(EstanteriaResponse.from(estanteriaService.update(id, request)));
     }
 
     @DeleteMapping("/{id}")

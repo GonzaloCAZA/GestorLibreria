@@ -54,7 +54,6 @@ public class PrestamoLibroServiceImpl implements PrestamoLibroService {
         prestamoExistente.setIdUsuario(prestamoLibro.getIdUsuario());
         prestamoExistente.setIdLibro(prestamoLibro.getIdLibro());
         prestamoExistente.setFechaPrestamo(prestamoLibro.getFechaPrestamo());
-        prestamoExistente.setFechaDevolucionPrevista(prestamoLibro.getFechaDevolucionPrevista());
         prestamoExistente.setFechaDevolucionReal(prestamoLibro.getFechaDevolucionReal());
         prestamoExistente.setCreado(prestamoLibro.getCreado());
         prestamoExistente.setActualizado(prestamoLibro.getActualizado());
