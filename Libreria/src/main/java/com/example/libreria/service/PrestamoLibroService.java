@@ -20,6 +20,8 @@ public interface PrestamoLibroService {
 
     PrestamoLibro update(Long id, PrestamoLibro prestamoLibro);
 
+    PrestamoLibro devolver(Long id, LocalDate fechaDevolucionReal);
+
     void deleteById(Long id);
 
     List<PrestamoLibro> findByUsuario(Usuario usuario);

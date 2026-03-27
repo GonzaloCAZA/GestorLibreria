@@ -62,6 +62,13 @@ public class PrestamoLibroServiceImpl implements PrestamoLibroService {
     }
 
     @Override
+    public PrestamoLibro devolver(Long id, LocalDate fechaDevolucionReal) {
+        PrestamoLibro prestamoExistente = findById(id);
+        prestamoExistente.setFechaDevolucionReal(fechaDevolucionReal);
+        return prestamoLibroRepository.save(prestamoExistente);
+    }
+
+    @Override
     public void deleteById(Long id) {
         PrestamoLibro prestamoLibro = findById(id);
         prestamoLibroRepository.delete(prestamoLibro);

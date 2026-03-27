@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca · Gestión</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F4EE;
+      --bg2: #EFEBE2;
+      --bg3: #ffffff;
+      --text: #1A1612;
+      --text2: #6B6459;
+      --text3: #9B9085;
+      --accent: #2D5A3D;
+      --accent2: #4A8C62;
+      --accent-light: #E8F3EC;
+      --warn: #C0621A;
+      --warn-light: #FEF3E8;
+      --danger: #A32D2D;
+      --danger-light: #FCEBEB;
+      --border: rgba(26,22,18,0.12);
+      --border2: rgba(26,22,18,0.22);
+      --shadow: 0 2px 12px rgba(26,22,18,0.08);
+      --shadow2: 0 8px 32px rgba(26,22,18,0.14);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #111410;
+      --bg2: #1C1F19;
+      --bg3: #252820;
+      --text: #EDE8DE;
+      --text2: #A09880;
+      --text3: #6B6254;
+      --accent: #6DBF8A;
+      --accent2: #4A8C62;
+      --accent-light: #1A2D1F;
+      --warn: #E8954A;
+      --warn-light: #2D1F0F;
+      --danger: #E24B4A;
+      --danger-light: #2D1515;
+      --border: rgba(237,232,222,0.1);
+      --border2: rgba(237,232,222,0.2);
+      --shadow: 0 2px 12px rgba(0,0,0,0.4);
+      --shadow2: 0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      transition: background var(--transition), color var(--transition);
+      min-height: 100vh;
+    }
+
+    #app { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; gap: 0;
+      height: 60px;
+      backdrop-filter: blur(8px);
+    }
+    .nav-brand {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-right: 2.5rem;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 0.25rem; flex: 1; }
+    .nav-link {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none; background: none;
+    }
+    .nav-link:hover { background: var(--bg2); color: var(--text); }
+    .nav-link.active { background: var(--accent-light); color: var(--accent); }
+    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+    .badge-role {
+      font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem;
+      border-radius: 99px; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .badge-admin { background: var(--accent-light); color: var(--accent); }
+    .badge-customer { background: var(--bg2); color: var(--text2); }
+    .btn-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--bg2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all var(--transition); color: var(--text);
+      font-size: 1rem;
+    }
+    .btn-icon:hover { background: var(--bg); border-color: var(--border2); }
+    .nav-user-mail { font-size: 0.8rem; color: var(--text2); }
+
+    /* ── MAIN ── */
+    .main { flex: 1; padding: 2.5rem 2rem; max-width: 1300px; margin: 0 auto; width: 100%; }
+
+    /* ── AUTH VIEWS ── */
+    .auth-wrap {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: var(--bg); padding: 2rem;
+    }
+    .auth-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 420px;
+      box-shadow: var(--shadow2);
+    }
+    .auth-header { text-align: center; margin-bottom: 2rem; }
+    .auth-logo { font-family: var(--font-display); font-size: 2rem; color: var(--text); }
+    .auth-logo span { color: var(--accent); }
+    .auth-subtitle { color: var(--text2); font-size: 0.875rem; margin-top: 0.5rem; }
+    .auth-tabs { display: flex; background: var(--bg2); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 1.75rem; }
+    .auth-tab {
+      flex: 1; padding: 0.5rem; border: none; background: none;
+      font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
+      color: var(--text2); cursor: pointer; border-radius: 6px; transition: all var(--transition);
+    }
+    .auth-tab.active { background: var(--bg3); color: var(--text); box-shadow: var(--shadow); }
+
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label { font-size: 0.8rem; font-weight: 500; color: var(--text2); display: block; margin-bottom: 0.5rem; }
+    .form-input {
+      width: 100%; padding: 0.65rem 0.875rem; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--bg2);
+      font-family: var(--font-body); font-size: 0.9rem; color: var(--text);
+      transition: all var(--transition); outline: none;
+    }
+    .form-input:focus { border-color: var(--accent); background: var(--bg3); box-shadow: 0 0 0 3px rgba(45,90,61,0.12); }
+    .form-input::placeholder { color: var(--text3); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.5rem; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition); border: none; }
+    .btn-primary { background: var(--accent); color: white; width: 100%; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+    .btn-outline:hover { background: var(--bg2); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { filter: brightness(1.1); }
+    .btn-sm { padding: 0.4rem 0.875rem; font-size: 0.8rem; }
+
+    .form-link { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--text2); }
+    .form-link a { color: var(--accent); cursor: pointer; text-decoration: none; }
+    .form-link a:hover { text-decoration: underline; }
+
+    .alert { padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 1rem; }
+    .alert-danger { background: var(--danger-light); color: var(--danger); border: 1px solid currentColor; opacity: 0.8; }
+    .alert-success { background: var(--accent-light); color: var(--accent); border: 1px solid currentColor; opacity: 0.8; }
+
+    /* ── PAGE HEADER ── */
+    .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .page-title { font-family: var(--font-display); font-size: 2.25rem; color: var(--text); letter-spacing: -0.03em; }
+    .page-count { font-size: 0.85rem; color: var(--text2); margin-top: 0.25rem; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.75rem; align-items: center; }
+    .filter-search {
+      flex: 1; min-width: 200px; max-width: 340px;
+      padding: 0.55rem 0.875rem; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--bg3);
+      font-family: var(--font-body); font-size: 0.875rem; color: var(--text); outline: none;
+    }
+    .filter-search:focus { border-color: var(--accent); }
+    .cat-pill {
+      padding: 0.45rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 500;
+      cursor: pointer; border: 1px solid var(--border); background: var(--bg3);
+      color: var(--text2); transition: all var(--transition); white-space: nowrap;
+    }
+    .cat-pill:hover { background: var(--bg2); color: var(--text); }
+    .cat-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+    /* ── BOOK GRID ── */
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
+    .book-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+      cursor: pointer; transition: all var(--transition);
+      display: flex; flex-direction: column; gap: 0.75rem;
+      position: relative; overflow: hidden;
+    }
+    .book-card:hover { border-color: var(--border2); box-shadow: var(--shadow2); transform: translateY(-2px); }
+    .book-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%; background: var(--accent);
+      transform: scaleY(0); transform-origin: bottom;
+      transition: transform var(--transition);
+    }
+    .book-card:hover::before { transform: scaleY(1); }
+    .book-spine { width: 100%; height: 120px; border-radius: 6px; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 2rem; position: relative; }
+    .book-cat-badge {
+      position: absolute; top: 8px; right: 8px;
+      font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.5rem;
+      border-radius: 99px; background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .book-title { font-family: var(--font-display); font-size: 1rem; color: var(--text); line-height: 1.3; }
+    .book-author { font-size: 0.78rem; color: var(--text2); }
+    .book-isbn { font-size: 0.7rem; color: var(--text3); font-family: monospace; }
+    .avail-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    .avail-yes { background: var(--accent); }
+    .avail-no { background: var(--danger); }
+    .avail-label { font-size: 0.75rem; color: var(--text2); display: flex; align-items: center; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; padding: 1rem;
+      animation: fadeIn 0.15s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem; max-width: 520px; width: 100%;
+      box-shadow: var(--shadow2);
+      animation: slideUp 0.2s cubic-bezier(0.4,0,0.2,1);
+      max-height: 90vh; overflow-y: auto;
+    }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; }
+    .modal-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); }
+    .modal-close { width: 32px; height: 32px; border: none; background: var(--bg2); border-radius: var(--radius-sm); cursor: pointer; color: var(--text2); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .modal-close:hover { background: var(--danger-light); color: var(--danger); }
+    .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .meta-item { background: var(--bg2); border-radius: var(--radius-sm); padding: 0.875rem; }
+    .meta-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 0.3rem; }
+    .meta-value { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+    .location-map { background: var(--bg2); border-radius: var(--radius); padding: 1.25rem; display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 1.5rem; }
+    .location-icon { font-size: 1.5rem; }
+    .location-path { font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
+    .location-path strong { color: var(--text); font-weight: 600; }
+
+    /* ── SALAS ── */
+    .sala-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; }
+    .sala-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .sala-card:hover { border-color: var(--border2); box-shadow: var(--shadow2); transform: translateY(-2px); }
+    .sala-name { font-family: var(--font-display); font-size: 1.25rem; color: var(--text); margin-bottom: 0.5rem; }
+    .sala-capacity { font-size: 0.85rem; color: var(--text2); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem; }
+    .sala-piso { font-size: 0.8rem; color: var(--text3); }
+    .sala-status { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+
+    /* ── PAGINATION ── */
+    .pagination { display: flex; align-items: center; gap: 0.5rem; justify-content: center; margin-top: 2.5rem; }
+    .page-btn {
+      width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text); cursor: pointer; font-family: var(--font-body);
+      font-size: 0.875rem; transition: all var(--transition); display: flex; align-items: center; justify-content: center;
+    }
+    .page-btn:hover { background: var(--bg2); border-color: var(--border2); }
+    .page-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── ADMIN PANEL ── */
+    .admin-section { margin-bottom: 3rem; }
+    .section-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); margin-bottom: 1.25rem; }
+    .admin-table-wrap { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text2); padding: 0.875rem 1rem; text-align: left; background: var(--bg2); border-bottom: 1px solid var(--border); }
+    .admin-table td { padding: 0.875rem 1rem; font-size: 0.875rem; color: var(--text); border-bottom: 1px solid var(--border); }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: var(--bg2); }
+    .table-actions { display: flex; gap: 0.4rem; }
+    .tag { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 99px; font-weight: 600; }
+    .tag-moroso { background: var(--danger-light); color: var(--danger); }
+    .tag-ok { background: var(--accent-light); color: var(--accent); }
+    .tag-admin { background: #E8F3EC; color: #2D5A3D; }
+    .tag-customer { background: var(--bg2); color: var(--text2); }
+
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+    .stat-label { font-size: 0.75rem; color: var(--text2); font-weight: 500; margin-bottom: 0.4rem; }
+    .stat-value { font-family: var(--font-display); font-size: 2rem; color: var(--text); letter-spacing: -0.03em; }
+    .stat-sub { font-size: 0.75rem; color: var(--text3); margin-top: 0.25rem; }
+
+    /* ── LOADING / EMPTY ── */
+    .loading-wrap { text-align: center; padding: 4rem 2rem; color: var(--text2); }
+    .loader { width: 32px; height: 32px; border: 2.5px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 4rem 2rem; }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .empty-text { color: var(--text2); font-size: 0.9rem; }
+
+    /* ── TOAST ── */
+    .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
+    .toast { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1.25rem; box-shadow: var(--shadow2); font-size: 0.875rem; color: var(--text); display: flex; align-items: center; gap: 0.6rem; animation: slideIn 0.2s ease; max-width: 340px; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    .toast-success { border-left: 3px solid var(--accent); }
+    .toast-error { border-left: 3px solid var(--danger); }
+
+    /* ── PRESTAMO FORM ── */
+    .prestamo-info { background: var(--accent-light); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: var(--accent); }
+
+    /* ── DARK TOGGLE ── */
+    .theme-toggle { font-size: 1rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav { padding: 0 1rem; }
+      .main { padding: 1.5rem 1rem; }
+      .book-grid { grid-template-columns: 1fr 1fr; }
+      .modal-meta { grid-template-columns: 1fr; }
+      .nav-user-mail { display: none; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const { createApp, ref, reactive, computed, onMounted, watch, nextTick } = Vue;
+
+// ────────────────────────────────────────────────────────────
+// API CLIENT
+// ────────────────────────────────────────────────────────────
+const API_URL = 'http://localhost:8080';
+
+async function getCsrfToken() {
+  const res = await fetch(`${API_URL}/api/auth/csrf`, { method: 'GET', credentials: 'include' });
+  if (!res.ok) throw new Error('No se pudo obtener CSRF');
+  const data = await res.json();
+  return data.token;
+}
+
+async function apiFetch(path, init = {}) {
+  const method = (init.method ?? 'GET').toUpperCase();
+  const headers = new Headers(init.headers ?? {});
+  if (!['GET','HEAD','OPTIONS'].includes(method)) {
+    const csrfToken = await getCsrfToken();
+    headers.set('X-XSRF-TOKEN', csrfToken);
+  }
+  if (!headers.has('Content-Type') && init.body) headers.set('Content-Type', 'application/json');
+  const response = await fetch(`${API_URL}${path}`, { ...init, headers, credentials: 'include' });
+  if (response.status === 204) return null;
+  const ct = response.headers.get('content-type') ?? '';
+  const data = ct.includes('application/json') ? await response.json() : await response.text();
+  if (!response.ok) throw { status: response.status, data };
+  return data;
+}
+
+// ────────────────────────────────────────────────────────────
+// BOOK EMOJIS
+// ────────────────────────────────────────────────────────────
+const CAT_EMOJIS = {
+  'Novela': '📖', 'Poesía': '✒️', 'Historia': '🏛️', 'Ciencia': '🔬',
+  'Filosofía': '💭', 'Arte': '🎨', 'Tecnología': '💻', 'Economía': '📊',
+  'Derecho': '⚖️', 'Medicina': '🩺', 'default': '📚'
+};
+function catEmoji(cat) { return CAT_EMOJIS[cat] || CAT_EMOJIS['default']; }
+
+// ────────────────────────────────────────────────────────────
+// APP
+// ────────────────────────────────────────────────────────────
+const App = {
+  setup() {
+    // ── STATE ──
+    const theme = ref(localStorage.getItem('bib-theme') || 'light');
+    const view = ref('login'); // login | libros | salas | admin | prestamos
+    const authTab = ref('login'); // login | register
+    const user = ref(null);
+    const toasts = ref([]);
+    const loading = ref(false);
+
+    // Auth forms
+    const loginForm = reactive({ mail: '', password: '' });
+    const registerForm = reactive({ mail: '', password: '' });
+    const forgotMode = ref(false);
+    const forgotMail = ref('');
+    const authError = ref('');
+    const authSuccess = ref('');
+
+    // Books
+    const books = ref([]);
+    const bookPage = ref(0);
+    const bookPageTotal = ref(0);
+    const bookTotal = ref(0);
+    const bookSearch = ref('');
+    const activeCategory = ref('');
+    const categories = ref([]);
+    const selectedBook = ref(null);
+    const bookLoading = ref(false);
+
+    // Salas
+    const salas = ref([]);
+    const salaPage = ref(0);
+    const salaPageTotal = ref(0);
+    const salaTotal = ref(0);
+    const selectedSala = ref(null);
+    const salaLoading = ref(false);
+    const salaReservas = ref([]);
+
+    // Prestamo modal
+    const prestamoModal = ref(false);
+    const prestamoBook = ref(null);
+    const prestamoDate = ref('');
+    const prestamoBusy = ref(false);
+
+    // Admin
+    const usuarios = ref([]);
+    const usuarioPage = ref(0);
+    const usuarioPageTotal = ref(0);
+    const prestamos = ref([]);
+    const prestamoPage = ref(0);
+    const prestamoPageTotal = ref(0);
+    const adminLoading = ref(false);
+
+    // ── THEME ──
+    watch(theme, v => {
+      document.documentElement.setAttribute('data-theme', v);
+      localStorage.setItem('bib-theme', v);
+    }, { immediate: true });
+    function toggleTheme() { theme.value = theme.value === 'light' ? 'dark' : 'light'; }
+
+    // ── TOAST ──
+    function toast(msg, type = 'success') {
+      const id = Date.now();
+      toasts.value.push({ id, msg, type });
+      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+    }
+
+    // ── AUTH ──
+    const isAdmin = computed(() => user.value?.rol === 'ROLE_ADMIN');
+
+    async function checkSession() {
+      try {
+        const data = await apiFetch('/api/auth/me');
+        user.value = data;
+        view.value = 'libros';
+        loadBooks();
+        loadCategories();
+      } catch { view.value = 'login'; }
+    }
+
+    async function doLogin() {
+      authError.value = ''; authSuccess.value = '';
+      loading.value = true;
+      try {
+        const data = await apiFetch('/api/auth/login', {
+          method: 'POST', body: JSON.stringify(loginForm)
+        });
+        user.value = data;
+        view.value = 'libros';
+        toast('Bienvenido, ' + data.mail);
+        loadBooks(); loadCategories();
+      } catch(e) {
+        authError.value = e?.data?.message || 'Credenciales incorrectas';
+      } finally { loading.value = false; }
+    }
+
+    async function doRegister() {
+      authError.value = ''; authSuccess.value = '';
+      loading.value = true;
+      try {
+        const data = await apiFetch('/api/auth/register', {
+          method: 'POST', body: JSON.stringify(registerForm)
+        });
+        user.value = data;
+        view.value = 'libros';
+        toast('Cuenta creada correctamente');
+        loadBooks(); loadCategories();
+      } catch(e) {
+        const det = e?.data?.details;
+        authError.value = det ? Object.values(det).join(', ') : (e?.data?.message || 'Error al registrar');
+      } finally { loading.value = false; }
+    }
+
+    async function doForgot() {
+      authError.value = ''; authSuccess.value = '';
+      loading.value = true;
+      try {
+        await apiFetch('/api/auth/forgot-password', {
+          method: 'POST', body: JSON.stringify({ mail: forgotMail.value })
+        });
+        authSuccess.value = 'Si el correo existe, se ha enviado el código de recuperación.';
+      } catch { authSuccess.value = 'Si el correo existe, se ha enviado el código de recuperación.'; }
+      finally { loading.value = false; }
+    }
+
+    async function doLogout() {
+      try { await apiFetch('/api/auth/logout', { method: 'POST' }); } catch {}
+      user.value = null; view.value = 'login';
+      books.value = []; salas.value = [];
+      toast('Sesión cerrada');
+    }
+
+    // ── NAVIGATION ──
+    function goTo(v) {
+      view.value = v;
+      if (v === 'libros') { bookPage.value = 0; loadBooks(); }
+      if (v === 'salas') { salaPage.value = 0; loadSalas(); }
+      if (v === 'admin') loadAdmin();
+      if (v === 'prestamos') { prestamoPage.value = 0; loadPrestamos(); }
+    }
+
+    // ── BOOKS ──
+    async function loadCategories() {
+      try {
+        // derive categories from estanterias or a broad books fetch
+        const data = await apiFetch('/api/estanterias');
+        const cats = [...new Set((data || []).map(e => e.categoria).filter(Boolean))];
+        categories.value = cats;
+      } catch {
+        categories.value = ['Novela', 'Poesía', 'Historia', 'Ciencia', 'Filosofía', 'Arte', 'Tecnología'];
+      }
+    }
+
+    async function loadBooks() {
+      bookLoading.value = true;
+      try {
+        let path;
+        const params = new URLSearchParams({ page: bookPage.value, size: 12, sort: 'titulo,asc' });
+        if (activeCategory.value) {
+          path = `/api/libros/categorias/${encodeURIComponent(activeCategory.value)}?${params}`;
+        } else {
+          if (bookSearch.value) params.set('titulo', bookSearch.value);
+          path = `/api/libros?${params}`;
+        }
+        const data = await apiFetch(path);
+        books.value = data.content || [];
+        bookPageTotal.value = data.totalPages || 0;
+        bookTotal.value = data.totalElements || 0;
+      } catch(e) {
+        if (e?.status === 401) { doLogout(); return; }
+        toast('Error cargando libros', 'error');
+      } finally { bookLoading.value = false; }
+    }
+
+    function selectCategory(cat) {
+      if (activeCategory.value === cat) { activeCategory.value = ''; }
+      else { activeCategory.value = cat; bookSearch.value = ''; }
+      bookPage.value = 0;
+      loadBooks();
+    }
+
+    let searchTimeout;
+    function onSearchInput() {
+      activeCategory.value = '';
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => { bookPage.value = 0; loadBooks(); }, 400);
+    }
+
+    function bookPageGo(p) { bookPage.value = p; loadBooks(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function openBook(book) { selectedBook.value = book; }
+    function closeBook() { selectedBook.value = null; }
+
+    function isAvailable(book) {
+      // A book is unavailable if it has an active prestamo without fechaDevolucionReal
+      // We approximate: all books are available unless we explicitly know otherwise
+      // Real apps would have an availability field — we'll mark as available by default
+      return true; // Would need backend /api/libros/{id}/disponibilidad
+    }
+
+    function openPrestamo(book) {
+      prestamoBook.value = book;
+      // Default: today
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2,'0');
+      const mm = String(today.getMonth()+1).padStart(2,'0');
+      const yyyy = today.getFullYear();
+      prestamoDate.value = `${yyyy}-${mm}-${dd}`;
+      prestamoModal.value = true;
+    }
+
+    function maxLoanDate() {
+      const d = new Date();
+      d.setMonth(d.getMonth() + 1);
+      return d.toISOString().split('T')[0];
+    }
+
+    async function confirmPrestamo() {
+      if (!prestamoDate.value) { toast('Selecciona fecha de devolución', 'error'); return; }
+      const devDate = prestamoDate.value;
+      const today = new Date().toISOString().split('T')[0];
+      prestamoBusy.value = true;
+      try {
+        await apiFetch('/api/prestamos', {
+          method: 'POST',
+          body: JSON.stringify({
+            idUsuario: { id: user.value.id },
+            idLibro: { id: prestamoBook.value.id },
+            fechaPrestamo: today,
+            fechaDevolucionPrevista: devDate,
+            fechaDevolucionReal: null
+          })
+        });
+        toast('Préstamo registrado correctamente');
+        prestamoModal.value = false;
+        selectedBook.value = null;
+      } catch(e) {
+        toast(e?.data?.message || 'Error al registrar préstamo', 'error');
+      } finally { prestamoBusy.value = false; }
+    }
+
+    // ── SALAS ──
+    async function loadSalas() {
+      salaLoading.value = true;
+      try {
+        const params = new URLSearchParams({ page: salaPage.value, size: 12, sort: 'nombre,asc' });
+        const data = await apiFetch(`/api/salas?${params}`);
+        salas.value = data.content || [];
+        salaPageTotal.value = data.totalPages || 0;
+        salaTotal.value = data.totalElements || 0;
+      } catch(e) {
+        if (e?.status === 401) { doLogout(); return; }
+        toast('Error cargando salas', 'error');
+      } finally { salaLoading.value = false; }
+    }
+
+    function salaPageGo(p) { salaPage.value = p; loadSalas(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    async function openSala(sala) {
+      selectedSala.value = sala;
+      salaReservas.value = [];
+      try {
+        const params = new URLSearchParams({ page: 0, size: 20, sort: 'fechaReserva,asc' });
+        const data = await apiFetch(`/api/reservas-sala?${params}`);
+        const all = data.content || [];
+        salaReservas.value = all.filter(r => r.salaId === sala.id);
+      } catch {}
+    }
+
+    function closeSala() { selectedSala.value = null; salaReservas.value = []; }
+
+    function isSalaAvailable(sala) {
+      const now = new Date();
+      return !salaReservas.value.some(r => {
+        const s = new Date(r.fechaReserva);
+        const e = new Date(r.fechaFinReserva);
+        return now >= s && now <= e;
+      });
+    }
+
+    // ── ADMIN ──
+    async function loadAdmin() {
+      adminLoading.value = true;
+      try {
+        const [uData] = await Promise.all([
+          apiFetch(`/api/usuarios?page=${usuarioPage.value}&size=10`)
+        ]);
+        usuarios.value = uData.content || [];
+        usuarioPageTotal.value = uData.totalPages || 0;
+      } catch(e) {
+        if (e?.status === 403) toast('Sin permisos de administrador', 'error');
+      } finally { adminLoading.value = false; }
+    }
+
+    async function loadPrestamos() {
+      adminLoading.value = true;
+      try {
+        const data = await apiFetch(`/api/prestamos?page=${prestamoPage.value}&size=15&sort=fechaPrestamo,desc`);
+        prestamos.value = data.content || [];
+        prestamoPageTotal.value = data.totalPages || 0;
+      } catch(e) {
+        if (e?.status === 403) toast('Sin permisos de administrador', 'error');
+      } finally { adminLoading.value = false; }
+    }
+
+    async function deleteUsuario(id) {
+      if (!confirm('¿Eliminar usuario?')) return;
+      try {
+        await apiFetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+        toast('Usuario eliminado');
+        loadAdmin();
+      } catch { toast('Error al eliminar', 'error'); }
+    }
+
+    async function toggleMoroso(u) {
+      try {
+        await apiFetch(`/api/usuarios/${u.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ mail: u.mail, rol: u.rol, moroso: !u.moroso })
+        });
+        toast('Estado actualizado');
+        loadAdmin();
+      } catch { toast('Error al actualizar', 'error'); }
+    }
+
+    async function devolvLibro(prestamo) {
+      const today = new Date().toISOString().split('T')[0];
+      try {
+        await apiFetch(`/api/prestamos/${prestamo.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            idUsuario: { id: prestamo.usuarioId },
+            idLibro: { id: prestamo.libroId },
+            fechaPrestamo: prestamo.fechaPrestamo,
+            fechaDevolucionPrevista: prestamo.fechaDevolucionPrevista,
+            fechaDevolucionReal: today
+          })
+        });
+        toast('Libro devuelto correctamente');
+        loadPrestamos();
+      } catch { toast('Error al registrar devolución', 'error'); }
+    }
+
+    // ── HELPERS ──
+    function fmtDate(d) {
+      if (!d) return '—';
+      const dt = new Date(d);
+      return dt.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function paginate(total) {
+      const pages = [];
+      for (let i = 0; i < total; i++) pages.push(i);
+      return pages;
+    }
+
+    // ── INIT ──
+    onMounted(() => { checkSession(); });
+
+    return {
+      theme, view, authTab, user, toasts, loading,
+      loginForm, registerForm, forgotMode, forgotMail, authError, authSuccess,
+      books, bookPage, bookPageTotal, bookTotal, bookSearch, activeCategory, categories, selectedBook, bookLoading,
+      salas, salaPage, salaPageTotal, salaTotal, selectedSala, salaLoading, salaReservas,
+      prestamoModal, prestamoBook, prestamoDate, prestamoBusy,
+      usuarios, usuarioPage, usuarioPageTotal, prestamos, prestamoPage, prestamoPageTotal, adminLoading,
+      isAdmin, catEmoji,
+      toggleTheme, doLogin, doRegister, doForgot, doLogout,
+      goTo, loadBooks, loadSalas, loadAdmin, loadPrestamos,
+      selectCategory, onSearchInput, bookPageGo, salaPageGo,
+      openBook, closeBook, openPrestamo, maxLoanDate, confirmPrestamo,
+      openSala, closeSala, isSalaAvailable,
+      deleteUsuario, toggleMoroso, devolvLibro,
+      fmtDate, paginate
+    };
+  },
+
+  template: `
+  <div>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- AUTH VIEWS -->
+    <!-- ──────────────────────────────────────────── -->
+    <div v-if="!user" class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">biblio<span>teca</span></div>
+          <div class="auth-subtitle" v-if="!forgotMode">Gestión de colecciones y espacios</div>
+          <div class="auth-subtitle" v-else>Recuperación de contraseña</div>
+        </div>
+
+        <!-- Forgot password -->
+        <div v-if="forgotMode">
+          <div class="alert alert-success" v-if="authSuccess">{{authSuccess}}</div>
+          <div class="alert alert-danger" v-if="authError">{{authError}}</div>
+          <div class="form-group">
+            <label class="form-label">Correo electrónico</label>
+            <input v-model="forgotMail" class="form-input" type="email" placeholder="tu@correo.com" />
+          </div>
+          <button class="btn btn-primary" @click="doForgot" :disabled="loading">
+            {{ loading ? 'Enviando…' : 'Enviar código' }}
+          </button>
+          <div class="form-link"><a @click="forgotMode=false;authError='';authSuccess=''">← Volver al acceso</a></div>
+        </div>
+
+        <!-- Login / Register -->
+        <div v-else>
+          <div class="auth-tabs">
+            <button class="auth-tab" :class="{active: authTab==='login'}" @click="authTab='login';authError=''">Entrar</button>
+            <button class="auth-tab" :class="{active: authTab==='register'}" @click="authTab='register';authError=''">Crear cuenta</button>
+          </div>
+          <div class="alert alert-danger" v-if="authError">{{authError}}</div>
+
+          <div v-if="authTab==='login'">
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input v-model="loginForm.mail" class="form-input" type="email" placeholder="tu@correo.com" @keyup.enter="doLogin" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contraseña</label>
+              <input v-model="loginForm.password" class="form-input" type="password" placeholder="••••••••" @keyup.enter="doLogin" />
+            </div>
+            <button class="btn btn-primary" @click="doLogin" :disabled="loading">
+              {{ loading ? 'Accediendo…' : 'Acceder' }}
+            </button>
+            <div class="form-link"><a @click="forgotMode=true;authError=''">¿Olvidaste tu contraseña?</a></div>
+          </div>
+
+          <div v-else>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input v-model="registerForm.mail" class="form-input" type="email" placeholder="tu@correo.com" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contraseña <span style="color:var(--text3);font-size:0.75rem">(mínimo 8 caracteres)</span></label>
+              <input v-model="registerForm.password" class="form-input" type="password" placeholder="••••••••" />
+            </div>
+            <button class="btn btn-primary" @click="doRegister" :disabled="loading">
+              {{ loading ? 'Creando…' : 'Crear cuenta' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- APP (authenticated) -->
+    <!-- ──────────────────────────────────────────── -->
+    <template v-if="user">
+
+      <!-- NAV -->
+      <nav class="nav">
+        <div class="nav-brand" @click="goTo('libros')">biblio<span>teca</span></div>
+        <div class="nav-links">
+          <button class="nav-link" :class="{active: view==='libros'}" @click="goTo('libros')">📚 Libros</button>
+          <button class="nav-link" :class="{active: view==='salas'}" @click="goTo('salas')">🏠 Salas</button>
+          <template v-if="isAdmin">
+            <button class="nav-link" :class="{active: view==='admin'}" @click="goTo('admin')">👥 Usuarios</button>
+            <button class="nav-link" :class="{active: view==='prestamos'}" @click="goTo('prestamos')">📋 Préstamos</button>
+          </template>
+        </div>
+        <div class="nav-actions">
+          <span class="nav-user-mail">{{user.mail}}</span>
+          <span class="badge-role" :class="isAdmin ? 'badge-admin' : 'badge-customer'">
+            {{isAdmin ? 'Admin' : 'Cliente'}}
+          </span>
+          <button class="btn-icon theme-toggle" @click="toggleTheme" :title="theme==='dark'?'Modo claro':'Modo oscuro'">
+            {{theme==='dark' ? '☀️' : '🌙'}}
+          </button>
+          <button class="btn-icon" @click="doLogout" title="Cerrar sesión">⎋</button>
+        </div>
+      </nav>
+
+      <!-- MAIN CONTENT -->
+      <main class="main">
+
+        <!-- ───── LIBROS ───── -->
+        <div v-if="view==='libros'">
+          <div class="page-header">
+            <div>
+              <div class="page-title">Catálogo</div>
+              <div class="page-count" v-if="bookTotal">{{bookTotal}} libros disponibles</div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filter-bar">
+            <input
+              v-model="bookSearch"
+              class="filter-search"
+              placeholder="Buscar por título…"
+              @input="onSearchInput"
+            />
+            <button
+              class="cat-pill"
+              :class="{active: activeCategory===''}"
+              @click="selectCategory('')"
+            >Todos</button>
+            <button
+              v-for="cat in categories"
+              :key="cat"
+              class="cat-pill"
+              :class="{active: activeCategory===cat}"
+              @click="selectCategory(cat)"
+            >{{catEmoji(cat)}} {{cat}}</button>
+          </div>
+
+          <!-- Loading -->
+          <div v-if="bookLoading" class="loading-wrap">
+            <div class="loader"></div>
+            Cargando libros…
+          </div>
+
+          <!-- Empty -->
+          <div v-else-if="books.length===0" class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div class="empty-text">No se encontraron libros con ese filtro.</div>
+          </div>
+
+          <!-- Grid -->
+          <div v-else class="book-grid">
+            <div
+              v-for="book in books"
+              :key="book.id"
+              class="book-card"
+              @click="openBook(book)"
+            >
+              <div class="book-spine">
+                {{catEmoji(book.estanteriaCategoria)}}
+                <span class="book-cat-badge">{{book.estanteriaCategoria || '—'}}</span>
+              </div>
+              <div class="book-title">{{book.titulo}}</div>
+              <div class="book-author">{{book.autorNombre || '—'}}</div>
+              <div class="book-isbn">{{book.isbn}}</div>
+              <div class="avail-label">
+                <span class="avail-dot avail-yes"></span> Disponible
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination" v-if="bookPageTotal > 1">
+            <button class="page-btn" :disabled="bookPage===0" @click="bookPageGo(bookPage-1)">‹</button>
+            <button
+              v-for="p in paginate(bookPageTotal)"
+              :key="p"
+              class="page-btn"
+              :class="{active: p===bookPage}"
+              @click="bookPageGo(p)"
+            >{{p+1}}</button>
+            <button class="page-btn" :disabled="bookPage>=bookPageTotal-1" @click="bookPageGo(bookPage+1)">›</button>
+          </div>
+        </div>
+
+        <!-- ───── SALAS ───── -->
+        <div v-if="view==='salas'">
+          <div class="page-header">
+            <div>
+              <div class="page-title">Salas de estudio</div>
+              <div class="page-count" v-if="salaTotal">{{salaTotal}} salas en la biblioteca</div>
+            </div>
+          </div>
+
+          <div v-if="salaLoading" class="loading-wrap">
+            <div class="loader"></div>
+            Cargando salas…
+          </div>
+
+          <div v-else-if="salas.length===0" class="empty-state">
+            <div class="empty-icon">🚪</div>
+            <div class="empty-text">No hay salas registradas.</div>
+          </div>
+
+          <div v-else class="sala-grid">
+            <div
+              v-for="sala in salas"
+              :key="sala.id"
+              class="sala-card"
+              @click="openSala(sala)"
+            >
+              <div class="sala-name">{{sala.nombre}}</div>
+              <div class="sala-capacity">
+                👥 Máximo {{sala.maximoPersonas}} personas
+              </div>
+              <div class="sala-piso">
+                📍 {{sala.pisoNombre}} · Planta {{sala.pisoNumero}}
+              </div>
+              <div class="sala-status">
+                <span class="avail-dot avail-yes"></span>
+                <span style="font-size:0.8rem;color:var(--text2)">Ver disponibilidad →</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pagination" v-if="salaPageTotal > 1">
+            <button class="page-btn" :disabled="salaPage===0" @click="salaPageGo(salaPage-1)">‹</button>
+            <button
+              v-for="p in paginate(salaPageTotal)"
+              :key="p"
+              class="page-btn"
+              :class="{active: p===salaPage}"
+              @click="salaPageGo(p)"
+            >{{p+1}}</button>
+            <button class="page-btn" :disabled="salaPage>=salaPageTotal-1" @click="salaPageGo(salaPage+1)">›</button>
+          </div>
+        </div>
+
+        <!-- ───── ADMIN: USUARIOS ───── -->
+        <div v-if="view==='admin'">
+          <div class="page-header">
+            <div class="page-title">Gestión de usuarios</div>
+          </div>
+
+          <div v-if="adminLoading" class="loading-wrap">
+            <div class="loader"></div>
+          </div>
+          <div v-else>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Registro</th><th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="usuarios.length===0">
+                    <td colspan="6" style="text-align:center;color:var(--text2);padding:2rem">No hay usuarios</td>
+                  </tr>
+                  <tr v-for="u in usuarios" :key="u.id">
+                    <td style="color:var(--text3);font-size:0.8rem">#{{u.id}}</td>
+                    <td>{{u.mail}}</td>
+                    <td><span class="tag" :class="u.rol==='ROLE_ADMIN'?'tag-admin':'tag-customer'">{{u.rol==='ROLE_ADMIN'?'Admin':'Cliente'}}</span></td>
+                    <td>
+                      <span class="tag" :class="u.moroso?'tag-moroso':'tag-ok'">{{u.moroso?'Moroso':'Al corriente'}}</span>
+                    </td>
+                    <td style="color:var(--text2);font-size:0.8rem">{{fmtDate(u.creado)}}</td>
+                    <td>
+                      <div class="table-actions">
+                        <button class="btn btn-outline btn-sm" @click="toggleMoroso(u)" :title="u.moroso?'Quitar moroso':'Marcar moroso'">
+                          {{u.moroso ? '✓' : '⚠'}}
+                        </button>
+                        <button class="btn btn-danger btn-sm" @click="deleteUsuario(u.id)">✕</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───── ADMIN: PRÉSTAMOS ───── -->
+        <div v-if="view==='prestamos'">
+          <div class="page-header">
+            <div class="page-title">Gestión de préstamos</div>
+          </div>
+
+          <div v-if="adminLoading" class="loading-wrap">
+            <div class="loader"></div>
+          </div>
+          <div v-else>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th><th>Usuario</th><th>Libro</th><th>Préstamo</th><th>Devolución prev.</th><th>Devuelto</th><th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="prestamos.length===0">
+                    <td colspan="7" style="text-align:center;color:var(--text2);padding:2rem">No hay préstamos</td>
+                  </tr>
+                  <tr v-for="p in prestamos" :key="p.id">
+                    <td style="color:var(--text3);font-size:0.8rem">#{{p.id}}</td>
+                    <td style="font-size:0.82rem">{{p.usuarioMail}}</td>
+                    <td style="font-size:0.82rem">{{p.libroTitulo}}</td>
+                    <td style="color:var(--text2);font-size:0.8rem">{{fmtDate(p.fechaPrestamo)}}</td>
+                    <td style="color:var(--text2);font-size:0.8rem">{{fmtDate(p.fechaDevolucionPrevista)}}</td>
+                    <td>
+                      <span v-if="p.fechaDevolucionReal" style="color:var(--accent);font-size:0.8rem">{{fmtDate(p.fechaDevolucionReal)}}</span>
+                      <span v-else class="tag tag-moroso">Pendiente</span>
+                    </td>
+                    <td>
+                      <button v-if="!p.fechaDevolucionReal" class="btn btn-outline btn-sm" @click="devolvLibro(p)">Devolver</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="pagination" v-if="prestamoPageTotal > 1">
+              <button class="page-btn" :disabled="prestamoPage===0" @click="prestamoPage--;loadPrestamos()">‹</button>
+              <button
+                v-for="p in paginate(prestamoPageTotal)"
+                :key="p"
+                class="page-btn"
+                :class="{active: p===prestamoPage}"
+                @click="prestamoPage=p;loadPrestamos()"
+              >{{p+1}}</button>
+              <button class="page-btn" :disabled="prestamoPage>=prestamoPageTotal-1" @click="prestamoPage++;loadPrestamos()">›</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </template>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- BOOK MODAL -->
+    <!-- ──────────────────────────────────────────── -->
+    <div v-if="selectedBook" class="modal-overlay" @click.self="closeBook">
+      <div class="modal">
+        <div class="modal-header">
+          <div>
+            <div style="font-size:0.75rem;color:var(--text3);margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.06em;">{{selectedBook.estanteriaCategoria || 'Sin categoría'}}</div>
+            <div class="modal-title">{{selectedBook.titulo}}</div>
+          </div>
+          <button class="modal-close" @click="closeBook">✕</button>
+        </div>
+
+        <div class="modal-meta">
+          <div class="meta-item">
+            <div class="meta-label">Autor</div>
+            <div class="meta-value">{{selectedBook.autorNombre || '—'}}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">ISBN</div>
+            <div class="meta-value" style="font-family:monospace;font-size:0.8rem">{{selectedBook.isbn || '—'}}</div>
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="location-map">
+          <span class="location-icon">📍</span>
+          <div class="location-path">
+            <strong>{{selectedBook.pisoNombre || 'Planta ' + selectedBook.pisoNumero}}</strong><br/>
+            Estantería de <strong>{{selectedBook.estanteriaCategoria || '—'}}</strong><br/>
+            Balda <strong>#{{selectedBook.baldaNumero || selectedBook.baldaId || '—'}}</strong>
+          </div>
+        </div>
+
+        <!-- Disponibilidad -->
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1.5rem;">
+          <span class="avail-dot avail-yes"></span>
+          <span style="font-size:0.875rem;color:var(--text)">Disponible para préstamo</span>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-primary" style="flex:1" @click="openPrestamo(selectedBook)">
+            Solicitar préstamo
+          </button>
+          <button class="btn btn-outline" @click="closeBook">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- SALA MODAL -->
+    <!-- ──────────────────────────────────────────── -->
+    <div v-if="selectedSala" class="modal-overlay" @click.self="closeSala">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">{{selectedSala.nombre}}</div>
+          <button class="modal-close" @click="closeSala">✕</button>
+        </div>
+
+        <div class="modal-meta">
+          <div class="meta-item">
+            <div class="meta-label">Capacidad</div>
+            <div class="meta-value">👥 {{selectedSala.maximoPersonas}} personas</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Ubicación</div>
+            <div class="meta-value">📍 {{selectedSala.pisoNombre}}</div>
+          </div>
+        </div>
+
+        <!-- Disponibilidad ahora -->
+        <div
+          :style="{
+            background: isSalaAvailable(selectedSala) ? 'var(--accent-light)' : 'var(--danger-light)',
+            borderRadius: 'var(--radius-sm)', padding: '1rem', marginBottom: '1.25rem',
+            display: 'flex', alignItems: 'center', gap: '0.75rem'
+          }"
+        >
+          <span style="font-size:1.5rem">{{isSalaAvailable(selectedSala) ? '✅' : '🔴'}}</span>
+          <div>
+            <div style="font-weight:600;font-size:0.9rem" :style="{color: isSalaAvailable(selectedSala) ? 'var(--accent)' : 'var(--danger)'}">
+              {{isSalaAvailable(selectedSala) ? 'Disponible ahora mismo' : 'Ocupada en este momento'}}
+            </div>
+            <div style="font-size:0.78rem;color:var(--text2);margin-top:0.15rem">Comprobado en tiempo real</div>
+          </div>
+        </div>
+
+        <!-- Reservas activas -->
+        <div v-if="salaReservas.length > 0">
+          <div style="font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text2);margin-bottom:0.75rem">Reservas</div>
+          <div
+            v-for="r in salaReservas" :key="r.id"
+            style="background:var(--bg2);border-radius:var(--radius-sm);padding:0.75rem;margin-bottom:0.5rem;font-size:0.83rem"
+          >
+            <div style="color:var(--text)">{{fmtDate(r.fechaReserva)}} — {{fmtDate(r.fechaFinReserva)}}</div>
+            <div style="color:var(--text2);font-size:0.75rem;margin-top:0.2rem">{{r.usuarioMail}}</div>
+          </div>
+        </div>
+        <div v-else style="font-size:0.85rem;color:var(--text2);margin-bottom:1.25rem">
+          Sin reservas registradas.
+        </div>
+
+        <button class="btn btn-outline" style="width:100%" @click="closeSala">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- PRESTAMO MODAL -->
+    <!-- ──────────────────────────────────────────── -->
+    <div v-if="prestamoModal" class="modal-overlay" @click.self="prestamoModal=false">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Solicitar préstamo</div>
+          <button class="modal-close" @click="prestamoModal=false">✕</button>
+        </div>
+
+        <div class="prestamo-info">
+          📖 <strong>{{prestamoBook?.titulo}}</strong><br/>
+          <span style="font-size:0.8rem">El préstamo máximo es de 1 mes a partir de hoy.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Fecha de devolución prevista</label>
+          <input
+            v-model="prestamoDate"
+            class="form-input"
+            type="date"
+            :min="new Date().toISOString().split('T')[0]"
+            :max="maxLoanDate()"
+          />
+        </div>
+
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-primary" style="flex:1" @click="confirmPrestamo" :disabled="prestamoBusy">
+            {{prestamoBusy ? 'Registrando…' : 'Confirmar préstamo'}}
+          </button>
+          <button class="btn btn-outline" @click="prestamoModal=false">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- TOASTS -->
+    <!-- ──────────────────────────────────────────── -->
+    <div class="toast-container">
+      <div
+        v-for="t in toasts" :key="t.id"
+        class="toast"
+        :class="t.type==='success' ? 'toast-success' : 'toast-error'"
+      >
+        {{t.type==='success' ? '✓' : '✕'}} {{t.msg}}
+      </div>
+    </div>
+
+  </div>
+  `
+};
+
+createApp(App).mount('#app');
+</script>
+</body>
+</html>

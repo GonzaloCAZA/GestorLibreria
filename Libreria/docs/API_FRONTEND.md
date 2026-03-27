@@ -726,6 +726,18 @@ Admin.
 
 Admin. Mismo body.
 
+### `PUT /api/prestamos/{id}/devolver`
+
+Admin.
+
+Body:
+
+```json
+{
+  "fechaDevolucionReal": "2026-03-27"
+}
+```
+
 ### `DELETE /api/prestamos/{id}`
 
 Admin. Respuesta `204`.

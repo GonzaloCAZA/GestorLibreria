@@ -1,6 +1,7 @@
 package com.example.libreria.controller;
 
 import com.example.libreria.domain.PrestamoLibro;
+import com.example.libreria.dto.catalogo.PrestamoLibroDevolucionRequest;
 import com.example.libreria.dto.catalogo.PrestamoLibroResponse;
 import com.example.libreria.dto.common.PageResponse;
 import com.example.libreria.service.PrestamoLibroService;
@@ -66,6 +67,17 @@ public class PrestamoLibroController {
     @Transactional
     public ResponseEntity<PrestamoLibroResponse> update(@PathVariable Long id, @Valid @RequestBody PrestamoLibro prestamoLibro) {
         return ResponseEntity.ok(PrestamoLibroResponse.from(prestamoLibroService.update(id, prestamoLibro)));
+    }
+
+    @PutMapping("/{id}/devolver")
+    @Transactional
+    public ResponseEntity<PrestamoLibroResponse> devolver(
+            @PathVariable Long id,
+            @Valid @RequestBody PrestamoLibroDevolucionRequest request
+    ) {
+        return ResponseEntity.ok(PrestamoLibroResponse.from(
+                prestamoLibroService.devolver(id, request.fechaDevolucionReal())
+        ));
     }
 
     @DeleteMapping("/{id}")
