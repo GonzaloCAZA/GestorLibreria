@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Biblioteca · Gestión</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       --bg: #F7F4EE;
@@ -24,10 +33,10 @@
       --warn-light: #FEF3E8;
       --danger: #A32D2D;
       --danger-light: #FCEBEB;
-      --border: rgba(26,22,18,0.12);
-      --border2: rgba(26,22,18,0.22);
-      --shadow: 0 2px 12px rgba(26,22,18,0.08);
-      --shadow2: 0 8px 32px rgba(26,22,18,0.14);
+      --border: rgba(26, 22, 18, 0.12);
+      --border2: rgba(26, 22, 18, 0.22);
+      --shadow: 0 2px 12px rgba(26, 22, 18, 0.08);
+      --shadow2: 0 8px 32px rgba(26, 22, 18, 0.14);
       --radius: 12px;
       --radius-sm: 8px;
       --font-display: 'DM Serif Display', Georgia, serif;
@@ -49,13 +58,17 @@
       --warn-light: #2D1F0F;
       --danger: #E24B4A;
       --danger-light: #2D1515;
-      --border: rgba(237,232,222,0.1);
-      --border2: rgba(237,232,222,0.2);
-      --shadow: 0 2px 12px rgba(0,0,0,0.4);
-      --shadow2: 0 8px 32px rgba(0,0,0,0.5);
+      --border: rgba(237, 232, 222, 0.1);
+      --border2: rgba(237, 232, 222, 0.2);
+      --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+      --shadow2: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
 
-    html, body { height: 100%; }
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       font-family: var(--font-body);
       background: var(--bg);
@@ -64,18 +77,27 @@
       min-height: 100vh;
     }
 
-    #app { min-height: 100vh; display: flex; flex-direction: column; }
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
     /* ── NAV ── */
     .nav {
-      position: sticky; top: 0; z-index: 100;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       background: var(--bg3);
       border-bottom: 1px solid var(--border);
       padding: 0 2rem;
-      display: flex; align-items: center; gap: 0;
+      display: flex;
+      align-items: center;
+      gap: 0;
       height: 60px;
       backdrop-filter: blur(8px);
     }
+
     .nav-brand {
       font-family: var(--font-display);
       font-size: 1.25rem;
@@ -85,8 +107,17 @@
       text-decoration: none;
       cursor: pointer;
     }
-    .nav-brand span { color: var(--accent); }
-    .nav-links { display: flex; gap: 0.25rem; flex: 1; }
+
+    .nav-brand span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      flex: 1;
+    }
+
     .nav-link {
       padding: 0.5rem 1rem;
       border-radius: var(--radius-sm);
@@ -95,1008 +126,1856 @@
       color: var(--text2);
       cursor: pointer;
       transition: all var(--transition);
-      border: none; background: none;
+      border: none;
+      background: none;
     }
-    .nav-link:hover { background: var(--bg2); color: var(--text); }
-    .nav-link.active { background: var(--accent-light); color: var(--accent); }
-    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+    .nav-link:hover {
+      background: var(--bg2);
+      color: var(--text);
+    }
+
+    .nav-link.active {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
     .badge-role {
-      font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem;
-      border-radius: 99px; letter-spacing: 0.04em; text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
-    .badge-admin { background: var(--accent-light); color: var(--accent); }
-    .badge-customer { background: var(--bg2); color: var(--text2); }
+
+    .badge-admin {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .badge-customer {
+      background: var(--bg2);
+      color: var(--text2);
+    }
+
     .btn-icon {
-      width: 36px; height: 36px; border-radius: var(--radius-sm);
-      border: 1px solid var(--border); background: var(--bg2);
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all var(--transition); color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      color: var(--text);
       font-size: 1rem;
     }
-    .btn-icon:hover { background: var(--bg); border-color: var(--border2); }
-    .nav-user-mail { font-size: 0.8rem; color: var(--text2); }
+
+    .btn-icon:hover {
+      background: var(--bg);
+      border-color: var(--border2);
+    }
+
+    .nav-user-mail {
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
 
     /* ── MAIN ── */
-    .main { flex: 1; padding: 2.5rem 2rem; max-width: 1300px; margin: 0 auto; width: 100%; }
+    .main {
+      flex: 1;
+      padding: 2.5rem 2rem;
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
     /* ── AUTH VIEWS ── */
     .auth-wrap {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      background: var(--bg); padding: 2rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      padding: 2rem;
     }
+
     .auth-card {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 420px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
       box-shadow: var(--shadow2);
     }
-    .auth-header { text-align: center; margin-bottom: 2rem; }
-    .auth-logo { font-family: var(--font-display); font-size: 2rem; color: var(--text); }
-    .auth-logo span { color: var(--accent); }
-    .auth-subtitle { color: var(--text2); font-size: 0.875rem; margin-top: 0.5rem; }
-    .auth-tabs { display: flex; background: var(--bg2); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 1.75rem; }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--text);
+    }
+
+    .auth-logo span {
+      color: var(--accent);
+    }
+
+    .auth-subtitle {
+      color: var(--text2);
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: var(--bg2);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      margin-bottom: 1.75rem;
+    }
+
     .auth-tab {
-      flex: 1; padding: 0.5rem; border: none; background: none;
-      font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
-      color: var(--text2); cursor: pointer; border-radius: 6px; transition: all var(--transition);
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all var(--transition);
     }
-    .auth-tab.active { background: var(--bg3); color: var(--text); box-shadow: var(--shadow); }
 
-    .form-group { margin-bottom: 1.25rem; }
-    .form-label { font-size: 0.8rem; font-weight: 500; color: var(--text2); display: block; margin-bottom: 0.5rem; }
+    .auth-tab.active {
+      background: var(--bg3);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text2);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
     .form-input {
-      width: 100%; padding: 0.65rem 0.875rem; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); background: var(--bg2);
-      font-family: var(--font-body); font-size: 0.9rem; color: var(--text);
-      transition: all var(--transition); outline: none;
+      width: 100%;
+      padding: 0.65rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg2);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--text);
+      transition: all var(--transition);
+      outline: none;
     }
-    .form-input:focus { border-color: var(--accent); background: var(--bg3); box-shadow: 0 0 0 3px rgba(45,90,61,0.12); }
-    .form-input::placeholder { color: var(--text3); }
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.5rem; border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all var(--transition); border: none; }
-    .btn-primary { background: var(--accent); color: white; width: 100%; }
-    .btn-primary:hover { filter: brightness(1.1); }
-    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text); }
-    .btn-outline:hover { background: var(--bg2); }
-    .btn-danger { background: var(--danger); color: white; }
-    .btn-danger:hover { filter: brightness(1.1); }
-    .btn-sm { padding: 0.4rem 0.875rem; font-size: 0.8rem; }
-
-    .form-link { text-align: center; margin-top: 1rem; font-size: 0.8rem; color: var(--text2); }
-    .form-link a { color: var(--accent); cursor: pointer; text-decoration: none; }
-    .form-link a:hover { text-decoration: underline; }
-
-    .alert { padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 1rem; }
-    .alert-danger { background: var(--danger-light); color: var(--danger); border: 1px solid currentColor; opacity: 0.8; }
-    .alert-success { background: var(--accent-light); color: var(--accent); border: 1px solid currentColor; opacity: 0.8; }
-
-    /* ── PAGE HEADER ── */
-    .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
-    .page-title { font-family: var(--font-display); font-size: 2.25rem; color: var(--text); letter-spacing: -0.03em; }
-    .page-count { font-size: 0.85rem; color: var(--text2); margin-top: 0.25rem; }
-
-    /* ── FILTER BAR ── */
-    .filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.75rem; align-items: center; }
-    .filter-search {
-      flex: 1; min-width: 200px; max-width: 340px;
-      padding: 0.55rem 0.875rem; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); background: var(--bg3);
-      font-family: var(--font-body); font-size: 0.875rem; color: var(--text); outline: none;
+    .form-input:focus {
+      border-color: var(--accent);
+      background: var(--bg3);
+      box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.12);
     }
-    .filter-search:focus { border-color: var(--accent); }
-    .cat-pill {
-      padding: 0.45rem 1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 500;
-      cursor: pointer; border: 1px solid var(--border); background: var(--bg3);
-      color: var(--text2); transition: all var(--transition); white-space: nowrap;
-    }
-    .cat-pill:hover { background: var(--bg2); color: var(--text); }
-    .cat-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
 
-    /* ── BOOK GRID ── */
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; }
-    .book-card {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.25rem;
-      cursor: pointer; transition: all var(--transition);
-      display: flex; flex-direction: column; gap: 0.75rem;
-      position: relative; overflow: hidden;
+    .form-input::placeholder {
+      color: var(--text3);
     }
-    .book-card:hover { border-color: var(--border2); box-shadow: var(--shadow2); transform: translateY(-2px); }
-    .book-card::before {
-      content: ''; position: absolute; top: 0; left: 0;
-      width: 4px; height: 100%; background: var(--accent);
-      transform: scaleY(0); transform-origin: bottom;
-      transition: transform var(--transition);
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
     }
-    .book-card:hover::before { transform: scaleY(1); }
-    .book-spine { width: 100%; height: 120px; border-radius: 6px; background: var(--bg2); display: flex; align-items: center; justify-content: center; font-size: 2rem; position: relative; }
-    .book-cat-badge {
-      position: absolute; top: 8px; right: 8px;
-      font-size: 0.65rem; font-weight: 600; padding: 0.2rem 0.5rem;
-      border-radius: 99px; background: var(--bg3); border: 1px solid var(--border);
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg2);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.875rem;
+      font-size: 0.8rem;
+    }
+
+    .form-link {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.8rem;
       color: var(--text2);
     }
-    .book-title { font-family: var(--font-display); font-size: 1rem; color: var(--text); line-height: 1.3; }
-    .book-author { font-size: 0.78rem; color: var(--text2); }
-    .book-isbn { font-size: 0.7rem; color: var(--text3); font-family: monospace; }
-    .avail-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-    .avail-yes { background: var(--accent); }
-    .avail-no { background: var(--danger); }
-    .avail-label { font-size: 0.75rem; color: var(--text2); display: flex; align-items: center; }
+
+    .form-link a {
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .form-link a:hover {
+      text-decoration: underline;
+    }
+
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .alert-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid currentColor;
+      opacity: 0.8;
+    }
+
+    .alert-success {
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid currentColor;
+      opacity: 0.8;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .page-count {
+      font-size: 0.85rem;
+      color: var(--text2);
+      margin-top: 0.25rem;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+      align-items: center;
+    }
+
+    .filter-search {
+      flex: 1;
+      min-width: 200px;
+      max-width: 340px;
+      padding: 0.55rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg3);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      color: var(--text);
+      outline: none;
+    }
+
+    .filter-search:focus {
+      border-color: var(--accent);
+    }
+
+    .cat-pill {
+      padding: 0.45rem 1rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text2);
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+
+    .cat-pill:hover {
+      background: var(--bg2);
+      color: var(--text);
+    }
+
+    .cat-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* ── BOOK GRID ── */
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .book-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-card:hover {
+      border-color: var(--border2);
+      box-shadow: var(--shadow2);
+      transform: translateY(-2px);
+    }
+
+    .book-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform var(--transition);
+    }
+
+    .book-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .book-spine {
+      width: 100%;
+      height: 120px;
+      border-radius: 6px;
+      background: var(--bg2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      position: relative;
+    }
+
+    .book-cat-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 99px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+    }
+
+    .book-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .book-author {
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+
+    .book-isbn {
+      font-size: 0.7rem;
+      color: var(--text3);
+      font-family: monospace;
+    }
+
+    .avail-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .avail-yes {
+      background: var(--accent);
+    }
+
+    .avail-no {
+      background: var(--danger);
+    }
+
+    .avail-label {
+      font-size: 0.75rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+    }
 
     /* ── MODAL ── */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 200; padding: 1rem;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 1rem;
       animation: fadeIn 0.15s ease;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 20px; padding: 2rem; max-width: 520px; width: 100%;
-      box-shadow: var(--shadow2);
-      animation: slideUp 0.2s cubic-bezier(0.4,0,0.2,1);
-      max-height: 90vh; overflow-y: auto;
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; gap: 1rem; }
-    .modal-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); }
-    .modal-close { width: 32px; height: 32px; border: none; background: var(--bg2); border-radius: var(--radius-sm); cursor: pointer; color: var(--text2); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .modal-close:hover { background: var(--danger-light); color: var(--danger); }
-    .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-    .meta-item { background: var(--bg2); border-radius: var(--radius-sm); padding: 0.875rem; }
-    .meta-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 0.3rem; }
-    .meta-value { font-size: 0.9rem; font-weight: 500; color: var(--text); }
-    .location-map { background: var(--bg2); border-radius: var(--radius); padding: 1.25rem; display: flex; gap: 0.75rem; align-items: flex-start; margin-bottom: 1.5rem; }
-    .location-icon { font-size: 1.5rem; }
-    .location-path { font-size: 0.85rem; color: var(--text2); line-height: 1.7; }
-    .location-path strong { color: var(--text); font-weight: 600; }
+
+    .modal {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow2);
+      animation: slideUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--bg2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text2);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .modal-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .meta-item {
+      background: var(--bg2);
+      border-radius: var(--radius-sm);
+      padding: 0.875rem;
+    }
+
+    .meta-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text3);
+      margin-bottom: 0.3rem;
+    }
+
+    .meta-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .location-map {
+      background: var(--bg2);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .location-icon {
+      font-size: 1.5rem;
+    }
+
+    .location-path {
+      font-size: 0.85rem;
+      color: var(--text2);
+      line-height: 1.7;
+    }
+
+    .location-path strong {
+      color: var(--text);
+      font-weight: 600;
+    }
 
     /* ── SALAS ── */
-    .sala-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; }
-    .sala-card {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem;
-      cursor: pointer; transition: all var(--transition);
+    .sala-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
     }
-    .sala-card:hover { border-color: var(--border2); box-shadow: var(--shadow2); transform: translateY(-2px); }
-    .sala-name { font-family: var(--font-display); font-size: 1.25rem; color: var(--text); margin-bottom: 0.5rem; }
-    .sala-capacity { font-size: 0.85rem; color: var(--text2); display: flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem; }
-    .sala-piso { font-size: 0.8rem; color: var(--text3); }
-    .sala-status { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+
+    .sala-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .sala-card:hover {
+      border-color: var(--border2);
+      box-shadow: var(--shadow2);
+      transform: translateY(-2px);
+    }
+
+    .sala-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .sala-capacity {
+      font-size: 0.85rem;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .sala-piso {
+      font-size: 0.8rem;
+      color: var(--text3);
+    }
+
+    .sala-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
 
     /* ── PAGINATION ── */
-    .pagination { display: flex; align-items: center; gap: 0.5rem; justify-content: center; margin-top: 2.5rem; }
-    .page-btn {
-      width: 36px; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border);
-      background: var(--bg3); color: var(--text); cursor: pointer; font-family: var(--font-body);
-      font-size: 0.875rem; transition: all var(--transition); display: flex; align-items: center; justify-content: center;
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 2.5rem;
     }
-    .page-btn:hover { background: var(--bg2); border-color: var(--border2); }
-    .page-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
-    .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .page-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover {
+      background: var(--bg2);
+      border-color: var(--border2);
+    }
+
+    .page-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
 
     /* ── ADMIN PANEL ── */
-    .admin-section { margin-bottom: 3rem; }
-    .section-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); margin-bottom: 1.25rem; }
-    .admin-table-wrap { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .admin-table { width: 100%; border-collapse: collapse; }
-    .admin-table th { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text2); padding: 0.875rem 1rem; text-align: left; background: var(--bg2); border-bottom: 1px solid var(--border); }
-    .admin-table td { padding: 0.875rem 1rem; font-size: 0.875rem; color: var(--text); border-bottom: 1px solid var(--border); }
-    .admin-table tr:last-child td { border-bottom: none; }
-    .admin-table tr:hover td { background: var(--bg2); }
-    .table-actions { display: flex; gap: 0.4rem; }
-    .tag { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 99px; font-weight: 600; }
-    .tag-moroso { background: var(--danger-light); color: var(--danger); }
-    .tag-ok { background: var(--accent-light); color: var(--accent); }
-    .tag-admin { background: #E8F3EC; color: #2D5A3D; }
-    .tag-customer { background: var(--bg2); color: var(--text2); }
+    .admin-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    .admin-table-wrap {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text2);
+      padding: 0.875rem 1rem;
+      text-align: left;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-table td {
+      padding: 0.875rem 1rem;
+      font-size: 0.875rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .admin-table tr:hover td {
+      background: var(--bg2);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .tag-moroso {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .tag-ok {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .tag-admin {
+      background: #E8F3EC;
+      color: #2D5A3D;
+    }
+
+    .tag-customer {
+      background: var(--bg2);
+      color: var(--text2);
+    }
 
     /* ── STATS ── */
-    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .stat-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
-    .stat-label { font-size: 0.75rem; color: var(--text2); font-weight: 500; margin-bottom: 0.4rem; }
-    .stat-value { font-family: var(--font-display); font-size: 2rem; color: var(--text); letter-spacing: -0.03em; }
-    .stat-sub { font-size: 0.75rem; color: var(--text3); margin-top: 0.25rem; }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text2);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--text);
+      letter-spacing: -0.03em;
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text3);
+      margin-top: 0.25rem;
+    }
 
     /* ── LOADING / EMPTY ── */
-    .loading-wrap { text-align: center; padding: 4rem 2rem; color: var(--text2); }
-    .loader { width: 32px; height: 32px; border: 2.5px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 1rem; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .empty-state { text-align: center; padding: 4rem 2rem; }
-    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
-    .empty-text { color: var(--text2); font-size: 0.9rem; }
+    .loading-wrap {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text2);
+    }
+
+    .loader {
+      width: 32px;
+      height: 32px;
+      border: 2.5px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    .empty-text {
+      color: var(--text2);
+      font-size: 0.9rem;
+    }
 
     /* ── TOAST ── */
-    .toast-container { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 999; display: flex; flex-direction: column; gap: 0.5rem; }
-    .toast { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem 1.25rem; box-shadow: var(--shadow2); font-size: 0.875rem; color: var(--text); display: flex; align-items: center; gap: 0.6rem; animation: slideIn 0.2s ease; max-width: 340px; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-    .toast-success { border-left: 3px solid var(--accent); }
-    .toast-error { border-left: 3px solid var(--danger); }
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;
+      box-shadow: var(--shadow2);
+      font-size: 0.875rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: slideIn 0.2s ease;
+      max-width: 340px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .toast-success {
+      border-left: 3px solid var(--accent);
+    }
+
+    .toast-error {
+      border-left: 3px solid var(--danger);
+    }
 
     /* ── PRESTAMO FORM ── */
-    .prestamo-info { background: var(--accent-light); border-radius: var(--radius-sm); padding: 1rem; margin-bottom: 1.25rem; font-size: 0.85rem; color: var(--accent); }
+    .prestamo-info {
+      background: var(--accent-light);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
 
     /* ── DARK TOGGLE ── */
-    .theme-toggle { font-size: 1rem; }
+    .theme-toggle {
+      font-size: 1rem;
+    }
 
     /* ── GESTIÓN PANEL ── */
-    .gestion-layout { display: grid; grid-template-columns: 200px 1fr; gap: 1.75rem; align-items: start; }
-    .gestion-sidebar {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 0.5rem; position: sticky; top: 80px;
+    .gestion-layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 1.75rem;
+      align-items: start;
     }
-    .gestion-tab {
-      width: 100%; display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.65rem 0.875rem; border: none; background: none;
-      font-family: var(--font-body); font-size: 0.875rem; font-weight: 500;
-      color: var(--text2); cursor: pointer; border-radius: var(--radius-sm);
-      transition: all var(--transition); text-align: left;
-    }
-    .gestion-tab:hover { background: var(--bg2); color: var(--text); }
-    .gestion-tab.active { background: var(--accent-light); color: var(--accent); }
-    .gestion-tab .tab-icon { font-size: 1rem; width: 20px; text-align: center; }
-    .gestion-tab .tab-count {
-      margin-left: auto; font-size: 0.7rem; background: var(--bg2);
-      padding: 0.1rem 0.45rem; border-radius: 99px; color: var(--text3);
-    }
-    .gestion-tab.active .tab-count { background: var(--accent); color: white; }
-    .gestion-divider { height: 1px; background: var(--border); margin: 0.4rem 0; }
 
-    .gestion-content { min-width: 0; }
-    .gestion-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-    .gestion-title { font-family: var(--font-display); font-size: 1.75rem; color: var(--text); letter-spacing: -0.02em; }
+    .gestion-sidebar {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem;
+      position: sticky;
+      top: 80px;
+    }
+
+    .gestion-tab {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 0.875rem;
+      border: none;
+      background: none;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+      text-align: left;
+    }
+
+    .gestion-tab:hover {
+      background: var(--bg2);
+      color: var(--text);
+    }
+
+    .gestion-tab.active {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .gestion-tab .tab-icon {
+      font-size: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .gestion-tab .tab-count {
+      margin-left: auto;
+      font-size: 0.7rem;
+      background: var(--bg2);
+      padding: 0.1rem 0.45rem;
+      border-radius: 99px;
+      color: var(--text3);
+    }
+
+    .gestion-tab.active .tab-count {
+      background: var(--accent);
+      color: white;
+    }
+
+    .gestion-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0.4rem 0;
+    }
+
+    .gestion-content {
+      min-width: 0;
+    }
+
+    .gestion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .gestion-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
 
     /* Form + list split */
-    .gestion-split { display: grid; grid-template-columns: 360px 1fr; gap: 1.5rem; align-items: start; }
-    .gestion-form-card {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 80px;
+    .gestion-split {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+      align-items: start;
     }
-    .gestion-form-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text2); margin-bottom: 1.25rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
-    .form-select {
-      width: 100%; padding: 0.65rem 0.875rem; border: 1px solid var(--border);
-      border-radius: var(--radius-sm); background: var(--bg2);
-      font-family: var(--font-body); font-size: 0.9rem; color: var(--text);
-      transition: all var(--transition); outline: none; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 0.875rem center;
-      padding-right: 2.5rem; cursor: pointer;
-    }
-    .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,0.12); }
 
-    .gestion-list-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .gestion-list-header { padding: 1rem 1.25rem; background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .gestion-list-count { font-size: 0.8rem; color: var(--text2); }
-    .edit-form-inline { background: var(--warn-light); border: 1px solid var(--warn); border-radius: var(--radius-sm); padding: 1rem; margin: 0.5rem 0; }
-    .edit-form-inline .form-input, .edit-form-inline .form-select { background: var(--bg3); }
-    .btn-edit { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
-    .btn-edit:hover { background: var(--warn-light); color: var(--warn); border-color: var(--warn); }
+    .gestion-form-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      position: sticky;
+      top: 80px;
+    }
+
+    .gestion-form-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text2);
+      margin-bottom: 1.25rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.875rem;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.65rem 0.875rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg2);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--text);
+      transition: all var(--transition);
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.875rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.12);
+    }
+
+    .gestion-list-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .gestion-list-header {
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .gestion-list-count {
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+
+    .edit-form-inline {
+      background: var(--warn-light);
+      border: 1px solid var(--warn);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .edit-form-inline .form-input,
+    .edit-form-inline .form-select {
+      background: var(--bg3);
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+
+    .btn-edit:hover {
+      background: var(--warn-light);
+      color: var(--warn);
+      border-color: var(--warn);
+    }
 
     @media (max-width: 900px) {
-      .gestion-layout { grid-template-columns: 1fr; }
-      .gestion-sidebar { position: static; display: flex; flex-wrap: wrap; gap: 0.25rem; }
-      .gestion-tab { width: auto; }
-      .gestion-split { grid-template-columns: 1fr; }
-      .gestion-form-card { position: static; }
+      .gestion-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .gestion-sidebar {
+        position: static;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+      }
+
+      .gestion-tab {
+        width: auto;
+      }
+
+      .gestion-split {
+        grid-template-columns: 1fr;
+      }
+
+      .gestion-form-card {
+        position: static;
+      }
     }
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      .nav { padding: 0 1rem; }
-      .main { padding: 1.5rem 1rem; }
-      .book-grid { grid-template-columns: 1fr 1fr; }
-      .modal-meta { grid-template-columns: 1fr; }
-      .nav-user-mail { display: none; }
-      .stats-row { grid-template-columns: 1fr 1fr; }
+      .nav {
+        padding: 0 1rem;
+      }
+
+      .main {
+        padding: 1.5rem 1rem;
+      }
+
+      .book-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .modal-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-user-mail {
+        display: none;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
-<div id="app"></div>
+  <div id="app"></div>
 
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script>
-const { createApp, ref, reactive, computed, onMounted, watch, nextTick } = Vue;
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp, ref, reactive, computed, onMounted, watch, nextTick } = Vue;
 
-// ────────────────────────────────────────────────────────────
-// API CLIENT
-// ────────────────────────────────────────────────────────────
-const API_URL = 'http://localhost:8080';
+    // ────────────────────────────────────────────────────────────
+    // API CLIENT
+    // ────────────────────────────────────────────────────────────
+    const API_URL = 'http://localhost:8080';
 
-async function getCsrfToken() {
-  const res = await fetch(`${API_URL}/api/auth/csrf`, { method: 'GET', credentials: 'include' });
-  if (!res.ok) throw new Error('No se pudo obtener CSRF');
-  const data = await res.json();
-  return data.token;
-}
-
-async function apiFetch(path, init = {}) {
-  const method = (init.method ?? 'GET').toUpperCase();
-  const headers = new Headers(init.headers ?? {});
-  if (!['GET','HEAD','OPTIONS'].includes(method)) {
-    const csrfToken = await getCsrfToken();
-    headers.set('X-XSRF-TOKEN', csrfToken);
-  }
-  if (!headers.has('Content-Type') && init.body) headers.set('Content-Type', 'application/json');
-  const response = await fetch(`${API_URL}${path}`, { ...init, headers, credentials: 'include' });
-  if (response.status === 204) return null;
-  const ct = response.headers.get('content-type') ?? '';
-  const data = ct.includes('application/json') ? await response.json() : await response.text();
-  if (!response.ok) throw { status: response.status, data };
-  return data;
-}
-
-// ────────────────────────────────────────────────────────────
-// BOOK EMOJIS
-// ────────────────────────────────────────────────────────────
-const CAT_EMOJIS = {
-  'Novela': '📖', 'Poesía': '✒️', 'Historia': '🏛️', 'Ciencia': '🔬',
-  'Filosofía': '💭', 'Arte': '🎨', 'Tecnología': '💻', 'Economía': '📊',
-  'Derecho': '⚖️', 'Medicina': '🩺', 'default': '📚'
-};
-function catEmoji(cat) { return CAT_EMOJIS[cat] || CAT_EMOJIS['default']; }
-
-// ────────────────────────────────────────────────────────────
-// APP
-// ────────────────────────────────────────────────────────────
-const App = {
-  setup() {
-    // ── STATE ──
-    const theme = ref(localStorage.getItem('bib-theme') || 'light');
-    const view = ref('login'); // login | libros | salas | admin | prestamos
-    const authTab = ref('login'); // login | register
-    const user = ref(null);
-    const toasts = ref([]);
-    const loading = ref(false);
-
-    // Auth forms
-    const loginForm = reactive({ mail: '', password: '' });
-    const registerForm = reactive({ mail: '', password: '' });
-    const forgotMode = ref(false);
-    const forgotMail = ref('');
-    const authError = ref('');
-    const authSuccess = ref('');
-
-    // Books
-    const books = ref([]);
-    const bookPage = ref(0);
-    const bookPageTotal = ref(0);
-    const bookTotal = ref(0);
-    const bookSearch = ref('');
-    const activeCategory = ref('');
-    const categories = ref([]);
-    const selectedBook = ref(null);
-    const bookLoading = ref(false);
-
-    // Salas
-    const salas = ref([]);
-    const salaPage = ref(0);
-    const salaPageTotal = ref(0);
-    const salaTotal = ref(0);
-    const selectedSala = ref(null);
-    const salaLoading = ref(false);
-    const salaReservas = ref([]);
-
-    // Modal de Reserva de Sala
-    const reservaModal = ref(false);
-    const reservaForm = reactive({ fecha: '', hora: '' });
-    const reservaBusy = ref(false);
-
-    // Prestamo modal
-    const prestamoModal = ref(false);
-    const prestamoBook = ref(null);
-    const prestamoDate = ref('');
-    const prestamoBusy = ref(false);
-
-    // Admin
-    const usuarios = ref([]);
-    const usuarioPage = ref(0);
-    const usuarioPageTotal = ref(0);
-    const prestamos = ref([]);
-    const prestamoPage = ref(0);
-    const prestamoPageTotal = ref(0);
-    const adminLoading = ref(false);
-
-    // Gestión de catálogo
-    const gestionTab = ref('pisos'); // pisos | estanterias | baldas | libros | salas-g | autores
-    const gestionLoading = ref(false);
-
-    // Listas de catálogo
-    const pisos = ref([]);
-    const estanterias = ref([]);
-    const baldas = ref([]);
-    const autores = ref([]);
-    const salasG = ref([]);
-
-    // Pisos
-    const pisoForm = reactive({ numPiso: '', nombre: '' });
-    const editingPiso = ref(null);
-    const editPisoForm = reactive({ numPiso: '', nombre: '' });
-
-    // Estanterías
-    const estanteriaForm = reactive({ categoria: '', idPiso: '' });
-    const editingEstanteria = ref(null);
-    const editEstanteriaForm = reactive({ categoria: '', idPiso: '' });
-
-    // Baldas
-    const baldaForm = reactive({ numero: '', idEstanteria: '' });
-    const editingBalda = ref(null);
-    const editBaldaForm = reactive({ numero: '', idEstanteria: '' });
-
-    // Libros (gestión)
-    const libroGForm = reactive({ titulo: '', isbn: '', idAutor: '', idBalda: '' });
-    const editingLibroG = ref(null);
-    const editLibroGForm = reactive({ titulo: '', isbn: '', idAutor: '', idBalda: '' });
-
-    // Salas gestión
-    const salaGForm = reactive({ nombre: '', maximoPersonas: '', idPiso: '' });
-    const editingSalaG = ref(null);
-    const editSalaGForm = reactive({ nombre: '', maximoPersonas: '', idPiso: '' });
-
-    // Autores
-    const autorForm = reactive({ nombre: '', fechaNacimiento: '', nacionalidad: '' });
-    const editingAutor = ref(null);
-    const editAutorForm = reactive({ nombre: '', fechaNacimiento: '', nacionalidad: '' });
-
-    // ── THEME ──
-    watch(theme, v => {
-      document.documentElement.setAttribute('data-theme', v);
-      localStorage.setItem('bib-theme', v);
-    }, { immediate: true });
-    function toggleTheme() { theme.value = theme.value === 'light' ? 'dark' : 'light'; }
-
-    // ── TOAST ──
-    function toast(msg, type = 'success') {
-      const id = Date.now();
-      toasts.value.push({ id, msg, type });
-      setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+    async function getCsrfToken() {
+      const res = await fetch(`${API_URL}/api/auth/csrf`, { method: 'GET', credentials: 'include' });
+      if (!res.ok) throw new Error('No se pudo obtener CSRF');
+      const data = await res.json();
+      return data.token;
     }
 
-    // ── AUTH ──
-    const isAdmin = computed(() => user.value?.rol === 'ROLE_ADMIN');
-
-    async function checkSession() {
-      try {
-        const data = await apiFetch('/api/auth/me');
-        user.value = data;
-        view.value = 'libros';
-        loadBooks();
-        loadCategories();
-      } catch { view.value = 'login'; }
-    }
-
-    async function doLogin() {
-      authError.value = ''; authSuccess.value = '';
-      loading.value = true;
-      try {
-        const data = await apiFetch('/api/auth/login', {
-          method: 'POST', body: JSON.stringify(loginForm)
-        });
-        user.value = data;
-        view.value = 'libros';
-        toast('Bienvenido, ' + data.mail);
-        loadBooks(); loadCategories();
-      } catch(e) {
-        authError.value = e?.data?.message || 'Credenciales incorrectas';
-      } finally { loading.value = false; }
-    }
-
-    async function doRegister() {
-      authError.value = ''; authSuccess.value = '';
-      loading.value = true;
-      try {
-        const data = await apiFetch('/api/auth/register', {
-          method: 'POST', body: JSON.stringify(registerForm)
-        });
-        user.value = data;
-        view.value = 'libros';
-        toast('Cuenta creada correctamente');
-        loadBooks(); loadCategories();
-      } catch(e) {
-        const det = e?.data?.details;
-        authError.value = det ? Object.values(det).join(', ') : (e?.data?.message || 'Error al registrar');
-      } finally { loading.value = false; }
-    }
-
-    async function doForgot() {
-      authError.value = ''; authSuccess.value = '';
-      loading.value = true;
-      try {
-        await apiFetch('/api/auth/forgot-password', {
-          method: 'POST', body: JSON.stringify({ mail: forgotMail.value })
-        });
-        authSuccess.value = 'Si el correo existe, se ha enviado el código de recuperación.';
-      } catch { authSuccess.value = 'Si el correo existe, se ha enviado el código de recuperación.'; }
-      finally { loading.value = false; }
-    }
-
-    async function doLogout() {
-      try { await apiFetch('/api/auth/logout', { method: 'POST' }); } catch {}
-      user.value = null; view.value = 'login';
-      books.value = []; salas.value = [];
-      toast('Sesión cerrada');
-    }
-
-    // ── NAVIGATION ──
-    function goTo(v) {
-      view.value = v;
-      if (v === 'libros') { bookPage.value = 0; loadBooks(); }
-      if (v === 'salas') { salaPage.value = 0; loadSalas(); }
-      if (v === 'admin') loadAdmin();
-      if (v === 'prestamos') { prestamoPage.value = 0; loadPrestamos(); }
-      if (v === 'gestion') loadGestion();
-    }
-
-    // ── BOOKS ──
-    async function loadCategories() {
-      try {
-        // derive categories from estanterias or a broad books fetch
-        const data = await apiFetch('/api/estanterias');
-        const cats = [...new Set((data || []).map(e => e.categoria).filter(Boolean))];
-        categories.value = cats;
-      } catch {
-        categories.value = ['Novela', 'Poesía', 'Historia', 'Ciencia', 'Filosofía', 'Arte', 'Tecnología'];
+    async function apiFetch(path, init = {}) {
+      const method = (init.method ?? 'GET').toUpperCase();
+      const headers = new Headers(init.headers ?? {});
+      if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+        const csrfToken = await getCsrfToken();
+        headers.set('X-XSRF-TOKEN', csrfToken);
       }
+      if (!headers.has('Content-Type') && init.body) headers.set('Content-Type', 'application/json');
+      const response = await fetch(`${API_URL}${path}`, { ...init, headers, credentials: 'include' });
+      if (response.status === 204) return null;
+      const ct = response.headers.get('content-type') ?? '';
+      const data = ct.includes('application/json') ? await response.json() : await response.text();
+      if (!response.ok) throw { status: response.status, data };
+      return data;
     }
 
-    async function loadBooks() {
-      bookLoading.value = true;
-      try {
-        let path;
-        const params = new URLSearchParams({ page: bookPage.value, size: 12, sort: 'titulo,asc' });
-        if (activeCategory.value) {
-          path = `/api/libros/categorias/${encodeURIComponent(activeCategory.value)}?${params}`;
-        } else {
-          if (bookSearch.value) params.set('titulo', bookSearch.value);
-          path = `/api/libros?${params}`;
-        }
-        const data = await apiFetch(path);
-        books.value = data.content || [];
-        bookPageTotal.value = data.totalPages || 0;
-        bookTotal.value = data.totalElements || 0;
-      } catch(e) {
-        if (e?.status === 401) { doLogout(); return; }
-        toast('Error cargando libros', 'error');
-      } finally { bookLoading.value = false; }
-    }
-
-    function selectCategory(cat) {
-      if (activeCategory.value === cat) { activeCategory.value = ''; }
-      else { activeCategory.value = cat; bookSearch.value = ''; }
-      bookPage.value = 0;
-      loadBooks();
-    }
-
-    let searchTimeout;
-    function onSearchInput() {
-      activeCategory.value = '';
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => { bookPage.value = 0; loadBooks(); }, 400);
-    }
-
-    function bookPageGo(p) { bookPage.value = p; loadBooks(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
-    function openBook(book) { selectedBook.value = book; }
-    function closeBook() { selectedBook.value = null; }
-
-    function isAvailable(book) {
-      // A book is unavailable if it has an active prestamo without fechaDevolucionReal
-      // We approximate: all books are available unless we explicitly know otherwise
-      // Real apps would have an availability field — we'll mark as available by default
-      return true; // Would need backend /api/libros/{id}/disponibilidad
-    }
-
-    function openPrestamo(book) {
-      prestamoBook.value = book;
-      // Default: today
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2,'0');
-      const mm = String(today.getMonth()+1).padStart(2,'0');
-      const yyyy = today.getFullYear();
-      prestamoDate.value = `${yyyy}-${mm}-${dd}`;
-      prestamoModal.value = true;
-    }
-
-    function maxLoanDate() {
-      const d = new Date();
-      d.setMonth(d.getMonth() + 1);
-      return d.toISOString().split('T')[0];
-    }
-
-    async function confirmPrestamo() {
-      if (!prestamoDate.value) { toast('Selecciona fecha de devolución', 'error'); return; }
-      const devDate = prestamoDate.value;
-      const today = new Date().toISOString().split('T')[0];
-      prestamoBusy.value = true;
-      try {
-        await apiFetch('/api/prestamos', {
-          method: 'POST',
-          body: JSON.stringify({
-            idUsuario: { id: user.value.id },
-            idLibro: { id: prestamoBook.value.id },
-            fechaPrestamo: today,
-            fechaDevolucionPrevista: devDate,
-            fechaDevolucionReal: null
-          })
-        });
-        toast('Préstamo registrado correctamente');
-        prestamoModal.value = false;
-        selectedBook.value = null;
-      } catch(e) {
-        toast(e?.data?.message || 'Error al registrar préstamo', 'error');
-      } finally { prestamoBusy.value = false; }
-    }
-
-    // ── SALAS ──
-    async function loadSalas() {
-      salaLoading.value = true;
-      try {
-        const params = new URLSearchParams({ page: salaPage.value, size: 12, sort: 'nombre,asc'});        
-        const data = await apiFetch(`/api/salas?${params}`);
-        salas.value = data.content || [];
-        salaPageTotal.value = data.totalPages || 0;
-        salaTotal.value = data.totalElements || 0;
-      } catch(e) {
-        if (e?.status === 401) { doLogout(); return; }
-        toast('Error cargando salas', 'error');
-      } finally { salaLoading.value = false; }
-    }
-
-    function salaPageGo(p) { salaPage.value = p; loadSalas(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
-    async function openSala(sala) {
-      selectedSala.value = sala;
-      salaReservas.value = [];
-      try {
-        const params = new URLSearchParams({ page: 0, size: 20, sort: 'fechaReserva,asc', 'mostrarAnteriores': user.value.rol !== 'ROLE_ADMIN' ? 'true' : 'false'  });
-        const data = await apiFetch(`/api/reservas-sala?${params}`);
-        const all = data.content || [];
-        salaReservas.value = all.filter(r => r.salaId === sala.id);
-      } catch {}
-    }
-
-    function closeSala() { selectedSala.value = null; salaReservas.value = []; }
-
-    function isSalaAvailable(sala) {
-      const now = new Date();
-      return !salaReservas.value.some(r => {
-        const s = new Date(r.fechaReserva);
-        const e = new Date(r.fechaFinReserva);
-        return now >= s && now <= e;
-      });
-    }
-
-    function openReservaModal() {
-      Object.assign(reservaForm, { fecha: '', hora: '' });
-      reservaModal.value = true;
-    }
-
-    async function saveReserva() {
-      if (!reservaForm.fecha || !reservaForm.hora) {
-        toast('Por favor completa la fecha y hora', 'error');
-        return;
-      }
-      
-      reservaBusy.value = true;
-      try {
-        const body = {
-          fechaReserva: new Date(reservaForm.fecha + 'T' + reservaForm.hora).toISOString(),
-          fechaFinReserva: new Date(new Date(reservaForm.fecha + 'T' + reservaForm.hora).getTime() + 60*60*1000).toISOString(), // +1h
-          idSala: { id: selectedSala.value.id },
-          idUsuario: { id: user.value.id },
-
-        };
-        await apiFetch('/api/reservas-sala', { method: 'POST', body: JSON.stringify(body) });
-        toast('Reserva creada correctamente');
-        reservaModal.value = false;
-        await openSala(selectedSala.value);
-      } catch (e) {
-        toast(errMsg(e, 'Error al crear la reserva'), 'error');
-      } finally {
-        reservaBusy.value = false;
-      }
-    }
-
-    // ── ADMIN ──
-    async function loadAdmin() {
-      adminLoading.value = true;
-      try {
-        const [uData] = await Promise.all([
-          apiFetch(`/api/usuarios?page=${usuarioPage.value}&size=10`)
-        ]);
-        usuarios.value = uData.content || [];
-        usuarioPageTotal.value = uData.totalPages || 0;
-      } catch(e) {
-        if (e?.status === 403) toast('Sin permisos de administrador', 'error');
-      } finally { adminLoading.value = false; }
-    }
-
-    async function loadPrestamos() {
-      adminLoading.value = true;
-      try {
-        const data = await apiFetch(`/api/prestamos?page=${prestamoPage.value}&size=15&sort=fechaPrestamo,desc`);
-        prestamos.value = data.content || [];
-        prestamoPageTotal.value = data.totalPages || 0;
-      } catch(e) {
-        if (e?.status === 403) toast('Sin permisos de administrador', 'error');
-      } finally { adminLoading.value = false; }
-    }
-
-    async function deleteUsuario(id) {
-      if (!confirm('¿Eliminar usuario?')) return;
-      try {
-        await apiFetch(`/api/usuarios/${id}`, { method: 'DELETE' });
-        toast('Usuario eliminado');
-        loadAdmin();
-      } catch { toast('Error al eliminar', 'error'); }
-    }
-
-    async function toggleMoroso(u) {
-      try {
-        await apiFetch(`/api/usuarios/${u.id}`, {
-          method: 'PUT',
-          body: JSON.stringify({ mail: u.mail, rol: u.rol, moroso: !u.moroso })
-        });
-        toast('Estado actualizado');
-        loadAdmin();
-      } catch { toast('Error al actualizar', 'error'); }
-    }
-
-    async function devolvLibro(prestamo) {
-      const today = new Date().toISOString().split('T')[0];
-      try {
-        await apiFetch(`/api/prestamos/${prestamo.id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-            idUsuario: { id: prestamo.usuarioId },
-            idLibro: { id: prestamo.libroId },
-            fechaPrestamo: prestamo.fechaPrestamo,
-            fechaDevolucionPrevista: prestamo.fechaDevolucionPrevista,
-            fechaDevolucionReal: today
-          })
-        });
-        toast('Libro devuelto correctamente');
-        loadPrestamos();
-      } catch { toast('Error al registrar devolución', 'error'); }
-    }
-
-    // ── GESTIÓN ──
-    async function loadGestion() {
-      gestionLoading.value = true;
-      try {
-        const [pData, eData, bData, aData, sData] = await Promise.all([
-          apiFetch('/api/pisos'),
-          apiFetch('/api/estanterias'),
-          apiFetch('/api/baldas'),
-          apiFetch('/api/autores?page=0&size=100'),
-          apiFetch('/api/salas?page=0&size=100')
-        ]);
-        pisos.value = Array.isArray(pData) ? pData : (pData?.content || []);
-        estanterias.value = Array.isArray(eData) ? eData : (eData?.content || []);
-        baldas.value = Array.isArray(bData) ? bData : (bData?.content || []);
-        autores.value = aData?.content || [];
-        salasG.value = sData?.content || [];
-      } catch(e) {
-        if (e?.status === 403) toast('Sin permisos de administrador', 'error');
-      } finally { gestionLoading.value = false; }
-    }
-
-    function switchGestionTab(t) {
-      gestionTab.value = t;
-      editingPiso.value = null; editingEstanteria.value = null;
-      editingBalda.value = null; editingLibroG.value = null;
-      editingSalaG.value = null; editingAutor.value = null;
-    }
-
-    function errMsg(e, fallback) {
-      const det = e?.data?.details;
-      if (det) return Object.values(det).join(', ');
-      return e?.data?.message || fallback;
-    }
-
-    // ── PISOS CRUD ──
-    async function createPiso() {
-      if (!pisoForm.numPiso || !pisoForm.nombre) { toast('Rellena todos los campos', 'error'); return; }
-      try {
-        await apiFetch('/api/pisos', { method: 'POST', body: JSON.stringify({ numPiso: Number(pisoForm.numPiso), nombre: pisoForm.nombre }) });
-        toast('Piso creado'); pisoForm.numPiso = ''; pisoForm.nombre = '';
-        await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al crear piso'), 'error'); }
-    }
-    function startEditPiso(p) {
-      editingPiso.value = p.id; editPisoForm.numPiso = p.numPiso; editPisoForm.nombre = p.nombre;
-    }
-    async function saveEditPiso(p) {
-      try {
-        await apiFetch(`/api/pisos/${p.id}`, { method: 'PUT', body: JSON.stringify({ numPiso: Number(editPisoForm.numPiso), nombre: editPisoForm.nombre }) });
-        toast('Piso actualizado'); editingPiso.value = null; await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
-    }
-    async function deletePiso(id) {
-      if (!confirm('¿Eliminar este piso? Se perderán sus estanterías.')) return;
-      try { await apiFetch(`/api/pisos/${id}`, { method: 'DELETE' }); toast('Piso eliminado'); await loadGestion(); }
-      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
-    }
-
-    // ── ESTANTERÍAS CRUD ──
-    async function createEstanteria() {
-      if (!estanteriaForm.categoria || !estanteriaForm.idPiso) { toast('Rellena todos los campos', 'error'); return; }
-      try {
-        await apiFetch('/api/estanterias', { method: 'POST', body: JSON.stringify({ categoria: estanteriaForm.categoria, idPiso: { id: Number(estanteriaForm.idPiso) } }) });
-        toast('Estantería creada'); estanteriaForm.categoria = ''; estanteriaForm.idPiso = '';
-        await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
-    }
-    function startEditEstanteria(e) {
-      editingEstanteria.value = e.id; editEstanteriaForm.categoria = e.categoria; editEstanteriaForm.idPiso = e.pisoId;
-    }
-    async function saveEditEstanteria(e) {
-      try {
-        await apiFetch(`/api/estanterias/${e.id}`, { method: 'PUT', body: JSON.stringify({ categoria: editEstanteriaForm.categoria, idPiso: { id: Number(editEstanteriaForm.idPiso) } }) });
-        toast('Estantería actualizada'); editingEstanteria.value = null; await loadGestion();
-      } catch(er) { toast(errMsg(er, 'Error al editar'), 'error'); }
-    }
-    async function deleteEstanteria(id) {
-      if (!confirm('¿Eliminar esta estantería?')) return;
-      try { await apiFetch(`/api/estanterias/${id}`, { method: 'DELETE' }); toast('Estantería eliminada'); await loadGestion(); }
-      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
-    }
-
-    // ── BALDAS CRUD ──
-    async function createBalda() {
-      if (!baldaForm.numero || !baldaForm.idEstanteria) { toast('Rellena todos los campos', 'error'); return; }
-      try {
-        await apiFetch('/api/baldas', { method: 'POST', body: JSON.stringify({ numero: Number(baldaForm.numero), idEstanteria: { id: Number(baldaForm.idEstanteria) } }) });
-        toast('Balda creada'); baldaForm.numero = ''; baldaForm.idEstanteria = '';
-        await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
-    }
-    function startEditBalda(b) {
-      editingBalda.value = b.id; editBaldaForm.numero = b.numero; editBaldaForm.idEstanteria = b.estanteriaId;
-    }
-    async function saveEditBalda(b) {
-      try {
-        await apiFetch(`/api/baldas/${b.id}`, { method: 'PUT', body: JSON.stringify({ numero: Number(editBaldaForm.numero), idEstanteria: { id: Number(editBaldaForm.idEstanteria) } }) });
-        toast('Balda actualizada'); editingBalda.value = null; await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
-    }
-    async function deleteBalda(id) {
-      if (!confirm('¿Eliminar esta balda?')) return;
-      try { await apiFetch(`/api/baldas/${id}`, { method: 'DELETE' }); toast('Balda eliminada'); await loadGestion(); }
-      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
-    }
-
-    // ── LIBROS GESTIÓN CRUD ──
-    async function createLibroG() {
-      if (!libroGForm.titulo || !libroGForm.isbn || !libroGForm.idAutor || !libroGForm.idBalda) { toast('Rellena todos los campos', 'error'); return; }
-      try {
-        await apiFetch('/api/libros', { method: 'POST', body: JSON.stringify({ titulo: libroGForm.titulo, isbn: libroGForm.isbn, idAutor: { id: Number(libroGForm.idAutor) }, idBalda: { id: Number(libroGForm.idBalda) } }) });
-        toast('Libro creado'); libroGForm.titulo = ''; libroGForm.isbn = ''; libroGForm.idAutor = ''; libroGForm.idBalda = '';
-        await loadGestion(); await loadBooks();
-      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
-    }
-    function startEditLibroG(l) {
-      editingLibroG.value = l.id;
-      editLibroGForm.titulo = l.titulo; editLibroGForm.isbn = l.isbn;
-      editLibroGForm.idAutor = l.autorId; editLibroGForm.idBalda = l.baldaId;
-    }
-    async function saveEditLibroG(l) {
-      try {
-        await apiFetch(`/api/libros/${l.id}`, { method: 'PUT', body: JSON.stringify({ titulo: editLibroGForm.titulo, isbn: editLibroGForm.isbn, idAutor: { id: Number(editLibroGForm.idAutor) }, idBalda: { id: Number(editLibroGForm.idBalda) } }) });
-        toast('Libro actualizado'); editingLibroG.value = null; await loadGestion(); await loadBooks();
-      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
-    }
-    async function deleteLibroG(id) {
-      if (!confirm('¿Eliminar este libro del catálogo?')) return;
-      try { await apiFetch(`/api/libros/${id}`, { method: 'DELETE' }); toast('Libro eliminado'); await loadGestion(); await loadBooks(); }
-      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
-    }
-
-    // ── SALAS GESTIÓN CRUD ──
-    async function createSalaG() {
-      if (!salaGForm.nombre || !salaGForm.maximoPersonas || !salaGForm.idPiso) { toast('Rellena todos los campos', 'error'); return; }
-      try {
-        await apiFetch('/api/salas', { method: 'POST', body: JSON.stringify({ nombre: salaGForm.nombre, maximoPersonas: Number(salaGForm.maximoPersonas), idPiso: { id: Number(salaGForm.idPiso) } }) });
-        toast('Sala creada'); salaGForm.nombre = ''; salaGForm.maximoPersonas = ''; salaGForm.idPiso = '';
-        await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
-    }
-    function startEditSalaG(s) {
-      editingSalaG.value = s.id; editSalaGForm.nombre = s.nombre; editSalaGForm.maximoPersonas = s.maximoPersonas; editSalaGForm.idPiso = s.pisoId;
-    }
-    async function saveEditSalaG(s) {
-      try {
-        await apiFetch(`/api/salas/${s.id}`, { method: 'PUT', body: JSON.stringify({ nombre: editSalaGForm.nombre, maximoPersonas: Number(editSalaGForm.maximoPersonas), idPiso: { id: Number(editSalaGForm.idPiso) } }) });
-        toast('Sala actualizada'); editingSalaG.value = null; await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
-    }
-    async function deleteSalaG(id) {
-      if (!confirm('¿Eliminar esta sala?')) return;
-      try { await apiFetch(`/api/salas/${id}`, { method: 'DELETE' }); toast('Sala eliminada'); await loadGestion(); }
-      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
-    }
-
-    // ── AUTORES CRUD ──
-    async function createAutor() {
-      if (!autorForm.nombre) { toast('El nombre es obligatorio', 'error'); return; }
-      try {
-        await apiFetch('/api/autores', { method: 'POST', body: JSON.stringify({ nombre: autorForm.nombre, fechaNacimiento: autorForm.fechaNacimiento || null, nacionalidad: autorForm.nacionalidad || null }) });
-        toast('Autor creado'); autorForm.nombre = ''; autorForm.fechaNacimiento = ''; autorForm.nacionalidad = '';
-        await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al crear'), 'error'); }
-    }
-    function startEditAutor(a) {
-      editingAutor.value = a.id; editAutorForm.nombre = a.nombre; editAutorForm.fechaNacimiento = a.fechaNacimiento || ''; editAutorForm.nacionalidad = a.nacionalidad || '';
-    }
-    async function saveEditAutor(a) {
-      try {
-        await apiFetch(`/api/autores/${a.id}`, { method: 'PUT', body: JSON.stringify({ nombre: editAutorForm.nombre, fechaNacimiento: editAutorForm.fechaNacimiento || null, nacionalidad: editAutorForm.nacionalidad || null }) });
-        toast('Autor actualizado'); editingAutor.value = null; await loadGestion();
-      } catch(e) { toast(errMsg(e, 'Error al editar'), 'error'); }
-    }
-    async function deleteAutor(id) {
-      if (!confirm('¿Eliminar este autor?')) return;
-      try { await apiFetch(`/api/autores/${id}`, { method: 'DELETE' }); toast('Autor eliminado'); await loadGestion(); }
-      catch(e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
-    }
-
-    // ── HELPERS ──
-    function fmtDate(d) {
-      if (!d) return '—';
-      const dt = new Date(d);
-      return dt.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
-    }
-    function fmtDateTime(d) {
-      if (!d) return '—';
-      const dt = new Date(d);
-      return dt.toLocaleString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }
-
-    function paginate(total) {
-      const pages = [];
-      for (let i = 0; i < total; i++) pages.push(i);
-      return pages;
-    }
-
-    // ── INIT ──
-    onMounted(() => { checkSession(); });
-
-    return {
-      theme, view, authTab, user, toasts, loading,
-      loginForm, registerForm, forgotMode, forgotMail, authError, authSuccess,
-      books, bookPage, bookPageTotal, bookTotal, bookSearch, activeCategory, categories, selectedBook, bookLoading,
-      salas, salaPage, salaPageTotal, salaTotal, selectedSala, salaLoading, salaReservas, reservaModal, reservaForm, reservaBusy,
-      prestamoModal, prestamoBook, prestamoDate, prestamoBusy,
-      usuarios, usuarioPage, usuarioPageTotal, prestamos, prestamoPage, prestamoPageTotal, adminLoading,
-      gestionTab, gestionLoading, pisos, estanterias, baldas, autores, salasG,
-      pisoForm, editingPiso, editPisoForm,
-      estanteriaForm, editingEstanteria, editEstanteriaForm,
-      baldaForm, editingBalda, editBaldaForm,
-      libroGForm, editingLibroG, editLibroGForm,
-      salaGForm, editingSalaG, editSalaGForm,
-      autorForm, editingAutor, editAutorForm,
-      isAdmin, catEmoji,
-      toggleTheme, doLogin, doRegister, doForgot, doLogout,
-      goTo, loadBooks, loadSalas, loadAdmin, loadPrestamos,
-      selectCategory, onSearchInput, bookPageGo, salaPageGo,
-      openBook, closeBook, openPrestamo, maxLoanDate, confirmPrestamo,
-      openSala, closeSala, isSalaAvailable, openReservaModal, saveReserva,
-      deleteUsuario, toggleMoroso, devolvLibro,
-      switchGestionTab, loadGestion,
-      createPiso, startEditPiso, saveEditPiso, deletePiso,
-      createEstanteria, startEditEstanteria, saveEditEstanteria, deleteEstanteria,
-      createBalda, startEditBalda, saveEditBalda, deleteBalda,
-      createLibroG, startEditLibroG, saveEditLibroG, deleteLibroG,
-      createSalaG, startEditSalaG, saveEditSalaG, deleteSalaG,
-      createAutor, startEditAutor, saveEditAutor, deleteAutor,
-      fmtDate, fmtDateTime, paginate
+    // ────────────────────────────────────────────────────────────
+    // BOOK EMOJIS
+    // ────────────────────────────────────────────────────────────
+    const CAT_EMOJIS = {
+      'Novela': '📖', 'Poesía': '✒️', 'Historia': '🏛️', 'Ciencia': '🔬',
+      'Filosofía': '💭', 'Arte': '🎨', 'Tecnología': '💻', 'Economía': '📊',
+      'Derecho': '⚖️', 'Medicina': '🩺', 'default': '📚'
     };
-  },
+    function catEmoji(cat) { return CAT_EMOJIS[cat] || CAT_EMOJIS['default']; }
 
-  template: `
+    // ────────────────────────────────────────────────────────────
+    // APP
+    // ────────────────────────────────────────────────────────────
+    const App = {
+      setup() {
+        // ── STATE ──
+        const theme = ref(localStorage.getItem('bib-theme') || 'light');
+        const view = ref('login'); // login | libros | salas | admin | prestamos
+        const authTab = ref('login'); // login | register
+        const user = ref(null);
+        const toasts = ref([]);
+        const loading = ref(false);
+
+        // Auth forms
+        const loginForm = reactive({ mail: '', password: '' });
+        const registerForm = reactive({ mail: '', password: '' });
+        const forgotMode = ref(false);
+        const forgotMail = ref('');
+        const authError = ref('');
+        const authSuccess = ref('');
+
+        // Books
+        const books = ref([]);
+        const bookPage = ref(0);
+        const bookPageTotal = ref(0);
+        const bookTotal = ref(0);
+        const bookSearch = ref('');
+        const activeCategory = ref('');
+        const categories = ref([]);
+        const selectedBook = ref(null);
+        const bookLoading = ref(false);
+
+        // Salas
+        const salas = ref([]);
+        const salaPage = ref(0);
+        const salaPageTotal = ref(0);
+        const salaTotal = ref(0);
+        const selectedSala = ref(null);
+        const salaLoading = ref(false);
+        const salaReservas = ref([]);
+
+        // Modal de Reserva de Sala
+        const reservaModal = ref(false);
+        const reservaForm = reactive({ fecha: '', hora: '' });
+        const reservaBusy = ref(false);
+
+        // Prestamo modal
+        const prestamoModal = ref(false);
+        const prestamoBook = ref(null);
+        const prestamoDate = ref('');
+        const prestamoBusy = ref(false);
+
+        // Admin
+        const usuarios = ref([]);
+        const usuarioPage = ref(0);
+        const usuarioPageTotal = ref(0);
+        const prestamos = ref([]);
+        const prestamoPage = ref(0);
+        const prestamoPageTotal = ref(0);
+        const adminLoading = ref(false);
+
+        // Gestión de catálogo
+        const gestionTab = ref('pisos'); // pisos | estanterias | baldas | libros | salas-g | autores
+        const gestionLoading = ref(false);
+
+        // Listas de catálogo
+        const pisos = ref([]);
+        const estanterias = ref([]);
+        const baldas = ref([]);
+        const autores = ref([]);
+        const salasG = ref([]);
+
+        // Pisos
+        const pisoForm = reactive({ numPiso: '', nombre: '' });
+        const editingPiso = ref(null);
+        const editPisoForm = reactive({ numPiso: '', nombre: '' });
+
+        // Estanterías
+        const estanteriaForm = reactive({ categoria: '', idPiso: '' });
+        const editingEstanteria = ref(null);
+        const editEstanteriaForm = reactive({ categoria: '', idPiso: '' });
+
+        // Baldas
+        const baldaForm = reactive({ numero: '', idEstanteria: '' });
+        const editingBalda = ref(null);
+        const editBaldaForm = reactive({ numero: '', idEstanteria: '' });
+
+        // Libros (gestión)
+        const libroGForm = reactive({ titulo: '', isbn: '', idAutor: '', idBalda: '' });
+        const editingLibroG = ref(null);
+        const editLibroGForm = reactive({ titulo: '', isbn: '', idAutor: '', idBalda: '' });
+
+        // Salas gestión
+        const salaGForm = reactive({ nombre: '', maximoPersonas: '', idPiso: '' });
+        const editingSalaG = ref(null);
+        const editSalaGForm = reactive({ nombre: '', maximoPersonas: '', idPiso: '' });
+
+        // Autores
+        const autorForm = reactive({ nombre: '', fechaNacimiento: '', nacionalidad: '' });
+        const editingAutor = ref(null);
+        const editAutorForm = reactive({ nombre: '', fechaNacimiento: '', nacionalidad: '' });
+
+        // ── THEME ──
+        watch(theme, v => {
+          document.documentElement.setAttribute('data-theme', v);
+          localStorage.setItem('bib-theme', v);
+        }, { immediate: true });
+        function toggleTheme() { theme.value = theme.value === 'light' ? 'dark' : 'light'; }
+
+        // ── TOAST ──
+        function toast(msg, type = 'success') {
+          const id = Date.now();
+          toasts.value.push({ id, msg, type });
+          setTimeout(() => { toasts.value = toasts.value.filter(t => t.id !== id); }, 3500);
+        }
+
+        // ── AUTH ──
+        const isAdmin = computed(() => user.value?.rol === 'ROLE_ADMIN');
+
+        async function checkSession() {
+          try {
+            const data = await apiFetch('/api/auth/me');
+            user.value = data;
+            view.value = 'libros';
+            loadBooks();
+            loadCategories();
+          } catch { view.value = 'login'; }
+        }
+
+        async function doLogin() {
+          authError.value = ''; authSuccess.value = '';
+          loading.value = true;
+          try {
+            const data = await apiFetch('/api/auth/login', {
+              method: 'POST', body: JSON.stringify(loginForm)
+            });
+            user.value = data;
+            view.value = 'libros';
+            toast('Bienvenido, ' + data.mail);
+            loadBooks(); loadCategories();
+          } catch (e) {
+            authError.value = e?.data?.message || 'Credenciales incorrectas';
+          } finally { loading.value = false; }
+        }
+
+        async function doRegister() {
+          authError.value = ''; authSuccess.value = '';
+          loading.value = true;
+          try {
+            const data = await apiFetch('/api/auth/register', {
+              method: 'POST', body: JSON.stringify(registerForm)
+            });
+            user.value = data;
+            view.value = 'libros';
+            toast('Cuenta creada correctamente');
+            loadBooks(); loadCategories();
+          } catch (e) {
+            const det = e?.data?.details;
+            authError.value = det ? Object.values(det).join(', ') : (e?.data?.message || 'Error al registrar');
+          } finally { loading.value = false; }
+        }
+
+        async function doForgot() {
+          authError.value = ''; authSuccess.value = '';
+          loading.value = true;
+          try {
+            await apiFetch('/api/auth/forgot-password', {
+              method: 'POST', body: JSON.stringify({ mail: forgotMail.value })
+            });
+            authSuccess.value = 'Si el correo existe, se ha enviado el código de recuperación.';
+          } catch { authSuccess.value = 'Si el correo existe, se ha enviado el código de recuperación.'; }
+          finally { loading.value = false; }
+        }
+
+        async function doLogout() {
+          try { await apiFetch('/api/auth/logout', { method: 'POST' }); } catch { }
+          user.value = null; view.value = 'login';
+          books.value = []; salas.value = [];
+          toast('Sesión cerrada');
+        }
+
+        // ── NAVIGATION ──
+        function goTo(v) {
+          view.value = v;
+          if (v === 'libros') { bookPage.value = 0; loadBooks(); }
+          if (v === 'salas') { salaPage.value = 0; loadSalas(); }
+          if (v === 'admin') loadAdmin();
+          if (v === 'prestamos') { prestamoPage.value = 0; loadPrestamos(); }
+          if (v === 'gestion') loadGestion();
+        }
+
+        // ── BOOKS ──
+        async function loadCategories() {
+          try {
+            // derive categories from estanterias or a broad books fetch
+            const data = await apiFetch('/api/estanterias');
+            const cats = [...new Set((data || []).map(e => e.categoria).filter(Boolean))];
+            categories.value = cats;
+          } catch {
+            categories.value = ['Novela', 'Poesía', 'Historia', 'Ciencia', 'Filosofía', 'Arte', 'Tecnología'];
+          }
+        }
+
+        async function loadBooks() {
+          bookLoading.value = true;
+          try {
+            let path;
+            const params = new URLSearchParams({ page: bookPage.value, size: 12, sort: 'titulo,asc' });
+            if (activeCategory.value) {
+              path = `/api/libros/categorias/${encodeURIComponent(activeCategory.value)}?${params}`;
+            } else {
+              if (bookSearch.value) params.set('titulo', bookSearch.value);
+              path = `/api/libros?${params}`;
+            }
+            const data = await apiFetch(path);
+            books.value = data.content || [];
+            bookPageTotal.value = data.totalPages || 0;
+            bookTotal.value = data.totalElements || 0;
+          } catch (e) {
+            if (e?.status === 401) { doLogout(); return; }
+            toast('Error cargando libros', 'error');
+          } finally { bookLoading.value = false; }
+        }
+
+        function selectCategory(cat) {
+          if (activeCategory.value === cat) { activeCategory.value = ''; }
+          else { activeCategory.value = cat; bookSearch.value = ''; }
+          bookPage.value = 0;
+          loadBooks();
+        }
+
+        let searchTimeout;
+        function onSearchInput() {
+          activeCategory.value = '';
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => { bookPage.value = 0; loadBooks(); }, 400);
+        }
+
+        function bookPageGo(p) { bookPage.value = p; loadBooks(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        function openBook(book) { selectedBook.value = book; }
+        function closeBook() { selectedBook.value = null; }
+
+        function isAvailable(book) {
+          // A book is unavailable if it has an active prestamo without fechaDevolucionReal
+          // We approximate: all books are available unless we explicitly know otherwise
+          // Real apps would have an availability field — we'll mark as available by default
+          return true; // Would need backend /api/libros/{id}/disponibilidad
+        }
+
+        function openPrestamo(book) {
+          prestamoBook.value = book;
+          // Default: today
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const yyyy = today.getFullYear();
+          prestamoDate.value = `${yyyy}-${mm}-${dd}`;
+          prestamoModal.value = true;
+        }
+
+        function maxLoanDate() {
+          const d = new Date();
+          d.setMonth(d.getMonth() + 1);
+          return d.toISOString().split('T')[0];
+        }
+
+        async function confirmPrestamo() {
+          if (!prestamoDate.value) { toast('Selecciona fecha de devolución', 'error'); return; }
+          const devDate = prestamoDate.value;
+          const today = new Date().toISOString().split('T')[0];
+          prestamoBusy.value = true;
+          try {
+            await apiFetch('/api/prestamos', {
+              method: 'POST',
+              body: JSON.stringify({
+                idUsuario: { id: user.value.id },
+                idLibro: { id: prestamoBook.value.id },
+                fechaPrestamo: today,
+                fechaDevolucionPrevista: devDate,
+                fechaDevolucionReal: null
+              })
+            });
+            toast('Préstamo registrado correctamente');
+            prestamoModal.value = false;
+            selectedBook.value = null;
+          } catch (e) {
+            toast(e?.data?.message || 'Error al registrar préstamo', 'error');
+          } finally { prestamoBusy.value = false; }
+        }
+
+        // ── SALAS ──
+        async function loadSalas() {
+          salaLoading.value = true;
+          try {
+            const params = new URLSearchParams({ page: salaPage.value, size: 12, sort: 'nombre,asc' });
+            const data = await apiFetch(`/api/salas?${params}`);
+            salas.value = data.content || [];
+            salaPageTotal.value = data.totalPages || 0;
+            salaTotal.value = data.totalElements || 0;
+          } catch (e) {
+            if (e?.status === 401) { doLogout(); return; }
+            toast('Error cargando salas', 'error');
+          } finally { salaLoading.value = false; }
+        }
+
+        function salaPageGo(p) { salaPage.value = p; loadSalas(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        async function openSala(sala) {
+          selectedSala.value = sala;
+          salaReservas.value = [];
+          try {
+            const params = new URLSearchParams({ page: 0, size: 20, sort: 'fechaReserva,asc', 'mostrarAnteriores': user.value.rol !== 'ROLE_ADMIN' ? 'true' : 'false' });
+            const data = await apiFetch(`/api/reservas-sala?${params}`);
+            const all = data.content || [];
+            salaReservas.value = all.filter(r => r.salaId === sala.id);
+          } catch { }
+        }
+
+        function closeSala() { selectedSala.value = null; salaReservas.value = []; }
+
+        function isSalaAvailable(sala) {
+          const now = new Date();
+          return !salaReservas.value.some(r => {
+            const s = new Date(r.fechaReserva);
+            const e = new Date(r.fechaFinReserva);
+            return now >= s && now <= e;
+          });
+        }
+
+        function openReservaModal() {
+          Object.assign(reservaForm, { fecha: '', hora: '' });
+          reservaModal.value = true;
+        }
+
+        async function saveReserva() {
+          if (!reservaForm.fecha || !reservaForm.hora) {
+            toast('Por favor completa la fecha y hora', 'error');
+            return;
+          }
+
+          reservaBusy.value = true;
+          try {
+            const body = {
+              fechaReserva: new Date(reservaForm.fecha + 'T' + reservaForm.hora).toISOString(),
+              fechaFinReserva: new Date(new Date(reservaForm.fecha + 'T' + reservaForm.hora).getTime() + 60 * 60 * 1000).toISOString(), // +1h
+              idSala: { id: selectedSala.value.id },
+              idUsuario: { id: user.value.id },
+
+            };
+            await apiFetch('/api/reservas-sala', { method: 'POST', body: JSON.stringify(body) });
+            toast('Reserva creada correctamente');
+            reservaModal.value = false;
+            await openSala(selectedSala.value);
+          } catch (e) {
+            toast(errMsg(e, 'Error al crear la reserva'), 'error');
+          } finally {
+            reservaBusy.value = false;
+          }
+        }
+
+        // ── ADMIN ──
+        async function loadAdmin() {
+          adminLoading.value = true;
+          try {
+            const [uData] = await Promise.all([
+              apiFetch(`/api/usuarios?page=${usuarioPage.value}&size=10`)
+            ]);
+            usuarios.value = uData.content || [];
+            usuarioPageTotal.value = uData.totalPages || 0;
+          } catch (e) {
+            if (e?.status === 403) toast('Sin permisos de administrador', 'error');
+          } finally { adminLoading.value = false; }
+        }
+
+        async function loadPrestamos() {
+          adminLoading.value = true;
+          try {
+            const data = await apiFetch(`/api/prestamos?page=${prestamoPage.value}&size=15&sort=fechaPrestamo,desc`);
+            prestamos.value = data.content || [];
+            prestamoPageTotal.value = data.totalPages || 0;
+          } catch (e) {
+            if (e?.status === 403) toast('Sin permisos de administrador', 'error');
+          } finally { adminLoading.value = false; }
+        }
+
+        async function deleteUsuario(id) {
+          if (!confirm('¿Eliminar usuario?')) return;
+          try {
+            await apiFetch(`/api/usuarios/${id}`, { method: 'DELETE' });
+            toast('Usuario eliminado');
+            loadAdmin();
+          } catch { toast('Error al eliminar', 'error'); }
+        }
+
+        async function toggleMoroso(u) {
+          try {
+            await apiFetch(`/api/usuarios/${u.id}`, {
+              method: 'PUT',
+              body: JSON.stringify({ mail: u.mail, rol: u.rol, moroso: !u.moroso })
+            });
+            toast('Estado actualizado');
+            loadAdmin();
+          } catch { toast('Error al actualizar', 'error'); }
+        }
+
+        async function devolvLibro(prestamo) {
+          const today = new Date().toISOString().split('T')[0];
+          try {
+            await apiFetch(`/api/prestamos/${prestamo.id}`, {
+              method: 'PUT',
+              body: JSON.stringify({
+                idUsuario: { id: prestamo.usuarioId },
+                idLibro: { id: prestamo.libroId },
+                fechaPrestamo: prestamo.fechaPrestamo,
+                fechaDevolucionPrevista: prestamo.fechaDevolucionPrevista,
+                fechaDevolucionReal: today
+              })
+            });
+            toast('Libro devuelto correctamente');
+            loadPrestamos();
+          } catch { toast('Error al registrar devolución', 'error'); }
+        }
+
+        // ── GESTIÓN ──
+        async function loadGestion() {
+          gestionLoading.value = true;
+          try {
+            const [pData, eData, bData, aData, sData] = await Promise.all([
+              apiFetch('/api/pisos'),
+              apiFetch('/api/estanterias'),
+              apiFetch('/api/baldas'),
+              apiFetch('/api/autores?page=0&size=100'),
+              apiFetch('/api/salas?page=0&size=100')
+            ]);
+            pisos.value = Array.isArray(pData) ? pData : (pData?.content || []);
+            estanterias.value = Array.isArray(eData) ? eData : (eData?.content || []);
+            baldas.value = Array.isArray(bData) ? bData : (bData?.content || []);
+            autores.value = aData?.content || [];
+            salasG.value = sData?.content || [];
+          } catch (e) {
+            if (e?.status === 403) toast('Sin permisos de administrador', 'error');
+          } finally { gestionLoading.value = false; }
+        }
+
+        function switchGestionTab(t) {
+          gestionTab.value = t;
+          editingPiso.value = null; editingEstanteria.value = null;
+          editingBalda.value = null; editingLibroG.value = null;
+          editingSalaG.value = null; editingAutor.value = null;
+        }
+
+        function errMsg(e, fallback) {
+          const det = e?.data?.details;
+          if (det) return Object.values(det).join(', ');
+          return e?.data?.message || fallback;
+        }
+
+        // ── PISOS CRUD ──
+        async function createPiso() {
+          if (!pisoForm.numPiso || !pisoForm.nombre) { toast('Rellena todos los campos', 'error'); return; }
+          try {
+            await apiFetch('/api/pisos', { method: 'POST', body: JSON.stringify({ numPiso: Number(pisoForm.numPiso), nombre: pisoForm.nombre }) });
+            toast('Piso creado'); pisoForm.numPiso = ''; pisoForm.nombre = '';
+            await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al crear piso'), 'error'); }
+        }
+        function startEditPiso(p) {
+          editingPiso.value = p.id; editPisoForm.numPiso = p.numPiso; editPisoForm.nombre = p.nombre;
+        }
+        async function saveEditPiso(p) {
+          try {
+            await apiFetch(`/api/pisos/${p.id}`, { method: 'PUT', body: JSON.stringify({ numPiso: Number(editPisoForm.numPiso), nombre: editPisoForm.nombre }) });
+            toast('Piso actualizado'); editingPiso.value = null; await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+        }
+        async function deletePiso(id) {
+          if (!confirm('¿Eliminar este piso? Se perderán sus estanterías.')) return;
+          try { await apiFetch(`/api/pisos/${id}`, { method: 'DELETE' }); toast('Piso eliminado'); await loadGestion(); }
+          catch (e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+        }
+
+        // ── ESTANTERÍAS CRUD ──
+        async function createEstanteria() {
+          if (!estanteriaForm.categoria || !estanteriaForm.idPiso) { toast('Rellena todos los campos', 'error'); return; }
+          try {
+            await apiFetch('/api/estanterias', { method: 'POST', body: JSON.stringify({ categoria: estanteriaForm.categoria, idPiso: { id: Number(estanteriaForm.idPiso) } }) });
+            toast('Estantería creada'); estanteriaForm.categoria = ''; estanteriaForm.idPiso = '';
+            await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+        }
+        function startEditEstanteria(e) {
+          editingEstanteria.value = e.id; editEstanteriaForm.categoria = e.categoria; editEstanteriaForm.idPiso = e.pisoId;
+        }
+        async function saveEditEstanteria(e) {
+          try {
+            await apiFetch(`/api/estanterias/${e.id}`, { method: 'PUT', body: JSON.stringify({ categoria: editEstanteriaForm.categoria, idPiso: { id: Number(editEstanteriaForm.idPiso) } }) });
+            toast('Estantería actualizada'); editingEstanteria.value = null; await loadGestion();
+          } catch (er) { toast(errMsg(er, 'Error al editar'), 'error'); }
+        }
+        async function deleteEstanteria(id) {
+          if (!confirm('¿Eliminar esta estantería?')) return;
+          try { await apiFetch(`/api/estanterias/${id}`, { method: 'DELETE' }); toast('Estantería eliminada'); await loadGestion(); }
+          catch (e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+        }
+
+        // ── BALDAS CRUD ──
+        async function createBalda() {
+          if (!baldaForm.numero || !baldaForm.idEstanteria) { toast('Rellena todos los campos', 'error'); return; }
+          try {
+            await apiFetch('/api/baldas', { method: 'POST', body: JSON.stringify({ numero: Number(baldaForm.numero), idEstanteria: { id: Number(baldaForm.idEstanteria) } }) });
+            toast('Balda creada'); baldaForm.numero = ''; baldaForm.idEstanteria = '';
+            await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+        }
+        function startEditBalda(b) {
+          editingBalda.value = b.id; editBaldaForm.numero = b.numero; editBaldaForm.idEstanteria = b.estanteriaId;
+        }
+        async function saveEditBalda(b) {
+          try {
+            await apiFetch(`/api/baldas/${b.id}`, { method: 'PUT', body: JSON.stringify({ numero: Number(editBaldaForm.numero), idEstanteria: { id: Number(editBaldaForm.idEstanteria) } }) });
+            toast('Balda actualizada'); editingBalda.value = null; await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+        }
+        async function deleteBalda(id) {
+          if (!confirm('¿Eliminar esta balda?')) return;
+          try { await apiFetch(`/api/baldas/${id}`, { method: 'DELETE' }); toast('Balda eliminada'); await loadGestion(); }
+          catch (e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+        }
+
+        // ── LIBROS GESTIÓN CRUD ──
+        async function createLibroG() {
+          if (!libroGForm.titulo || !libroGForm.isbn || !libroGForm.idAutor || !libroGForm.idBalda) { toast('Rellena todos los campos', 'error'); return; }
+          try {
+            await apiFetch('/api/libros', { method: 'POST', body: JSON.stringify({ titulo: libroGForm.titulo, isbn: libroGForm.isbn, idAutor: { id: Number(libroGForm.idAutor) }, idBalda: { id: Number(libroGForm.idBalda) } }) });
+            toast('Libro creado'); libroGForm.titulo = ''; libroGForm.isbn = ''; libroGForm.idAutor = ''; libroGForm.idBalda = '';
+            await loadGestion(); await loadBooks();
+          } catch (e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+        }
+        function startEditLibroG(l) {
+          editingLibroG.value = l.id;
+          editLibroGForm.titulo = l.titulo; editLibroGForm.isbn = l.isbn;
+          editLibroGForm.idAutor = l.autorId; editLibroGForm.idBalda = l.baldaId;
+        }
+        async function saveEditLibroG(l) {
+          try {
+            await apiFetch(`/api/libros/${l.id}`, { method: 'PUT', body: JSON.stringify({ titulo: editLibroGForm.titulo, isbn: editLibroGForm.isbn, idAutor: { id: Number(editLibroGForm.idAutor) }, idBalda: { id: Number(editLibroGForm.idBalda) } }) });
+            toast('Libro actualizado'); editingLibroG.value = null; await loadGestion(); await loadBooks();
+          } catch (e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+        }
+        async function deleteLibroG(id) {
+          if (!confirm('¿Eliminar este libro del catálogo?')) return;
+          try { await apiFetch(`/api/libros/${id}`, { method: 'DELETE' }); toast('Libro eliminado'); await loadGestion(); await loadBooks(); }
+          catch (e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+        }
+
+        // ── SALAS GESTIÓN CRUD ──
+        async function createSalaG() {
+          if (!salaGForm.nombre || !salaGForm.maximoPersonas || !salaGForm.idPiso) { toast('Rellena todos los campos', 'error'); return; }
+          try {
+            await apiFetch('/api/salas', { method: 'POST', body: JSON.stringify({ nombre: salaGForm.nombre, maximoPersonas: Number(salaGForm.maximoPersonas), idPiso: { id: Number(salaGForm.idPiso) } }) });
+            toast('Sala creada'); salaGForm.nombre = ''; salaGForm.maximoPersonas = ''; salaGForm.idPiso = '';
+            await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+        }
+        function startEditSalaG(s) {
+          editingSalaG.value = s.id; editSalaGForm.nombre = s.nombre; editSalaGForm.maximoPersonas = s.maximoPersonas; editSalaGForm.idPiso = s.pisoId;
+        }
+        async function saveEditSalaG(s) {
+          try {
+            await apiFetch(`/api/salas/${s.id}`, { method: 'PUT', body: JSON.stringify({ nombre: editSalaGForm.nombre, maximoPersonas: Number(editSalaGForm.maximoPersonas), idPiso: { id: Number(editSalaGForm.idPiso) } }) });
+            toast('Sala actualizada'); editingSalaG.value = null; await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+        }
+        async function deleteSalaG(id) {
+          if (!confirm('¿Eliminar esta sala?')) return;
+          try { await apiFetch(`/api/salas/${id}`, { method: 'DELETE' }); toast('Sala eliminada'); await loadGestion(); }
+          catch (e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+        }
+
+        // ── AUTORES CRUD ──
+        async function createAutor() {
+          if (!autorForm.nombre) { toast('El nombre es obligatorio', 'error'); return; }
+          try {
+            await apiFetch('/api/autores', { method: 'POST', body: JSON.stringify({ nombre: autorForm.nombre, fechaNacimiento: autorForm.fechaNacimiento || null, nacionalidad: autorForm.nacionalidad || null }) });
+            toast('Autor creado'); autorForm.nombre = ''; autorForm.fechaNacimiento = ''; autorForm.nacionalidad = '';
+            await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al crear'), 'error'); }
+        }
+        function startEditAutor(a) {
+          editingAutor.value = a.id; editAutorForm.nombre = a.nombre; editAutorForm.fechaNacimiento = a.fechaNacimiento || ''; editAutorForm.nacionalidad = a.nacionalidad || '';
+        }
+        async function saveEditAutor(a) {
+          try {
+            await apiFetch(`/api/autores/${a.id}`, { method: 'PUT', body: JSON.stringify({ nombre: editAutorForm.nombre, fechaNacimiento: editAutorForm.fechaNacimiento || null, nacionalidad: editAutorForm.nacionalidad || null }) });
+            toast('Autor actualizado'); editingAutor.value = null; await loadGestion();
+          } catch (e) { toast(errMsg(e, 'Error al editar'), 'error'); }
+        }
+        async function deleteAutor(id) {
+          if (!confirm('¿Eliminar este autor?')) return;
+          try { await apiFetch(`/api/autores/${id}`, { method: 'DELETE' }); toast('Autor eliminado'); await loadGestion(); }
+          catch (e) { toast(errMsg(e, 'Error al eliminar'), 'error'); }
+        }
+
+        // ── HELPERS ──
+        function fmtDate(d) {
+          if (!d) return '—';
+          const dt = new Date(d);
+          return dt.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        function fmtDateTime(d) {
+          if (!d) return '—';
+          const dt = new Date(d);
+          return dt.toLocaleString('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function paginate(total) {
+          const pages = [];
+          for (let i = 0; i < total; i++) pages.push(i);
+          return pages;
+        }
+
+        // ── INIT ──
+        onMounted(() => { checkSession(); });
+
+        return {
+          theme, view, authTab, user, toasts, loading,
+          loginForm, registerForm, forgotMode, forgotMail, authError, authSuccess,
+          books, bookPage, bookPageTotal, bookTotal, bookSearch, activeCategory, categories, selectedBook, bookLoading,
+          salas, salaPage, salaPageTotal, salaTotal, selectedSala, salaLoading, salaReservas, reservaModal, reservaForm, reservaBusy,
+          prestamoModal, prestamoBook, prestamoDate, prestamoBusy,
+          usuarios, usuarioPage, usuarioPageTotal, prestamos, prestamoPage, prestamoPageTotal, adminLoading,
+          gestionTab, gestionLoading, pisos, estanterias, baldas, autores, salasG,
+          pisoForm, editingPiso, editPisoForm,
+          estanteriaForm, editingEstanteria, editEstanteriaForm,
+          baldaForm, editingBalda, editBaldaForm,
+          libroGForm, editingLibroG, editLibroGForm,
+          salaGForm, editingSalaG, editSalaGForm,
+          autorForm, editingAutor, editAutorForm,
+          isAdmin, catEmoji,
+          toggleTheme, doLogin, doRegister, doForgot, doLogout,
+          goTo, loadBooks, loadSalas, loadAdmin, loadPrestamos,
+          selectCategory, onSearchInput, bookPageGo, salaPageGo,
+          openBook, closeBook, openPrestamo, maxLoanDate, confirmPrestamo,
+          openSala, closeSala, isSalaAvailable, openReservaModal, saveReserva,
+          deleteUsuario, toggleMoroso, devolvLibro,
+          switchGestionTab, loadGestion,
+          createPiso, startEditPiso, saveEditPiso, deletePiso,
+          createEstanteria, startEditEstanteria, saveEditEstanteria, deleteEstanteria,
+          createBalda, startEditBalda, saveEditBalda, deleteBalda,
+          createLibroG, startEditLibroG, saveEditLibroG, deleteLibroG,
+          createSalaG, startEditSalaG, saveEditSalaG, deleteSalaG,
+          createAutor, startEditAutor, saveEditAutor, deleteAutor,
+          fmtDate, fmtDateTime, paginate
+        };
+      },
+
+      template: `
   <div>
 
     <!-- ──────────────────────────────────────────── -->
@@ -2146,9 +3025,10 @@ const App = {
 
   </div>
   `
-};
+    };
 
-createApp(App).mount('#app');
-</script>
+    createApp(App).mount('#app');
+  </script>
 </body>
+
 </html>

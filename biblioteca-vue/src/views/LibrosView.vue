@@ -4,12 +4,8 @@
       <template #actions>
         <div class="relative">
           <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[0.8rem] pointer-events-none">🔍</span>
-          <input
-            v-model="search"
-            type="text"
-            placeholder="Buscar por título…"
-            class="field-input pl-8 py-2 text-[0.92rem] w-56"
-          />
+          <input v-model="search" type="text" placeholder="Buscar por título…"
+            class="field-input pl-8 py-2 text-[0.92rem] w-56" />
         </div>
         <span class="text-[0.82rem] italic text-ink-light">{{ filtered.length }} libro(s)</span>
         <button v-if="auth.isAdmin" class="btn btn-primary btn-sm" @click="openForm()">+ Nuevo libro</button>
@@ -78,35 +74,35 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useToastStore } from '@/stores/toast'
 import { librosApi, autoresApi, baldasApi } from '@/api/services'
-import DataTable  from '@/components/ui/DataTable.vue'
-import AppModal   from '@/components/ui/AppModal.vue'
+import DataTable from '@/components/ui/DataTable.vue'
+import AppModal from '@/components/ui/AppModal.vue'
 import ConfirmModal from '@/components/ui/ConfirmModal.vue'
 
-const auth  = useAuthStore()
+const auth = useAuthStore()
 const toast = useToastStore()
 
-const rows    = ref([])
+const rows = ref([])
 const autores = ref([])
-const baldas  = ref([])
+const baldas = ref([])
 const loading = ref(true)
-const search  = ref('')
-const saving  = ref(false)
+const search = ref('')
+const saving = ref(false)
 
-const showModal   = ref(false)
+const showModal = ref(false)
 const showConfirm = ref(false)
-const editing     = ref(false)
-const toDelete    = ref(null)
+const editing = ref(false)
+const toDelete = ref(null)
 
 const form = reactive({ id: null, titulo: '', isbn: '', idAutor: null, idBalda: null })
 const formErrors = reactive({ titulo: '', isbn: '' })
 
 const columns = [
-  { key: 'id',                  label: '#',          mono: true },
-  { key: 'titulo',              label: 'Título' },
-  { key: 'isbn',                label: 'ISBN',        mono: true },
-  { key: 'autorNombre',         label: 'Autor' },
+  { key: 'id', label: '#', mono: true },
+  { key: 'titulo', label: 'Título' },
+  { key: 'isbn', label: 'ISBN', mono: true },
+  { key: 'autorNombre', label: 'Autor' },
   { key: 'estanteriaCategoria', label: 'Categoría' },
-  { key: 'pisoNombre',          label: 'Piso' },
+  { key: 'pisoNombre', label: 'Piso' },
 ]
 
 const filtered = computed(() => {
@@ -118,9 +114,9 @@ async function load() {
   loading.value = true
   try {
     const [l, a, b] = await Promise.all([librosApi.getAll(), autoresApi.getAll(), baldasApi.getAll()])
-    rows.value    = l.data
+    rows.value = l.data
     autores.value = a.data
-    baldas.value  = b.data
+    baldas.value = b.data
   } finally {
     loading.value = false
   }
@@ -144,7 +140,7 @@ async function save() {
   const body = { titulo: form.titulo, isbn: form.isbn, idAutor: { id: form.idAutor }, idBalda: { id: form.idBalda } }
   try {
     if (editing.value) await librosApi.update(form.id, body)
-    else               await librosApi.create(body)
+    else await librosApi.create(body)
     toast.success('Libro guardado correctamente')
     showModal.value = false
     await load()
