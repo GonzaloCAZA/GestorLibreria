@@ -1,20 +1,27 @@
 package com.example.libreria.repository;
 
-import com.example.libreria.domain.ReservaSala;
+import com.example.libreria.domain.ReservarSala;
 import com.example.libreria.domain.Sala;
 import com.example.libreria.domain.Usuario;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
 import java.util.List;
 
-public interface ReservaSalaRepository extends JpaRepository<ReservaSala, Long> {
+public interface ReservaSalaRepository extends JpaRepository<ReservarSala, Long> {
 
-    List<ReservaSala> findByIdUsuario(Usuario idUsuario);
+    List<ReservarSala> findByIdUsuario(Usuario idUsuario);
 
-    List<ReservaSala> findByIdSala(Sala idSala);
+    List<ReservarSala> findByIdSala(Sala idSala);
 
-    List<ReservaSala> findByFechaReserva(Instant fechaReserva);
+    List<ReservarSala> findByFechaReserva(Instant fechaReserva);
+    Page<ReservarSala> findByFechaReserva(Instant fechaReserva, Pageable pageable);
 
-    List<ReservaSala> findByFechaFinReserva(Instant fechaFinReserva);
+    List<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva);
+    Page<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva, Pageable pageable);
+
+    List<ReservarSala> findByFechaFinReservaAfter(Instant fechaFinReservaAfter);
+    Page<ReservarSala> findByFechaFinReservaAfter(Instant fechaFinReservaAfter, Pageable pageable);
 }

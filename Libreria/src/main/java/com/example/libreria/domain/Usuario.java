@@ -1,25 +1,34 @@
 package com.example.libreria.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.libreria.util.Rol;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
-
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 254)
+    @NotNull
     @Column(name = "mail", nullable = false, length = 254)
     private String mail;
 
-    @Lob
-    @Column(name = "rol", nullable = false)
-    private String rol;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @Column(nullable = false, columnDefinition = "ENUM('ROLE_ADMIN','ROLE_CUSTOMER','ROLE_DEV')")
+    private Rol rol;
 
+    @NotNull
     @ColumnDefault("0")
     @Column(name = "moroso", nullable = false)
     private Boolean moroso;
@@ -31,6 +40,12 @@ public class Usuario {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "actualizado")
     private Instant actualizado;
+
+    @Size(max = 255)
+    @NotNull
+    @JsonIgnore
+    @Column(name = "pwd", nullable = false)
+    private String pwd;
 
     public Long getId() {
         return id;
@@ -48,11 +63,11 @@ public class Usuario {
         this.mail = mail;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 
@@ -78,6 +93,14 @@ public class Usuario {
 
     public void setActualizado(Instant actualizado) {
         this.actualizado = actualizado;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
 }

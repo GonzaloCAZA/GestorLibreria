@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  body {
+    background-color: #faf6ee;
+    color: #1a1208;
+    font-family: 'Crimson Pro', Georgia, serif;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.4;
+  }
+}
+
+@layer components {
+  /* ── Sidebar grid lines ── */
+  .sidebar-grid {
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(200,134,10,0.07) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(200,134,10,0.04) 40px);
+  }
+
+  /* ── Table base ── */
+  .lib-table {
+    @apply w-full border-collapse text-[0.95rem];
+  }
+  .lib-table thead th {
+    @apply bg-cream-dark px-4 py-3 text-left text-[0.7rem] font-semibold uppercase tracking-widest text-ink-light border-b-2 border-paper-dark whitespace-nowrap;
+  }
+  .lib-table tbody tr {
+    @apply border-b border-paper transition-colors duration-100;
+  }
+  .lib-table tbody tr:hover {
+    @apply bg-cream;
+  }
+  .lib-table tbody td {
+    @apply px-4 py-[11px] align-middle;
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 font-body font-semibold text-[0.95rem] tracking-wide transition-all duration-150 rounded-[2px] cursor-pointer border-0 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply bg-ink text-amber-light hover:-translate-y-px hover:shadow-btn;
+  }
+  .btn-amber {
+    @apply bg-amber text-white hover:bg-amber-light;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-ink-light border border-paper-dark hover:border-amber hover:text-amber;
+  }
+  .btn-danger {
+    @apply bg-danger text-white hover:opacity-85;
+  }
+  .btn-sm {
+    @apply px-3.5 py-1.5 text-[0.85rem];
+  }
+
+  /* ── Form fields ── */
+  .field-label {
+    @apply block text-[0.72rem] font-semibold uppercase tracking-[0.08em] text-ink-light mb-1.5;
+  }
+  .field-input {
+    @apply w-full px-3.5 py-2.5 bg-white border-[1.5px] border-paper-dark font-body text-[1rem] text-ink outline-none transition-colors duration-150 rounded-[2px] focus:border-amber;
+  }
+  .field-error {
+    @apply text-[0.8rem] text-danger italic mt-1;
+  }
+
+  /* ── Card ── */
+  .card {
+    @apply bg-white border border-paper-dark shadow-card;
+  }
+  .card-header {
+    @apply px-6 py-5 border-b border-paper flex items-center justify-between gap-3 flex-wrap;
+  }
+  .card-title {
+    @apply font-display text-[1.15rem] font-semibold text-ink;
+  }
+
+  /* ── Badges ── */
+  .badge {
+    @apply inline-block px-2 py-0.5 text-[0.67rem] font-semibold uppercase tracking-[0.07em] rounded-[2px];
+  }
+  .badge-admin  { @apply bg-amber text-white; }
+  .badge-customer { @apply bg-teal text-white; }
+  .badge-moroso { @apply bg-danger text-white; }
+  .badge-ok     { @apply bg-teal text-white; }
+
+  /* ── Stat card ── */
+  .stat-card {
+    @apply bg-white border border-paper-dark shadow-card p-5 relative overflow-hidden;
+  }
+  .stat-card::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-[3px] bg-amber;
+  }
+  .stat-card.teal::after { background-color: #1a5c5c; }
+  .stat-card.red::after  { background-color: #8b2318; }
+}
+
+/* ── Animations ── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes authIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.animate-fade-slide { animation: fadeSlideIn 0.25s ease both; }
+.animate-auth-in    { animation: authIn 0.55s cubic-bezier(.22,.68,0,1.2) both; }
+.animate-toast-in   { animation: toastIn 0.3s ease both; }
