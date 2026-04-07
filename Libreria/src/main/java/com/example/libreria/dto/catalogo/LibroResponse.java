@@ -18,9 +18,10 @@ public record LibroResponse(
         Integer pisoNumero,
         String pisoNombre,
         Instant creado,
-        Instant actualizado
+        Instant actualizado,
+        boolean isPrestado
 ) {
-    public static LibroResponse from(Libro libro) {
+    public static LibroResponse from(Libro libro, boolean isPrestado) {
         return new LibroResponse(
                 libro.getId(),
                 libro.getTitulo(),
@@ -35,7 +36,8 @@ public record LibroResponse(
                 libro.getIdBalda().getIdEstanteria().getIdPiso().getNumPiso(),
                 libro.getIdBalda().getIdEstanteria().getIdPiso().getNombre(),
                 libro.getCreado(),
-                libro.getActualizado()
+                libro.getActualizado(),
+                isPrestado
         );
     }
 }

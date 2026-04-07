@@ -28,6 +28,8 @@ public interface PrestamoLibroService {
 
     List<PrestamoLibro> findByLibro(Libro libro);
 
+    boolean isPrestado(Long libroId);
+
     List<PrestamoLibro> findByFechaPrestamo(LocalDate fechaPrestamo);
     Page<PrestamoLibro> findByFechaPrestamo(LocalDate fechaPrestamo, Pageable pageable);
 

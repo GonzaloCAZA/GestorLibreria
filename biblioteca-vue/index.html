@@ -480,6 +480,11 @@ const App = {
     const salaLoading = ref(false);
     const salaReservas = ref([]);
 
+    // Modal de Reserva de Sala
+    const reservaModal = ref(false);
+    const reservaForm = reactive({ fecha: '', hora: '' });
+    const reservaBusy = ref(false);
+
     // Prestamo modal
     const prestamoModal = ref(false);
     const prestamoBook = ref(null);
@@ -764,6 +769,37 @@ const App = {
       });
     }
 
+    function openReservaModal() {
+      Object.assign(reservaForm, { fecha: '', hora: '' });
+      reservaModal.value = true;
+    }
+
+    async function saveReserva() {
+      if (!reservaForm.fecha || !reservaForm.hora) {
+        toast('Por favor completa la fecha y hora', 'error');
+        return;
+      }
+      
+      reservaBusy.value = true;
+      try {
+        const body = {
+          fechaReserva: new Date(reservaForm.fecha + 'T' + reservaForm.hora).toISOString(),
+          fechaFinReserva: new Date(new Date(reservaForm.fecha + 'T' + reservaForm.hora).getTime() + 60*60*1000).toISOString(), // +1h
+          idSala: { id: selectedSala.value.id },
+          idUsuario: { id: user.value.id },
+
+        };
+        await apiFetch('/api/reservas-sala', { method: 'POST', body: JSON.stringify(body) });
+        toast('Reserva creada correctamente');
+        reservaModal.value = false;
+        await openSala(selectedSala.value);
+      } catch (e) {
+        toast(errMsg(e, 'Error al crear la reserva'), 'error');
+      } finally {
+        reservaBusy.value = false;
+      }
+    }
+
     // ── ADMIN ──
     async function loadAdmin() {
       adminLoading.value = true;
@@ -1027,7 +1063,7 @@ const App = {
       theme, view, authTab, user, toasts, loading,
       loginForm, registerForm, forgotMode, forgotMail, authError, authSuccess,
       books, bookPage, bookPageTotal, bookTotal, bookSearch, activeCategory, categories, selectedBook, bookLoading,
-      salas, salaPage, salaPageTotal, salaTotal, selectedSala, salaLoading, salaReservas,
+      salas, salaPage, salaPageTotal, salaTotal, selectedSala, salaLoading, salaReservas, reservaModal, reservaForm, reservaBusy,
       prestamoModal, prestamoBook, prestamoDate, prestamoBusy,
       usuarios, usuarioPage, usuarioPageTotal, prestamos, prestamoPage, prestamoPageTotal, adminLoading,
       gestionTab, gestionLoading, pisos, estanterias, baldas, autores, salasG,
@@ -1042,7 +1078,7 @@ const App = {
       goTo, loadBooks, loadSalas, loadAdmin, loadPrestamos,
       selectCategory, onSearchInput, bookPageGo, salaPageGo,
       openBook, closeBook, openPrestamo, maxLoanDate, confirmPrestamo,
-      openSala, closeSala, isSalaAvailable,
+      openSala, closeSala, isSalaAvailable, openReservaModal, saveReserva,
       deleteUsuario, toggleMoroso, devolvLibro,
       switchGestionTab, loadGestion,
       createPiso, startEditPiso, saveEditPiso, deletePiso,
@@ -1214,7 +1250,7 @@ const App = {
               <div class="book-author">{{book.autorNombre || '—'}}</div>
               <div class="book-isbn">{{book.isbn}}</div>
               <div class="avail-label">
-                <span class="avail-dot avail-yes"></span> Disponible
+                <span class="avail-dot avail-yes"></span> {{book.isPrestado ? 'Prestado' : 'Disponible'}}
               </div>
             </div>
           </div>
@@ -2006,8 +2042,52 @@ const App = {
         <div v-else style="font-size:0.85rem;color:var(--text2);margin-bottom:1.25rem">
           Sin reservas registradas.
         </div>
+        <button class="btn btn-outline" style="width:100%;margin-bottom:1rem;background-color:var(--accent);color:var(--bg)" @click="openReservaModal">Reservar</button>
 
         <button class="btn btn-outline" style="width:100%" @click="closeSala">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- ──────────────────────────────────────────── -->
+    <!-- RESERVA SALA MODAL -->
+    <!-- ──────────────────────────────────────────── -->
+    <div v-if="reservaModal" class="modal-overlay" @click.self="reservaModal=false">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title">Reservar sala</div>
+          <button class="modal-close" @click="reservaModal=false">✕</button>
+        </div>
+
+        <div class="prestamo-info">
+          🏠 <strong>{{selectedSala?.nombre}}</strong><br/>
+          <span style="font-size:0.8rem">Selecciona la fecha y hora para tu reserva.</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Fecha *</label>
+          <input
+            v-model="reservaForm.fecha"
+            class="form-input"
+            type="date"
+            :min="new Date().toISOString().split('T')[0]"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Hora *</label>
+          <input
+            v-model="reservaForm.hora"
+            class="form-input"
+            type="time"
+          />
+        </div>
+
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn btn-primary" style="flex:1" @click="saveReserva" :disabled="reservaBusy">
+            {{reservaBusy ? 'Reservando…' : 'Reservar'}}
+          </button>
+          <button class="btn btn-outline" @click="reservaModal=false">Cancelar</button>
+        </div>
       </div>
     </div>
 

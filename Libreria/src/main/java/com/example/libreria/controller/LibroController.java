@@ -8,10 +8,12 @@ import com.example.libreria.dto.common.PageResponse;
 import com.example.libreria.service.BaldaService;
 import com.example.libreria.service.EstanteriaService;
 import com.example.libreria.service.LibroService;
+import com.example.libreria.service.PrestamoLibroService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,11 +33,18 @@ public class LibroController {
     private final LibroService libroService;
     private final EstanteriaService estanteriaService;
     private final BaldaService baldaService;
+    private final PrestamoLibroService prestamoLibroService;
 
-    public LibroController(LibroService libroService, EstanteriaService estanteriaService, BaldaService baldaService) {
+    public LibroController(
+            LibroService libroService,
+            EstanteriaService estanteriaService,
+            BaldaService baldaService,
+            PrestamoLibroService prestamoLibroService
+    ) {
         this.libroService = libroService;
         this.estanteriaService = estanteriaService;
         this.baldaService = baldaService;
+        this.prestamoLibroService = prestamoLibroService;
     }
 
     @GetMapping
@@ -45,27 +54,41 @@ public class LibroController {
             Pageable pageable
     ) {
         if (categoria != null && !categoria.isBlank()) {
-            return ResponseEntity.ok(PageResponse.from(libroService.findByCategoria(categoria, pageable), LibroResponse::from));
+            return ResponseEntity.ok(PageResponse.from(
+                    libroService.findByCategoria(categoria, pageable),
+                    libro -> LibroResponse.from(libro, prestamoLibroService.isPrestado(libro.getId()))
+            ));
         }
         if (titulo != null && !titulo.isBlank()) {
-            return ResponseEntity.ok(PageResponse.from(libroService.findByTituloContaining(titulo, pageable), LibroResponse::from));
+            return ResponseEntity.ok(PageResponse.from(
+                    libroService.findByTituloContaining(titulo, pageable),
+                    libro -> LibroResponse.from(libro, prestamoLibroService.isPrestado(libro.getId()))
+            ));
         }
-        return ResponseEntity.ok(PageResponse.from(libroService.findAll(pageable), LibroResponse::from));
+        return ResponseEntity.ok(PageResponse.from(
+                libroService.findAll(pageable),
+                libro -> LibroResponse.from(libro, prestamoLibroService.isPrestado(libro.getId()))
+        ));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LibroResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(LibroResponse.from(libroService.findById(id)));
+        Libro libro = libroService.findById(id);
+        return ResponseEntity.ok(LibroResponse.from(libro, prestamoLibroService.isPrestado(libro.getId())));
     }
 
     @GetMapping("/isbn/{isbn}")
     public ResponseEntity<LibroResponse> findByIsbn(@PathVariable String isbn) {
-        return ResponseEntity.ok(LibroResponse.from(libroService.findByIsbn(isbn)));
+        Libro libro = libroService.findByIsbn(isbn);
+        return ResponseEntity.ok(LibroResponse.from(libro, prestamoLibroService.isPrestado(libro.getId())));
     }
 
     @GetMapping("/categorias/{categoria}")
     public ResponseEntity<PageResponse<LibroResponse>> findByCategoria(@PathVariable String categoria, Pageable pageable) {
-        return ResponseEntity.ok(PageResponse.from(libroService.findByCategoria(categoria, pageable), LibroResponse::from));
+        return ResponseEntity.ok(PageResponse.from(
+                libroService.findByCategoria(categoria, pageable),
+                libro -> LibroResponse.from(libro, prestamoLibroService.isPrestado(libro.getId()))
+        ));
     }
 
     @PostMapping
@@ -73,14 +96,16 @@ public class LibroController {
     @Transactional
     public ResponseEntity<LibroResponse> create(@Valid @RequestBody Libro libro) {
         libro.setIdBalda(baldaService.findById(libro.getIdBalda().getId()));
-        return ResponseEntity.ok(LibroResponse.from(libroService.save(libro)));
+        Libro libroGuardado = libroService.save(libro);
+        return ResponseEntity.ok(LibroResponse.from(libroGuardado, prestamoLibroService.isPrestado(libroGuardado.getId())));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public ResponseEntity<LibroResponse> update(@PathVariable Long id, @Valid @RequestBody Libro libro) {
-        return ResponseEntity.ok(LibroResponse.from(libroService.update(id, libro)));
+        Libro libroActualizado = libroService.update(id, libro);
+        return ResponseEntity.ok(LibroResponse.from(libroActualizado, prestamoLibroService.isPrestado(libroActualizado.getId())));
     }
 
     @DeleteMapping("/{id}")

@@ -87,6 +87,12 @@ public class PrestamoLibroServiceImpl implements PrestamoLibroService {
 
     @Override
     @Transactional(readOnly = true)
+    public boolean isPrestado(Long libroId) {
+        return prestamoLibroRepository.existsByIdLibro_IdAndFechaDevolucionRealIsNull(libroId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PrestamoLibro> findByFechaPrestamo(LocalDate fechaPrestamo) {
         return prestamoLibroRepository.findByFechaPrestamo(fechaPrestamo);
     }

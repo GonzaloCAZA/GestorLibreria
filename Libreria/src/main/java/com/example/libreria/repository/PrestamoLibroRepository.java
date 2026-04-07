@@ -16,6 +16,8 @@ public interface PrestamoLibroRepository extends JpaRepository<PrestamoLibro, Lo
 
     List<PrestamoLibro> findByIdLibro(Libro idLibro);
 
+    boolean existsByIdLibro_IdAndFechaDevolucionRealIsNull(Long libroId);
+
     List<PrestamoLibro> findByFechaPrestamo(LocalDate fechaPrestamo);
     Page<PrestamoLibro> findByFechaPrestamo(LocalDate fechaPrestamo, Pageable pageable);
 
