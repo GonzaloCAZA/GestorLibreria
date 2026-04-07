@@ -1,0 +1,38 @@
+############################
+# FRONTEND (biblioteca-vue)
+############################
+biblioteca-vue/node_modules/
+biblioteca-vue/dist/
+biblioteca-vue/.env
+biblioteca-vue/.env.*
+biblioteca-vue/npm-debug.log*
+biblioteca-vue/yarn-debug.log*
+biblioteca-vue/yarn-error.log*
+
+############################
+# BACKEND (Libreria - Spring Boot)
+############################
+Libreria/target/
+Libreria/*.log
+Libreria/logs/
+Libreria/.env
+Libreria/.env.*
+
+############################
+# GENERALES
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# IDEs
+############################
+.vscode/
+.idea/
+*.iml
+
+############################
+# SISTEMA
+############################
+*.swp
+*.swo
