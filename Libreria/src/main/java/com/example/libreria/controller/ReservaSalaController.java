@@ -9,6 +9,7 @@ import com.example.libreria.service.PisoService;
 import com.example.libreria.service.ReservaSalaService;
 import com.example.libreria.service.SalaService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 @Transactional(readOnly = true)
@@ -43,6 +45,7 @@ public class ReservaSalaController {
     public ResponseEntity<PageResponse<ReservaSalaResponse>> findAll(
             @RequestParam(required = false) Instant fechaReserva,
             @RequestParam(required = false) Instant fechaFinReserva,
+            @RequestParam(required = false) Boolean mostrarAnteriores,
             Pageable pageable
     ) {
         if (fechaReserva != null) {
@@ -51,7 +54,12 @@ public class ReservaSalaController {
         if (fechaFinReserva != null) {
             return ResponseEntity.ok(PageResponse.from(reservaSalaService.findByFechaFinReserva(fechaFinReserva, pageable), ReservaSalaResponse::from));
         }
-        return ResponseEntity.ok(PageResponse.from(reservaSalaService.findAll(pageable), ReservaSalaResponse::from));
+        //Para admins se muestran todas para usuarios solo las que estan pendientes
+        Page <ReservarSala> reservas = mostrarAnteriores ? reservaSalaService.findByFechaReservaAfter(Instant.now(), pageable)
+            : reservaSalaService.findAll(pageable);
+
+        return ResponseEntity.ok(PageResponse.from(reservas, ReservaSalaResponse::from));
+
     }
 
     @PreAuthorize("hasRole('ADMIN')")

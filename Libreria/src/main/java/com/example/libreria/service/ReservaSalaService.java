@@ -25,7 +25,8 @@ public interface ReservaSalaService {
     List<ReservarSala> findByUsuario(Usuario usuario);
 
     List<ReservarSala> findBySala(Sala sala);
-
+    List<ReservarSala> findByFechaReservaAfter(Instant fecha);
+    Page<ReservarSala> findByFechaReservaAfter(Instant fecha, Pageable pageable);
     List<ReservarSala> findByFechaReserva(Instant fechaReserva);
     Page<ReservarSala> findByFechaReserva(Instant fechaReserva, Pageable pageable);
 

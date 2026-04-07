@@ -734,7 +734,7 @@ const App = {
     async function loadSalas() {
       salaLoading.value = true;
       try {
-        const params = new URLSearchParams({ page: salaPage.value, size: 12, sort: 'nombre,asc' });
+        const params = new URLSearchParams({ page: salaPage.value, size: 12, sort: 'nombre,asc'});        
         const data = await apiFetch(`/api/salas?${params}`);
         salas.value = data.content || [];
         salaPageTotal.value = data.totalPages || 0;
@@ -751,7 +751,7 @@ const App = {
       selectedSala.value = sala;
       salaReservas.value = [];
       try {
-        const params = new URLSearchParams({ page: 0, size: 20, sort: 'fechaReserva,asc' });
+        const params = new URLSearchParams({ page: 0, size: 20, sort: 'fechaReserva,asc', 'mostrarAnteriores': user.value.rol !== 'ROLE_ADMIN' ? 'true' : 'false'  });
         const data = await apiFetch(`/api/reservas-sala?${params}`);
         const all = data.content || [];
         salaReservas.value = all.filter(r => r.salaId === sala.id);

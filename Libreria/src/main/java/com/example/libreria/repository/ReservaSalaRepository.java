@@ -21,4 +21,7 @@ public interface ReservaSalaRepository extends JpaRepository<ReservarSala, Long>
 
     List<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva);
     Page<ReservarSala> findByFechaFinReserva(Instant fechaFinReserva, Pageable pageable);
+
+    List<ReservarSala> findByFechaFinReservaAfter(Instant fechaFinReservaAfter);
+    Page<ReservarSala> findByFechaFinReservaAfter(Instant fechaFinReservaAfter, Pageable pageable);
 }

@@ -79,6 +79,16 @@ public class ReservaSalaServiceImpl implements ReservaSalaService {
     }
 
     @Override
+    public List<ReservarSala> findByFechaReservaAfter(Instant fecha) {
+        return reservaSalaRepository.findByFechaFinReservaAfter(fecha);
+    }
+
+    @Override
+    public Page<ReservarSala> findByFechaReservaAfter(Instant fecha, Pageable pageable) {
+        return reservaSalaRepository.findByFechaFinReservaAfter(fecha, pageable);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ReservarSala> findByFechaReserva(Instant fechaReserva) {
         return reservaSalaRepository.findByFechaReserva(fechaReserva);
