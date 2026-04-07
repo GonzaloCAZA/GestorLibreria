@@ -63,13 +63,7 @@ public class ReservaSalaController {
     @PostMapping
     @Transactional
     public ResponseEntity<ReservaSalaResponse> create(@Valid @RequestBody ReservarSala reservarSala) {
-        System.out.println(reservarSala.getIdSala().getId());
-        Sala sala = salaService.findById(reservarSala.getIdSala().getId());
-        System.out.println(sala.getIdPiso().getId());
-        Piso piso = pisoService.findById(sala.getIdPiso().getId());
-        reservarSala.setIdSala(sala);
-
-        System.out.println(reservarSala.getIdSala().getIdPiso());
+        reservarSala.setIdSala(salaService.findById(reservarSala.getIdSala().getId()));
         return ResponseEntity.ok(ReservaSalaResponse.from(reservaSalaService.save(reservarSala)));
     }
 
